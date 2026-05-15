@@ -86,6 +86,7 @@ export default function WorkoutLogger() {
   }
 
   function handleFinish() {
+    if (!window.confirm('Finish workout and save? This will overwrite any previous log for today.')) return
     const todayStr = toLocalDateStr(new Date())
     // Save swapped names in the log so future ghost targets look up the right exercise
     const exercises = session.exercises.map(ex => ({

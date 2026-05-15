@@ -8,8 +8,14 @@ const makeLog = (date, exerciseName, sets) => ({
 })
 
 describe('detectPR', () => {
-  it('returns null with no history', () => {
+  it('detects first-ever PR (no prior logs)', () => {
     const sets = [{ weight: 100, reps: 5, completed: true, type: 'S' }]
+    const pr = detectPR('Bench Press', sets, [])
+    expect(pr).toEqual({ exercise: 'Bench Press', weight: 100, previousBest: 0 })
+  })
+
+  it('returns null with no history and no completed sets', () => {
+    const sets = [{ weight: 0, reps: 5, completed: false, type: 'S' }]
     expect(detectPR('Bench Press', sets, [])).toBeNull()
   })
 

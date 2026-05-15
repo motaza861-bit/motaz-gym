@@ -15,9 +15,9 @@ export function detectPR(exerciseName, newSets, workoutLogs) {
     .filter(ex => ex.name === exerciseName)
     .reduce((best, ex) => Math.max(best, maxWeight(ex.sets)), 0)
 
-  if (!previousMax) return null
-
   const newMax = maxWeight(newSets)
+  if (!newMax) return null
+  if (!previousMax) return { exercise: exerciseName, weight: newMax, previousBest: 0 }
   if (newMax > previousMax) {
     return { exercise: exerciseName, weight: newMax, previousBest: previousMax }
   }

@@ -44,7 +44,7 @@ export default function RestTimer({ seconds, onDone }) {
     }
     const id = setTimeout(() => setRemaining(r => r - 1), 1000)
     return () => clearTimeout(id)
-  }, [remaining])
+  }, [remaining, onDone])
 
   const mins = Math.floor(remaining / 60)
   const secs = remaining % 60
