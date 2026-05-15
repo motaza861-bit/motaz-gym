@@ -26,29 +26,34 @@ export default function Nutrition() {
     { calories: 0, protein: 0, carbs: 0, fat: 0 }
   )
 
-  const totalCalories = eaten.calories + bump
+  const totalCalories = Math.max(0, eaten.calories + bump)
 
-  function updateLog(changes) {
+  function toggleMeal(mealId) {
     setNutritionLogs(prev => {
       const existing = prev.find(l => l.date === todayStr)
-      const updated = { ...(existing ?? { date: todayStr, meals: [], calorieBump: 0 }), ...changes }
+      const meals = existing?.meals ?? []
+      const alreadyEaten = meals.find(m => m.id === mealId)?.eaten
+      const updatedMeals = alreadyEaten
+        ? meals.map(m => m.id === mealId ? { ...m, eaten: false } : m)
+        : [...meals.filter(m => m.id !== mealId), { id: mealId, eaten: true }]
+      const base = existing ?? { date: todayStr, meals: [], calorieBump: 0 }
+      const updated = { ...base, meals: updatedMeals }
       return existing
         ? prev.map(l => l.date === todayStr ? updated : l)
         : [...prev, updated]
     })
   }
 
-  function toggleMeal(mealId) {
-    const meals = todayLog.meals
-    const alreadyEaten = meals.find(m => m.id === mealId)?.eaten
-    const updatedMeals = alreadyEaten
-      ? meals.map(m => m.id === mealId ? { ...m, eaten: false } : m)
-      : [...meals.filter(m => m.id !== mealId), { id: mealId, eaten: true }]
-    updateLog({ meals: updatedMeals })
-  }
-
   function adjustCalories(delta) {
-    updateLog({ calorieBump: bump + delta })
+    setNutritionLogs(prev => {
+      const existing = prev.find(l => l.date === todayStr)
+      const currentBump = existing?.calorieBump ?? 0
+      const base = existing ?? { date: todayStr, meals: [], calorieBump: 0 }
+      const updated = { ...base, calorieBump: currentBump + delta }
+      return existing
+        ? prev.map(l => l.date === todayStr ? updated : l)
+        : [...prev, updated]
+    })
   }
 
   return (
