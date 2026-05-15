@@ -1,0 +1,87 @@
+/* src/pages/Schedule.css */
+.schedule-title { font-size: 22px; font-weight: 900; }
+.schedule-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; margin-bottom: 20px; }
+
+.week-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+
+.day-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+
+.day-card.today {
+  border-color: rgba(255,60,60,0.4);
+  background: linear-gradient(135deg, #1a0000, #111);
+}
+
+.day-card.rest { opacity: 0.5; }
+
+.day-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.day-name { font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+
+.today-badge {
+  background: var(--red);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.session-badge {
+  background: rgba(255,60,60,0.15);
+  color: var(--red);
+  border: 1px solid rgba(255,60,60,0.3);
+  font-size: 12px;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+}
+
+.day-rest { font-size: 13px; color: var(--text-muted); }
+.day-focus { font-size: 12px; color: var(--red); font-weight: 700; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+.day-muscles { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; }
+
+.day-exercises { display: flex; flex-direction: column; gap: 5px; }
+
+.day-ex {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #bbb;
+}
+
+.day-ex-sets { color: var(--red); font-weight: 700; }
+
+.protocol-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+.protocol-title {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--red);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.protocol-item {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 7px;
+  line-height: 1.5;
+}
+
+.protocol-item strong { color: var(--text); }
