@@ -1,9 +1,12 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { exportAllData, importAllData } from '../hooks/useStorage'
 import './Settings.css'
 
 export default function Settings() {
   const [importStatus, setImportStatus] = useState(null) // 'success' | 'error' | null
+  const timerRef = useRef(null)
+
+  useEffect(() => () => { if (timerRef.current) clearTimeout(timerRef.current) }, [])
 
   async function handleImport(e) {
     const file = e.target.files?.[0]
@@ -11,7 +14,7 @@ export default function Settings() {
     try {
       await importAllData(file)
       setImportStatus('success')
-      setTimeout(() => window.location.reload(), 1200)
+      timerRef.current = setTimeout(() => window.location.reload(), 1200)
     } catch {
       setImportStatus('error')
     }
@@ -43,7 +46,12 @@ export default function Settings() {
                'Restore from a previously exported .json file'}
             </div>
           </div>
-          <label className="settings-btn" style={{ cursor: 'pointer' }}>
+          <label
+            className="settings-btn"
+            role="button"
+            tabIndex={0}
+            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') e.currentTarget.click() }}
+          >
             Import
             <input type="file" accept=".json" onChange={handleImport} style={{ display: 'none' }} />
           </label>
