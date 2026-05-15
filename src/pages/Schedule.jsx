@@ -12,9 +12,9 @@ const WEEK = [
   { day: 'Sunday',    session: 'rest' },
 ]
 
-const TODAY_NAME = new Date().toLocaleDateString('en', { weekday: 'long' })
-
 export default function Schedule() {
+  const todayName = new Date().toLocaleDateString('en', { weekday: 'long' })
+
   return (
     <div className="page schedule-page">
       <h1 className="schedule-title">Training Schedule 📅</h1>
@@ -22,7 +22,7 @@ export default function Schedule() {
 
       <div className="week-grid">
         {WEEK.map(({ day, session }) => {
-          const isToday = day === TODAY_NAME
+          const isToday = day === todayName
           const isRest = session === 'rest'
           const data = isRest ? null : SESSIONS[session]
           return (
