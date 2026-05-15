@@ -1,12 +1,12 @@
 import './WorkoutCard.css'
 
-export default function WorkoutCard({ session, sessionLabel, onStart }) {
-  const preview = session.exercises.slice(0, 3)
+export default function WorkoutCard({ session, sessionLabel, onStart, eyebrow = "Today's Training" }) {
+  const preview = (session.exercises ?? []).slice(0, 3)
   return (
     <div className="workout-card">
       <div className="wc-header">
         <div>
-          <div className="wc-eyebrow">Today's Training</div>
+          <div className="wc-eyebrow">{eyebrow}</div>
           <div className="wc-title">{session.name}</div>
           <div className="wc-muscles">{session.muscles}</div>
         </div>
@@ -14,8 +14,8 @@ export default function WorkoutCard({ session, sessionLabel, onStart }) {
       </div>
 
       <div className="wc-exercises">
-        {preview.map(ex => (
-          <div key={ex.name} className="wc-ex">
+        {preview.map((ex, i) => (
+          <div key={i} className="wc-ex">
             <span className="wc-ex-name">{ex.name}</span>
             <span className="wc-ex-sets">{ex.sets}×{ex.reps}</span>
           </div>

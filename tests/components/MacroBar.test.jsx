@@ -13,4 +13,10 @@ describe('MacroBar', () => {
     const fill = document.querySelector('.macro-bar-fill')
     expect(fill.style.width).toBe('100%')
   })
+
+  it('shows correct partial fill width', () => {
+    render(<MacroBar label="Carbs" value={110} target={220} color="orange" unit="g" />)
+    const fill = document.querySelector('.macro-bar-fill')
+    expect(fill.style.width).toBe('50%')
+  })
 })

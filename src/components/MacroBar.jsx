@@ -1,6 +1,6 @@
 import './MacroBar.css'
 
-export default function MacroBar({ label, value, target, color, unit = 'g' }) {
+export default function MacroBar({ label, value = 0, target = 0, color, unit = 'g' }) {
   const pct = Math.min(100, target > 0 ? Math.round((value / target) * 100) : 0)
   return (
     <div className="macro-bar">
