@@ -1,0 +1,27 @@
+/* src/components/MacroBar.css */
+.macro-bar { margin-bottom: 12px; }
+.macro-bar:last-child { margin-bottom: 0; }
+
+.macro-bar-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.macro-bar-label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+.macro-bar-values { font-size: 13px; font-weight: 800; }
+.macro-bar-target { font-size: 11px; color: var(--text-muted); font-weight: 400; }
+
+.macro-bar-track {
+  height: 5px;
+  background: var(--border-light);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.macro-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
