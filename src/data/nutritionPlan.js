@@ -1,9 +1,9 @@
 // src/data/nutritionPlan.js
 export const TARGETS = {
   calories: 2400,
-  protein: 220,   // grams — 2g/kg at ~110kg
-  carbs: 240,     // grams
-  fat: 70,        // grams
+  protein: 210,   // grams — approx 2g/kg at ~105kg; meal plan provides ~208g
+  carbs: 250,     // grams — meal plan actual
+  fat: 70,        // grams — goal; meal plan provides ~66g
 }
 
 export const MEALS = [

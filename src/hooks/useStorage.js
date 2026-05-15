@@ -14,7 +14,8 @@ export function useStorage(key, defaultValue) {
   const setValue = useCallback((update) => {
     setValueState(prev => {
       const next = typeof update === 'function' ? update(prev) : update
-      try { localStorage.setItem(key, JSON.stringify(next)) } catch { /* storage full */ }
+      // eslint-disable-next-line no-empty
+      try { localStorage.setItem(key, JSON.stringify(next)) } catch {}
       return next
     })
   }, [key])
@@ -50,7 +51,9 @@ export function importAllData(file) {
       try {
         const data = JSON.parse(e.target.result)
         for (const [key, value] of Object.entries(data)) {
-          localStorage.setItem(key, JSON.stringify(value))
+          if (DATA_KEYS.includes(key)) {
+            localStorage.setItem(key, JSON.stringify(value))
+          }
         }
         resolve(true)
       } catch {
