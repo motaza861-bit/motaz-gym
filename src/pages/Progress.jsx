@@ -11,6 +11,7 @@ import {
 import './Progress.css'
 
 const CHART_EXERCISES = ['Barbell Back Squat', 'Bench Press', 'Conventional Deadlift', 'Overhead Press']
+const tooltipStyle = { background: '#111', border: '1px solid #333', borderRadius: 8 }
 
 export default function Progress() {
   const [workoutLogs] = useStorage('motaz_workout_logs', [])
@@ -21,7 +22,7 @@ export default function Progress() {
   const prs = getPRs(workoutLogs)
 
   // Body weight: raw points + 7-day moving average
-  const bwRaw = bodyWeightLogs
+  const bwRaw = [...bodyWeightLogs]
     .sort((a, b) => a.date.localeCompare(b.date))
     .map(l => ({ date: l.date.slice(5), weight: l.weight }))
   const bwData = movingAverage(bwRaw, 'weight', 7) // adds `avg` field
@@ -36,7 +37,7 @@ export default function Progress() {
         const ex = log.exercises?.find(e => e.name === exName)
         if (ex) {
           const max = Math.max(
-            ...ex.sets
+            ...(ex.sets ?? [])
               .filter(s => s.completed && (!s.type || s.type === 'T' || s.type === 'S'))
               .map(s => s.weight),
             0
@@ -57,8 +58,6 @@ export default function Progress() {
     setBodyWeightLogs(prev => [...prev.filter(l => l.date !== todayStr), { date: todayStr, weight: w }])
     setNewWeight('')
   }
-
-  const tooltipStyle = { background: '#111', border: '1px solid #333', borderRadius: 8 }
 
   return (
     <div className="page progress-page">
@@ -180,7 +179,7 @@ export default function Progress() {
       {prs.length === 0 ? (
         <p className="progress-empty card">Complete your first workout to start tracking PRs.</p>
       ) : (
-        prs.sort((a, b) => b.date?.localeCompare(a.date)).map(pr => (
+        [...prs].sort((a, b) => b.date?.localeCompare(a.date)).map(pr => (
           <div key={pr.exercise} className="pr-row">
             <div className="pr-row-name">{pr.exercise}</div>
             <div className="pr-row-weight">{pr.weight}kg</div>

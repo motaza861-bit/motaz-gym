@@ -36,9 +36,9 @@ export function calcVolumeBySession(workoutLogs) {
 }
 
 // Adds a rolling `avg` field to each data point
-export function movingAverage(data, field = 'weight', window = 7) {
+export function movingAverage(data, field = 'weight', windowSize = 7) {
   return data.map((point, i) => {
-    const slice = data.slice(Math.max(0, i - window + 1), i + 1)
+    const slice = data.slice(Math.max(0, i - windowSize + 1), i + 1)
     const avg = slice.reduce((sum, p) => sum + (p[field] ?? 0), 0) / slice.length
     return { ...point, avg: Math.round(avg * 10) / 10 }
   })
