@@ -1,0 +1,32 @@
+/* src/pages/Nutrition.css */
+.nutrition-header { margin-bottom: 16px; }
+.nutrition-title { font-size: 22px; font-weight: 900; }
+.nutrition-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+.calorie-adjust {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 12px 0 14px;
+  padding: 10px 14px;
+  background: var(--bg-input);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-light);
+}
+
+.adjust-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 800;
+  width: 40px; height: 40px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.adjust-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 600;
+}

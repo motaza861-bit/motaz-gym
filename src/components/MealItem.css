@@ -1,0 +1,35 @@
+/* src/components/MealItem.css */
+.meal-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.meal-item.meal-eaten { border-color: rgba(76,175,80,0.3); }
+.meal-item:hover { border-color: var(--border-light); }
+
+.meal-emoji { font-size: 24px; flex-shrink: 0; }
+.meal-body { flex: 1; }
+.meal-name { font-size: 14px; font-weight: 700; }
+.meal-time { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+.meal-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.meal-kcal { font-size: 14px; font-weight: 800; color: var(--red); }
+
+.meal-check {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--bg-input);
+  border: 1px solid var(--border-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800;
+}
+
+.meal-check.checked { background: var(--green); border-color: var(--green); color: #fff; }
