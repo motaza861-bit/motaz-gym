@@ -15,7 +15,7 @@ export default function BottomNav() {
         <NavLink key={tab.to} to={tab.to} className={({ isActive }) =>
           isActive ? 'nav-item active' : 'nav-item'
         }>
-          <span className="nav-icon">{tab.icon}</span>
+          <span className="nav-icon" aria-hidden="true">{tab.icon}</span>
           <span className="nav-label">{tab.label}</span>
         </NavLink>
       ))}

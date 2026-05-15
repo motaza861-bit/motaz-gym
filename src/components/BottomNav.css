@@ -7,8 +7,8 @@
   max-width: 480px;
   display: flex;
   justify-content: space-around;
-  padding: 12px 8px 20px;
-  background: #0d0d0d;
+  padding: 12px 8px calc(20px + env(safe-area-inset-bottom));
+  background: var(--bg);
   border-top: 1px solid var(--border);
   z-index: 100;
 }

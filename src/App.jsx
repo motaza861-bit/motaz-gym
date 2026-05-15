@@ -18,6 +18,7 @@ export default function App() {
         <Route path="/progress" element={<Progress />} />
         <Route path="/schedule" element={<Schedule />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
       <BottomNav />
     </BrowserRouter>
