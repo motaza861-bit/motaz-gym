@@ -14,7 +14,6 @@ export function useStorage(key, defaultValue) {
   const setValue = useCallback((update) => {
     setValueState(prev => {
       const next = typeof update === 'function' ? update(prev) : update
-      // eslint-disable-next-line no-empty
       try { localStorage.setItem(key, JSON.stringify(next)) } catch {}
       return next
     })

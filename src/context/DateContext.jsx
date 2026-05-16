@@ -25,6 +25,7 @@ export function DateProvider({ children }) {
   )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useSelectedDate() {
   const ctx = useContext(DateContext)
   if (!ctx) throw new Error('useSelectedDate must be used inside DateProvider')

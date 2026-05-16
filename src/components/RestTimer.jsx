@@ -3,8 +3,6 @@ import { useState, useEffect, useRef } from 'react'
 import './RestTimer.css'
 
 function playDoneSignal() {
-  // Audio cue (Web Audio API)
-  // eslint-disable-next-line no-empty
   try {
     const ctx = new AudioContext()
     const osc = ctx.createOscillator()
@@ -17,8 +15,7 @@ function playDoneSignal() {
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6)
     osc.start(ctx.currentTime)
     osc.stop(ctx.currentTime + 0.6)
-  } catch {} // eslint-disable-line no-empty
-  // Haptic vibration (mobile)
+  } catch {}
   if (navigator.vibrate) navigator.vibrate([200, 100, 200])
 }
 
@@ -28,6 +25,7 @@ export default function RestTimer({ seconds, onDone }) {
 
   // Reset when a new rest period starts
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setRemaining(seconds)
     firedRef.current = false
   }, [seconds])

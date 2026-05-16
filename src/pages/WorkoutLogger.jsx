@@ -30,7 +30,6 @@ function getPreviousSets(exerciseName, workoutLogs, excludeDate) {
 export default function WorkoutLogger() {
   const [program, setProgram] = useExercises()
   const SESSIONS = program.sessions
-  const DAY_SESSION = program.daySession
   const [workoutLogs, setWorkoutLogs] = useStorage('motaz_workout_logs', [])
   const { selectedDate } = useSelectedDate()
   const sessionKey = getTodaySession(selectedDate)
@@ -62,6 +61,7 @@ export default function WorkoutLogger() {
     setElapsed(0)
     setEditingId(null)
     startedAt.current = Date.now()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionKey])
 
   if (!session || sessionKey === 'rest') {

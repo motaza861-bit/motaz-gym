@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { calcBMR, calcTDEE, calcMacros, ACTIVITY_MULTIPLIERS, GOAL_ADJUSTMENTS } from '../../src/utils/macroCalculator'
+import { calcBMR, calcTDEE, calcMacros, ACTIVITY_MULTIPLIERS } from '../../src/utils/macroCalculator'
 
 describe('calcBMR', () => {
   it('calculates male BMR (Miffin-St Jeor)', () => {
