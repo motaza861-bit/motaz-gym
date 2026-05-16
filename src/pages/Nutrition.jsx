@@ -8,6 +8,7 @@ import CalorieRing from '../components/CalorieRing'
 import MacroBar from '../components/MacroBar'
 import MealItem, { MealEditForm } from '../components/MealItem'
 import DateStrip from '../components/DateStrip'
+import FoodScanner from '../components/FoodScanner'
 import './Nutrition.css'
 
 function generateId() {
@@ -20,6 +21,7 @@ export default function Nutrition() {
   const [meals, setMeals] = useMeals()
   const [targets] = useTargets()
   const [editingId, setEditingId] = useState(null)
+  const [scannerOpen, setScannerOpen] = useState(false)
 
   const dateStr = toLocalDateStr(selectedDate)
   const dayLog = nutritionLogs.find(l => l.date === dateStr) ?? { date: dateStr, meals: [], calorieBump: 0 }
@@ -80,7 +82,10 @@ export default function Nutrition() {
       <DateStrip />
 
       <div className="nutrition-header">
-        <h1 className="nutrition-title">Food Schedule 🥗</h1>
+        <div className="nutrition-header-row">
+          <h1 className="nutrition-title">Food Schedule 🥗</h1>
+          <button className="nutrition-scan-btn" onClick={() => setScannerOpen(true)} aria-label="Scan food">📷</button>
+        </div>
         <div className="nutrition-sub">
           {selectedDate.toLocaleDateString('en', { weekday: 'long' })} · {targets.calories} kcal target
         </div>
@@ -132,6 +137,13 @@ export default function Nutrition() {
 
       {editingId !== 'new' && (
         <button className="add-meal-btn" onClick={() => setEditingId('new')}>+ Add meal</button>
+      )}
+
+      {scannerOpen && (
+        <FoodScanner
+          onAdd={meal => setMeals(prev => [...prev, meal])}
+          onClose={() => setScannerOpen(false)}
+        />
       )}
     </div>
   )
