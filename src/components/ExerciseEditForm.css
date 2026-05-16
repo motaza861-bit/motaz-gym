@@ -87,3 +87,5 @@
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+.ex-edit-cancel:hover { border-color: var(--text-muted); }

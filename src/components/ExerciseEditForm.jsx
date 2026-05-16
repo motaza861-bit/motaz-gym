@@ -16,7 +16,7 @@ export default function ExerciseEditForm({ exercise, onSave, onCancel }) {
     if (!form.name.trim()) return
     onSave({
       name: form.name.trim(),
-      sets: Number(form.sets) || 3,
+      sets: Math.max(1, Number(form.sets) || 3),
       reps: form.reps.trim() || '8-10',
       rest: Number(form.rest) || 90,
       muscles: form.muscles.trim(),
@@ -28,24 +28,34 @@ export default function ExerciseEditForm({ exercise, onSave, onCancel }) {
       <div className="ex-edit-title">{exercise ? 'Edit Exercise' : 'New Exercise'}</div>
       <div className="ex-edit-grid">
         <div className="ex-edit-field ex-edit-full">
-          <label className="ex-edit-label">Name</label>
-          <input className="ex-edit-input" type="text" placeholder="e.g. Bench Press" value={form.name} onChange={e => set('name', e.target.value)} />
+          <label className="ex-edit-label" htmlFor="ex-name">Name</label>
+          <input id="ex-name" className="ex-edit-input" type="text"
+            placeholder="e.g. Bench Press" value={form.name}
+            onChange={e => set('name', e.target.value)} />
         </div>
         <div className="ex-edit-field">
-          <label className="ex-edit-label">Sets</label>
-          <input className="ex-edit-input" type="number" inputMode="numeric" min="1" value={form.sets} onChange={e => set('sets', e.target.value)} />
+          <label className="ex-edit-label" htmlFor="ex-sets">Sets</label>
+          <input id="ex-sets" className="ex-edit-input" type="number"
+            inputMode="numeric" min="1" value={form.sets}
+            onChange={e => set('sets', e.target.value)} />
         </div>
         <div className="ex-edit-field">
-          <label className="ex-edit-label">Reps</label>
-          <input className="ex-edit-input" type="text" placeholder="8-10" value={form.reps} onChange={e => set('reps', e.target.value)} />
+          <label className="ex-edit-label" htmlFor="ex-reps">Reps</label>
+          <input id="ex-reps" className="ex-edit-input" type="text"
+            placeholder="8-10" value={form.reps}
+            onChange={e => set('reps', e.target.value)} />
         </div>
         <div className="ex-edit-field">
-          <label className="ex-edit-label">Rest (s)</label>
-          <input className="ex-edit-input" type="number" inputMode="numeric" min="0" value={form.rest} onChange={e => set('rest', e.target.value)} />
+          <label className="ex-edit-label" htmlFor="ex-rest">Rest (s)</label>
+          <input id="ex-rest" className="ex-edit-input" type="number"
+            inputMode="numeric" min="0" value={form.rest}
+            onChange={e => set('rest', e.target.value)} />
         </div>
         <div className="ex-edit-field ex-edit-full">
-          <label className="ex-edit-label">Muscles</label>
-          <input className="ex-edit-input" type="text" placeholder="e.g. Chest, Triceps" value={form.muscles} onChange={e => set('muscles', e.target.value)} />
+          <label className="ex-edit-label" htmlFor="ex-muscles">Muscles</label>
+          <input id="ex-muscles" className="ex-edit-input" type="text"
+            placeholder="e.g. Chest, Triceps" value={form.muscles}
+            onChange={e => set('muscles', e.target.value)} />
         </div>
       </div>
       <div className="ex-edit-actions">
