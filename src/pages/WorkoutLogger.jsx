@@ -1,11 +1,12 @@
-// src/pages/WorkoutLogger.jsx
 import { useState, useEffect, useRef } from 'react'
 import { useStorage } from '../hooks/useStorage'
+import { useSelectedDate } from '../context/DateContext'
 import { getTodaySession, toLocalDateStr } from '../utils/dateHelpers'
 import { detectPR } from '../utils/prDetector'
 import { SESSIONS } from '../data/workoutProgram'
 import ExerciseBlock from '../components/ExerciseBlock'
 import RestTimer from '../components/RestTimer'
+import DateStrip from '../components/DateStrip'
 import './WorkoutLogger.css'
 
 function buildInitialSets(exercise) {
@@ -14,9 +15,9 @@ function buildInitialSets(exercise) {
   }))
 }
 
-function getPreviousSets(exerciseName, workoutLogs) {
+function getPreviousSets(exerciseName, workoutLogs, excludeDate) {
   const sorted = [...workoutLogs]
-    .filter(l => l.completed)
+    .filter(l => l.completed && l.date !== excludeDate)
     .sort((a, b) => b.date.localeCompare(a.date))
   for (const log of sorted) {
     const ex = log.exercises?.find(e => e.name === exerciseName)
@@ -27,14 +28,13 @@ function getPreviousSets(exerciseName, workoutLogs) {
 
 export default function WorkoutLogger() {
   const [workoutLogs, setWorkoutLogs] = useStorage('motaz_workout_logs', [])
-  const now = new Date()
-  const sessionKey = getTodaySession(now)
+  const { selectedDate } = useSelectedDate()
+  const sessionKey = getTodaySession(selectedDate)
   const session = SESSIONS[sessionKey]
 
   const [exerciseSets, setExerciseSets] = useState(() =>
     session ? Object.fromEntries(session.exercises.map(ex => [ex.name, buildInitialSets(ex)])) : {}
   )
-  // Maps original exercise name → replacement name for this session only
   const [swappedExercises, setSwappedExercises] = useState({})
   const [swapTarget, setSwapTarget] = useState(null)
   const [swapInput, setSwapInput] = useState('')
@@ -50,6 +50,7 @@ export default function WorkoutLogger() {
   if (!session || sessionKey === 'rest') {
     return (
       <div className="page workout-logger">
+        <DateStrip />
         <div className="logger-rest">
           <div className="logger-rest-emoji">😴</div>
           <h2>Rest Day</h2>
@@ -59,6 +60,7 @@ export default function WorkoutLogger() {
     )
   }
 
+  const dateStr = toLocalDateStr(selectedDate)
   const mins = Math.floor(elapsed / 60)
   const secs = elapsed % 60
   const elapsedDisplay = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`
@@ -86,9 +88,8 @@ export default function WorkoutLogger() {
   }
 
   function handleFinish() {
-    if (!window.confirm('Finish workout and save? This will overwrite any previous log for today.')) return
-    const todayStr = toLocalDateStr(new Date())
-    // Save swapped names in the log so future ghost targets look up the right exercise
+    if (!window.confirm('Finish workout and save? This will overwrite any previous log for this date.')) return
+
     const exercises = session.exercises.map(ex => ({
       name: swappedExercises[ex.name] ?? ex.name,
       sets: exerciseSets[ex.name],
@@ -97,10 +98,10 @@ export default function WorkoutLogger() {
     const prs = exercises
       .map(ex => detectPR(ex.name, ex.sets, workoutLogs))
       .filter(Boolean)
-      .map(pr => ({ ...pr, date: todayStr }))
+      .map(pr => ({ ...pr, date: dateStr }))
 
     const log = {
-      date: todayStr,
+      date: dateStr,
       session: sessionKey,
       startedAt: startedAt.current,
       completedAt: Date.now(),
@@ -109,16 +110,17 @@ export default function WorkoutLogger() {
       prs,
     }
 
-    setWorkoutLogs(prev => [...prev.filter(l => l.date !== todayStr), log])
+    setWorkoutLogs(prev => [...prev.filter(l => l.date !== dateStr), log])
 
     alert(prs.length
-      ? `Workout complete! 🏆 ${prs.length} new PR${prs.length > 1 ? 's' : ''}!`
-      : 'Workout complete! Great work 💪'
+      ? `Workout saved! 🏆 ${prs.length} new PR${prs.length > 1 ? 's' : ''}!`
+      : 'Workout saved! Great work 💪'
     )
   }
 
   return (
     <div className="page workout-logger">
+      <DateStrip />
       <div className="logger-header">
         <div>
           <div className="logger-title">{session.name}</div>
@@ -129,7 +131,7 @@ export default function WorkoutLogger() {
 
       {session.exercises.map(ex => {
         const effectiveName = swappedExercises[ex.name] ?? ex.name
-        const previousSets = getPreviousSets(effectiveName, workoutLogs)
+        const previousSets = getPreviousSets(effectiveName, workoutLogs, dateStr)
 
         return (
           <div key={ex.name}>
