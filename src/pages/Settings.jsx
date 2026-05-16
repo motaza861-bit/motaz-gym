@@ -87,6 +87,23 @@ export default function Settings() {
     <div className="page settings-page">
       <h1 className="settings-title">Settings ⚙️</h1>
 
+      <p className="section-title">Workout Program</p>
+      <div className="settings-card">
+        <div className="settings-card-title">Workout Program</div>
+        <p className="settings-card-desc">Regenerate your AI workout program with updated preferences.</p>
+        <button
+          className="settings-btn settings-btn-outline"
+          onClick={() => {
+            if (window.confirm('This will replace your current workout program. Continue?')) {
+              try { localStorage.removeItem('motaz_onboarded') } catch {}
+              window.location.reload()
+            }
+          }}
+        >
+          Regenerate Program
+        </button>
+      </div>
+
       <p className="section-title">Macro Calculator</p>
       <div className="card settings-card">
         <div className="calc-grid">

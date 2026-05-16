@@ -114,3 +114,24 @@
   color: var(--text);
   font-weight: 600;
 }
+
+.settings-card-title {
+  font-size: 15px;
+  font-weight: 700;
+  padding: 16px 16px 8px 16px;
+  margin: 0;
+}
+
+.settings-card-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0 16px 12px 16px;
+  line-height: 1.4;
+}
+
+.settings-btn-outline {
+  background: transparent;
+  border: 1px solid var(--red);
+  color: var(--red);
+  margin: 0 16px 16px 16px;
+}
