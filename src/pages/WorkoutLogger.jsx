@@ -5,6 +5,7 @@ import { getTodaySession, toLocalDateStr } from '../utils/dateHelpers'
 import { detectPR } from '../utils/prDetector'
 import { useExercises } from '../hooks/useExercises'
 import ExerciseBlock from '../components/ExerciseBlock'
+import ExerciseEditForm from '../components/ExerciseEditForm'
 import RestTimer from '../components/RestTimer'
 import DateStrip from '../components/DateStrip'
 import './WorkoutLogger.css'
@@ -43,6 +44,7 @@ export default function WorkoutLogger() {
   const [swapInput, setSwapInput] = useState('')
   const [activeRest, setActiveRest] = useState(null)
   const [elapsed, setElapsed] = useState(0)
+  const [editingId, setEditingId] = useState(null) // null | exercise.name | 'new'
   const startedAt = useRef(Date.now())
 
   useEffect(() => {
@@ -58,6 +60,7 @@ export default function WorkoutLogger() {
     setSwapTarget(null)
     setSwapInput('')
     setElapsed(0)
+    setEditingId(null)
     startedAt.current = Date.now()
   }, [sessionKey])
 
@@ -132,6 +135,36 @@ export default function WorkoutLogger() {
     )
   }
 
+  function saveExercise(updated) {
+    setProgram(prev => {
+      const exercises = editingId === 'new'
+        ? [...prev.sessions[sessionKey].exercises, updated]
+        : prev.sessions[sessionKey].exercises.map(ex => ex.name === editingId ? updated : ex)
+      return {
+        ...prev,
+        sessions: {
+          ...prev.sessions,
+          [sessionKey]: { ...prev.sessions[sessionKey], exercises },
+        },
+      }
+    })
+    setEditingId(null)
+  }
+
+  function deleteExercise(name) {
+    if (!window.confirm(`Delete "${name}"?`)) return
+    setProgram(prev => ({
+      ...prev,
+      sessions: {
+        ...prev.sessions,
+        [sessionKey]: {
+          ...prev.sessions[sessionKey],
+          exercises: prev.sessions[sessionKey].exercises.filter(ex => ex.name !== name),
+        },
+      },
+    }))
+  }
+
   return (
     <div className="page workout-logger">
       <DateStrip />
@@ -149,7 +182,13 @@ export default function WorkoutLogger() {
 
         return (
           <div key={ex.name}>
-            {swapTarget === ex.name ? (
+            {editingId === ex.name ? (
+              <ExerciseEditForm
+                exercise={ex}
+                onSave={saveExercise}
+                onCancel={() => setEditingId(null)}
+              />
+            ) : swapTarget === ex.name ? (
               <div className="swap-overlay card">
                 <div className="swap-title">Replace exercise</div>
                 <input
@@ -172,7 +211,9 @@ export default function WorkoutLogger() {
                 sets={exerciseSets[ex.name] ?? []}
                 onSetUpdate={(i, field, val) => handleSetUpdate(ex.name, i, field, val)}
                 previousSets={previousSets}
-                onSwap={() => { setSwapTarget(ex.name); setSwapInput(effectiveName) }}
+                onSwap={swappedExercises[ex.name] ? undefined : () => { setSwapTarget(ex.name); setSwapInput(effectiveName) }}
+                onEdit={() => setEditingId(ex.name)}
+                onDelete={() => deleteExercise(ex.name)}
               />
             )}
             {activeRest?.exerciseName === ex.name && activeRest.seconds > 0 && (
@@ -184,6 +225,18 @@ export default function WorkoutLogger() {
           </div>
         )
       })}
+
+      {editingId === 'new' && (
+        <ExerciseEditForm
+          exercise={null}
+          onSave={saveExercise}
+          onCancel={() => setEditingId(null)}
+        />
+      )}
+
+      {editingId !== 'new' && (
+        <button className="add-exercise-btn" onClick={() => setEditingId('new')}>+ Add exercise</button>
+      )}
 
       <button className="btn-primary" onClick={handleFinish}>
         ✅ Finish Workout
