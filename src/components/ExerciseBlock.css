@@ -28,6 +28,22 @@
   flex-shrink: 0;
 }
 
+.ex-block-header-actions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.ex-action-btn {
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  font-size: 14px;
+  padding: 4px 8px;
+  cursor: pointer;
+  line-height: 1;
+}
+
 .ex-ghost-hint {
   font-size: 10px;
   color: var(--text-dim);

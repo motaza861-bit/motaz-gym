@@ -4,7 +4,7 @@ import './ExerciseBlock.css'
 const SET_TYPES = ['S', 'W', 'T', 'D']
 const TYPE_COLORS = { S: 'var(--text-muted)', W: 'var(--orange)', T: 'var(--red)', D: 'var(--yellow)' }
 
-export default function ExerciseBlock({ exercise, sets, onSetUpdate, previousSets, onSwap }) {
+export default function ExerciseBlock({ exercise, sets, onSetUpdate, previousSets, onSwap, onEdit, onDelete }) {
   const hasPrev = previousSets?.some(s => s.weight > 0)
 
   return (
@@ -14,9 +14,17 @@ export default function ExerciseBlock({ exercise, sets, onSetUpdate, previousSet
           <div className="ex-block-name">{exercise.name}</div>
           <div className="ex-block-meta">{exercise.sets} sets · {exercise.reps} reps · {exercise.rest}s rest</div>
         </div>
-        {onSwap && (
-          <button className="ex-swap-btn" onClick={onSwap} title="Swap exercise">⇄</button>
-        )}
+        <div className="ex-block-header-actions">
+          {onSwap && (
+            <button className="ex-swap-btn" onClick={onSwap} title="Swap exercise">⇄</button>
+          )}
+          {onEdit && (
+            <button className="ex-action-btn" onClick={onEdit} title="Edit exercise">✏️</button>
+          )}
+          {onDelete && (
+            <button className="ex-action-btn" onClick={onDelete} title="Delete exercise">🗑</button>
+          )}
+        </div>
       </div>
 
       {hasPrev && <div className="ex-ghost-hint">Placeholders = last session</div>}
