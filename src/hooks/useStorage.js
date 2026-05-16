@@ -23,7 +23,7 @@ export function useStorage(key, defaultValue) {
   return [value, setValue]
 }
 
-const DATA_KEYS = ['motaz_workout_logs', 'motaz_nutrition_logs', 'motaz_body_weight_logs']
+const DATA_KEYS = ['motaz_workout_logs', 'motaz_nutrition_logs', 'motaz_body_weight_logs', 'motaz_meals', 'motaz_targets', 'motaz_profile']
 
 export function exportAllData() {
   const snapshot = {}
