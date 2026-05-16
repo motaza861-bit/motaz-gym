@@ -32,3 +32,8 @@ export const SESSIONS = {
 
 // Mon=1,Tue=2,Wed=3,Thu=4,Fri=5,Sat=6,Sun=0
 export const DAY_SESSION = { 0: 'rest', 1: 'A', 2: 'B', 3: 'rest', 4: 'A', 5: 'B', 6: 'rest' }
+
+export const DEFAULT_PROGRAM = {
+  sessions: SESSIONS,
+  daySession: DAY_SESSION,
+}
