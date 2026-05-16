@@ -35,11 +35,16 @@
 }
 
 .ex-action-btn {
-  background: var(--bg);
+  background: var(--bg-input);
   border: 1px solid var(--border-light);
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 14px;
-  padding: 4px 8px;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
   cursor: pointer;
   line-height: 1;
 }
