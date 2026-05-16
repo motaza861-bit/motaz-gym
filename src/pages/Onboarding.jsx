@@ -34,6 +34,7 @@ const EQUIPMENT_OPTIONS = [
 export default function Onboarding({ onComplete }) {
   const [step, setStep] = useState(0)
   const [form, setForm] = useState({
+    name: '',
     goal: 'recomp',
     gender: 'male',
     age: '',
@@ -45,7 +46,8 @@ export default function Onboarding({ onComplete }) {
     equipment: 'full',
   })
   const [error, setError] = useState(null)
-  const [result, setResult] = useState(null)
+  const [generatedData, setGeneratedData] = useState(null)
+  const [calcedTargets, setCalcedTargets] = useState(null)
   const [generating, setGenerating] = useState(false)
 
   const [, setExercises] = useStorage('motaz_exercises', DEFAULT_PROGRAM)
@@ -85,19 +87,8 @@ export default function Onboarding({ onComplete }) {
         goal: form.goal,
       })
 
-      setExercises({ sessions: data.sessions, daySession: data.daySession })
-      setTargets(targets)
-      setProfile({
-        weight: form.weight,
-        height: form.height,
-        age: form.age,
-        gender: form.gender,
-        activityLevel: form.activityLevel,
-        goal: form.goal,
-      })
-      try { localStorage.setItem('motaz_onboarded', '1') } catch {}
-
-      setResult({ targets, sessionCount: Object.keys(data.sessions).length })
+      setGeneratedData(data)
+      setCalcedTargets(targets)
       setStep(7)
       setGenerating(false)
     } catch (e) {
@@ -105,6 +96,22 @@ export default function Onboarding({ onComplete }) {
       setStep(5)
       setGenerating(false)
     }
+  }
+
+  function confirm() {
+    setExercises({ sessions: generatedData.sessions, daySession: generatedData.daySession })
+    setTargets(calcedTargets)
+    setProfile({
+      name: form.name.trim(),
+      weight: form.weight,
+      height: form.height,
+      age: form.age,
+      gender: form.gender,
+      activityLevel: form.activityLevel,
+      goal: form.goal,
+    })
+    try { localStorage.setItem('motaz_onboarded', '1') } catch {}
+    setStep(8)
   }
 
   const next = () => step === 5 ? generate() : setStep(s => s + 1)
@@ -126,9 +133,21 @@ export default function Onboarding({ onComplete }) {
       {step === 0 && (
         <div className="ob-step">
           <div className="ob-welcome-icon">💪</div>
-          <h1 className="ob-title">Welcome to<br/>Motaz Gym</h1>
+          <h1 className="ob-title">Welcome to<br/>IronMind</h1>
           <p className="ob-subtitle">Answer a few questions and we'll build a workout program and nutrition targets specifically for you.</p>
-          <button className="ob-btn-primary" onClick={next}>Get Started</button>
+          <div className="ob-field">
+            <label className="ob-label" htmlFor="ob-name">Your name</label>
+            <input
+              id="ob-name"
+              className="ob-input"
+              type="text"
+              placeholder="Enter your name"
+              value={form.name}
+              onChange={e => set('name', e.target.value)}
+              autoComplete="given-name"
+            />
+          </div>
+          <button className="ob-btn-primary" onClick={next} disabled={!form.name.trim()}>Get Started</button>
         </div>
       )}
 
@@ -242,21 +261,53 @@ export default function Onboarding({ onComplete }) {
         </div>
       )}
 
-      {step === 7 && result && (
+      {step === 7 && generatedData && (
+        <div className="ob-step ob-preview-step">
+          <h2 className="ob-title">Your Program</h2>
+          <p className="ob-subtitle">{Object.keys(generatedData.sessions).length} sessions · review and confirm</p>
+          <div className="ob-program-preview">
+            {Object.entries(generatedData.sessions).map(([key, session]) => (
+              <div key={key} className="ob-session-card">
+                <div className="ob-session-header">
+                  <span className="ob-session-key">{key}</span>
+                  <div className="ob-session-info">
+                    <div className="ob-session-name">{session.name}</div>
+                    <div className="ob-session-focus">{session.focus} · {session.muscles}</div>
+                  </div>
+                </div>
+                <div className="ob-exercise-list">
+                  {session.exercises.map((ex, i) => (
+                    <div key={i} className="ob-exercise">
+                      <span className="ob-exercise-name">{ex.name}</span>
+                      <span className="ob-exercise-meta">{ex.sets}×{ex.reps}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="ob-preview-actions">
+            <button className="ob-btn-outline" onClick={() => { setGenerating(false); setStep(5) }}>Try Again</button>
+            <button className="ob-btn-confirm" onClick={confirm}>Save Program →</button>
+          </div>
+        </div>
+      )}
+
+      {step === 8 && calcedTargets && (
         <div className="ob-step ob-center">
           <div className="ob-done-icon">✅</div>
-          <h2 className="ob-title">Your program is ready</h2>
+          <h2 className="ob-title">Hi {form.name.trim()},<br/>you're all set!</h2>
           <div className="ob-summary">
             <div className="ob-summary-item">
-              <span className="ob-summary-val">{result.sessionCount}</span>
+              <span className="ob-summary-val">{Object.keys(generatedData.sessions).length}</span>
               <span className="ob-summary-key">sessions</span>
             </div>
             <div className="ob-summary-item">
-              <span className="ob-summary-val">{result.targets.calories.toLocaleString('en').replace(/,/g, ' ')}</span>
+              <span className="ob-summary-val">{calcedTargets.calories.toLocaleString('en').replace(/,/g, ' ')}</span>
               <span className="ob-summary-key">kcal/day</span>
             </div>
             <div className="ob-summary-item">
-              <span className="ob-summary-val">{result.targets.protein}g</span>
+              <span className="ob-summary-val">{calcedTargets.protein}g</span>
               <span className="ob-summary-key">protein</span>
             </div>
           </div>

@@ -1,6 +1,6 @@
 import Groq from 'groq-sdk'
 
-const MODEL = 'llama-3.2-11b-vision-preview'
+const MODEL = 'meta-llama/llama-4-scout-17b-16e-instruct'
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
 const MAX_BASE64_BYTES = 5 * 1024 * 1024 // ~3.75 MB decoded
 

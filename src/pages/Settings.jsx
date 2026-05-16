@@ -223,8 +223,8 @@ export default function Settings() {
       <p className="section-title">About</p>
       <div className="card settings-card">
         <div className="settings-about">
-          <div className="settings-about-name">Motaz Gym Tracker</div>
-          <div className="settings-about-sub">4-day Full Body A/B · Recomp protocol</div>
+          <div className="settings-about-name">IronMind</div>
+          <div className="settings-about-sub">AI-powered workout & nutrition tracker</div>
           <div className="settings-about-sub">React + Vite · No backend · Local storage only</div>
         </div>
       </div>

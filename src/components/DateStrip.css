@@ -1,28 +1,19 @@
 .date-strip {
   display: flex;
-  align-items: center;
-  gap: 2px;
-  margin-bottom: 16px;
-}
-
-.date-strip-arrow {
-  font-size: 22px;
-  color: var(--text-muted);
-  padding: 6px 8px;
-  flex-shrink: 0;
-  border-radius: var(--radius-sm);
-  transition: color 0.15s;
-}
-.date-strip-arrow:hover { color: var(--text); }
-
-.date-strip-days {
-  display: flex;
-  flex: 1;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
   gap: 3px;
+  margin-bottom: 16px;
+  padding: 0 4px;
+}
+
+.date-strip::-webkit-scrollbar {
+  display: none;
 }
 
 .date-day {
-  flex: 1;
+  flex: 0 0 44px;
   display: flex;
   flex-direction: column;
   align-items: center;
