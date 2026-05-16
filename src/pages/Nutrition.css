@@ -31,3 +31,15 @@
   color: var(--text-muted);
   font-weight: 600;
 }
+
+.add-meal-btn {
+  width: 100%;
+  padding: 14px;
+  border: 1px dashed var(--border-light);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-bottom: 10px;
+  transition: border-color 0.2s, color 0.2s;
+}
+.add-meal-btn:hover { border-color: var(--red); color: var(--red); }
