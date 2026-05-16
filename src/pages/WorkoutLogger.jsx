@@ -3,7 +3,7 @@ import { useStorage } from '../hooks/useStorage'
 import { useSelectedDate } from '../context/DateContext'
 import { getTodaySession, toLocalDateStr } from '../utils/dateHelpers'
 import { detectPR } from '../utils/prDetector'
-import { SESSIONS } from '../data/workoutProgram'
+import { useExercises } from '../hooks/useExercises'
 import ExerciseBlock from '../components/ExerciseBlock'
 import RestTimer from '../components/RestTimer'
 import DateStrip from '../components/DateStrip'
@@ -27,6 +27,9 @@ function getPreviousSets(exerciseName, workoutLogs, excludeDate) {
 }
 
 export default function WorkoutLogger() {
+  const [program, setProgram] = useExercises()
+  const SESSIONS = program.sessions
+  const DAY_SESSION = program.daySession
   const [workoutLogs, setWorkoutLogs] = useStorage('motaz_workout_logs', [])
   const { selectedDate } = useSelectedDate()
   const sessionKey = getTodaySession(selectedDate)
