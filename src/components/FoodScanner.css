@@ -51,6 +51,9 @@
   padding: 48px 24px;
   cursor: pointer;
   gap: 12px;
+  width: 100%;
+  background: none;
+  border: none;
 }
 
 .scanner-camera-icon {

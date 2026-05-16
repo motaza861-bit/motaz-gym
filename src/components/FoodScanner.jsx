@@ -1,10 +1,12 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './FoodScanner.css'
 
 function compressImage(file) {
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file)
     const img = new Image()
     img.onload = () => {
+      URL.revokeObjectURL(url)
       const max = 800
       const scale = Math.min(max / img.width, max / img.height, 1)
       const canvas = document.createElement('canvas')
@@ -13,7 +15,11 @@ function compressImage(file) {
       canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height)
       resolve(canvas.toDataURL('image/jpeg', 0.8).split(',')[1])
     }
-    img.src = URL.createObjectURL(file)
+    img.onerror = () => {
+      URL.revokeObjectURL(url)
+      reject(new Error('Could not load image'))
+    }
+    img.src = url
   })
 }
 
@@ -23,12 +29,22 @@ export default function FoodScanner({ onAdd, onClose }) {
   const [result, setResult] = useState(null)
   const [errorMsg, setErrorMsg] = useState('')
   const inputRef = useRef(null)
+  const previewUrlRef = useRef(null)
+
+  useEffect(() => {
+    return () => {
+      if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current)
+    }
+  }, [])
 
   async function handleFile(e) {
     const file = e.target.files?.[0]
     if (!file) return
 
-    setPreview(URL.createObjectURL(file))
+    if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current)
+    const url = URL.createObjectURL(file)
+    previewUrlRef.current = url
+    setPreview(url)
     setState('loading')
 
     try {
@@ -53,6 +69,7 @@ export default function FoodScanner({ onAdd, onClose }) {
   }
 
   function handleAdd() {
+    if (!result) return
     onAdd({
       id: `scan_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
       name: result.food,
@@ -68,6 +85,10 @@ export default function FoodScanner({ onAdd, onClose }) {
   }
 
   function retry() {
+    if (previewUrlRef.current) {
+      URL.revokeObjectURL(previewUrlRef.current)
+      previewUrlRef.current = null
+    }
     setPreview(null)
     setResult(null)
     setErrorMsg('')
@@ -80,23 +101,22 @@ export default function FoodScanner({ onAdd, onClose }) {
       <div className="scanner-modal">
         <div className="scanner-header">
           <span className="scanner-title">Scan Food</span>
-          <button className="scanner-close" onClick={onClose}>✕</button>
+          <button className="scanner-close" aria-label="Close" onClick={onClose}>✕</button>
         </div>
 
         <input
           ref={inputRef}
           type="file"
           accept="image/*"
-          capture="environment"
           className="scanner-file-input"
           onChange={handleFile}
         />
 
         {state === 'idle' && (
-          <div className="scanner-idle" onClick={() => inputRef.current?.click()}>
+          <button className="scanner-idle" onClick={() => inputRef.current?.click()}>
             <div className="scanner-camera-icon">📷</div>
             <p className="scanner-hint">Tap to take a photo of your food</p>
-          </div>
+          </button>
         )}
 
         {state === 'loading' && (
