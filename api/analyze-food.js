@@ -1,5 +1,9 @@
 import Anthropic from '@anthropic-ai/sdk'
 
+const MODEL = 'claude-haiku-4-5-20251001'
+const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
+const MAX_BASE64_BYTES = 5 * 1024 * 1024 // ~3.75 MB decoded
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
@@ -11,11 +15,19 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'No image provided' })
   }
 
+  if (!ALLOWED_MIME_TYPES.includes(mimeType)) {
+    return res.status(400).json({ error: 'Unsupported image type' })
+  }
+
+  if (image.length > MAX_BASE64_BYTES) {
+    return res.status(400).json({ error: 'Image too large' })
+  }
+
   const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
   try {
     const message = await client.messages.create({
-      model: 'claude-haiku-4-5-20251001',
+      model: MODEL,
       max_tokens: 256,
       messages: [{
         role: 'user',
@@ -34,15 +46,27 @@ export default async function handler(req, res) {
 
     const raw = message.content[0].text.trim()
     const jsonStr = raw.replace(/^```json?\n?/, '').replace(/\n?```$/, '')
-    const data = JSON.parse(jsonStr)
+
+    let data
+    try {
+      data = JSON.parse(jsonStr)
+    } catch {
+      return res.status(422).json({ error: 'Could not parse food analysis' })
+    }
 
     if (data.error) {
       return res.status(422).json(data)
     }
 
-    return res.status(200).json(data)
+    const { food, calories, protein, carbs, fat } = data
+    if (typeof calories !== 'number' || typeof protein !== 'number' ||
+        typeof carbs !== 'number' || typeof fat !== 'number') {
+      return res.status(422).json({ error: 'Could not identify food' })
+    }
+
+    return res.status(200).json({ food, calories, protein, carbs, fat })
   } catch (err) {
-    console.error('analyze-food error:', err.message)
+    console.error('analyze-food error:', err)
     return res.status(500).json({ error: 'Failed to analyse image' })
   }
 }
