@@ -1,17 +1,18 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-vi.mock('@anthropic-ai/sdk', () => {
-  const mockCreate = vi.fn().mockResolvedValue({
-    content: [{ text: '{"food":"Grilled chicken breast","calories":165,"protein":31,"carbs":0,"fat":4}' }]
-  })
-  return {
-    default: class MockAnthropic {
-      constructor() {
-        this.messages = { create: mockCreate }
+vi.mock('@google/generative-ai', () => ({
+  GoogleGenerativeAI: class {
+    getGenerativeModel() {
+      return {
+        generateContent: vi.fn().mockResolvedValue({
+          response: {
+            text: () => '{"food":"Grilled chicken breast","calories":165,"protein":31,"carbs":0,"fat":4}'
+          }
+        })
       }
     }
   }
-})
+}))
 
 const mockRes = () => {
   const res = {}

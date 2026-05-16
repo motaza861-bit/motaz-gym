@@ -1,4 +1,6 @@
-import Anthropic from '@anthropic-ai/sdk'
+import { GoogleGenerativeAI } from '@google/generative-ai'
+
+const MODEL = 'gemini-2.0-flash'
 
 const EQUIPMENT_GUIDE = {
   full: 'barbells, cables, machines, dumbbells — full commercial gym',
@@ -29,8 +31,6 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing required fields' })
   }
 
-  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
-
   const prompt = `You are an expert strength and conditioning coach. Create a personalised workout program.
 
 User profile:
@@ -59,14 +59,12 @@ Return ONLY this JSON (no markdown fences, no explanation):
 
 Rules: 5-8 exercises per session. Cover all major muscle groups. rest is in seconds (60-180).`
 
-  try {
-    const message = await client.messages.create({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 2048,
-      messages: [{ role: 'user', content: prompt }],
-    })
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
+  const model = genAI.getGenerativeModel({ model: MODEL })
 
-    const raw = message.content[0].text.trim()
+  try {
+    const result = await model.generateContent(prompt)
+    const raw = result.response.text().trim()
     const jsonStr = raw.replace(/^```json?\n?/, '').replace(/\n?```$/, '')
     const data = JSON.parse(jsonStr)
 
@@ -76,7 +74,7 @@ Rules: 5-8 exercises per session. Cover all major muscle groups. rest is in seco
 
     return res.status(200).json(data)
   } catch (err) {
-    console.error('generate-workout error:', err.message)
+    console.error('generate-workout error:', err)
     return res.status(500).json({ error: 'Failed to generate workout program' })
   }
 }

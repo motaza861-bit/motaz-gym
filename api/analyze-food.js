@@ -1,6 +1,6 @@
-import Anthropic from '@anthropic-ai/sdk'
+import { GoogleGenerativeAI } from '@google/generative-ai'
 
-const MODEL = 'claude-haiku-4-5-20251001'
+const MODEL = 'gemini-2.0-flash'
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
 const MAX_BASE64_BYTES = 5 * 1024 * 1024 // ~3.75 MB decoded
 
@@ -23,28 +23,16 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Image too large' })
   }
 
-  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
+  const model = genAI.getGenerativeModel({ model: MODEL })
 
   try {
-    const message = await client.messages.create({
-      model: MODEL,
-      max_tokens: 256,
-      messages: [{
-        role: 'user',
-        content: [
-          {
-            type: 'image',
-            source: { type: 'base64', media_type: mimeType, data: image },
-          },
-          {
-            type: 'text',
-            text: 'Analyse this food photo. Estimate the nutritional content for the portion visible. Return ONLY this JSON (no markdown, no explanation): {"food":"food name","calories":number,"protein":number,"carbs":number,"fat":number}. If you cannot identify any food, return {"error":"Could not identify food"}.',
-          },
-        ],
-      }],
-    })
+    const result = await model.generateContent([
+      { inlineData: { data: image, mimeType } },
+      'Analyse this food photo. Estimate the nutritional content for the portion visible. Return ONLY this JSON (no markdown, no explanation): {"food":"food name","calories":number,"protein":number,"carbs":number,"fat":number}. If you cannot identify any food, return {"error":"Could not identify food"}.',
+    ])
 
-    const raw = message.content[0].text.trim()
+    const raw = result.response.text().trim()
     const jsonStr = raw.replace(/^```json?\n?/, '').replace(/\n?```$/, '')
 
     let data
