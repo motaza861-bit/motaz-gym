@@ -26,5 +26,7 @@ export function DateProvider({ children }) {
 }
 
 export function useSelectedDate() {
-  return useContext(DateContext)
+  const ctx = useContext(DateContext)
+  if (!ctx) throw new Error('useSelectedDate must be used inside DateProvider')
+  return ctx
 }
