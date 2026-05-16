@@ -1,39 +1,36 @@
-// src/pages/Schedule.jsx
-import { SESSIONS } from '../data/workoutProgram'
+import { useExercises } from '../hooks/useExercises'
 import './Schedule.css'
 
-const WEEK = [
-  { day: 'Monday',    session: 'A' },
-  { day: 'Tuesday',   session: 'B' },
-  { day: 'Wednesday', session: 'rest' },
-  { day: 'Thursday',  session: 'A' },
-  { day: 'Friday',    session: 'B' },
-  { day: 'Saturday',  session: 'rest' },
-  { day: 'Sunday',    session: 'rest' },
-]
+const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
 export default function Schedule() {
-  const todayName = new Date().toLocaleDateString('en', { weekday: 'long' })
+  const [program] = useExercises()
+  const { sessions, daySession } = program
+  const todayIdx = new Date().getDay()
+
+  const trainingDaysCount = Object.values(daySession).filter(v => v !== 'rest').length
+  const sessionCount = Object.keys(sessions).length
 
   return (
     <div className="page schedule-page">
       <h1 className="schedule-title">Training Schedule 📅</h1>
-      <p className="schedule-sub">4-day Full Body A/B · Evidence-based recomp program</p>
+      <p className="schedule-sub">{trainingDaysCount} training days/week · {sessionCount} distinct sessions</p>
 
       <div className="week-grid">
-        {WEEK.map(({ day, session }) => {
-          const isToday = day === todayName
-          const isRest = session === 'rest'
-          const data = isRest ? null : SESSIONS[session]
+        {DAY_NAMES.map((day, idx) => {
+          const sessionKey = daySession[idx]
+          const isToday = idx === todayIdx
+          const isRest = !sessionKey || sessionKey === 'rest'
+          const data = isRest ? null : sessions[sessionKey]
           return (
             <div key={day} className={`day-card ${isToday ? 'today' : ''} ${isRest ? 'rest' : ''}`}>
               <div className="day-card-header">
                 <div className="day-name">{day} {isToday && <span className="today-badge">Today</span>}</div>
-                {!isRest && <div className="session-badge">{session}</div>}
+                {!isRest && <div className="session-badge">{sessionKey}</div>}
               </div>
               {isRest ? (
                 <div className="day-rest">😴 Rest &amp; Recover</div>
-              ) : (
+              ) : data ? (
                 <>
                   <div className="day-focus">{data.focus}</div>
                   <div className="day-muscles">{data.muscles}</div>
@@ -46,17 +43,10 @@ export default function Schedule() {
                     ))}
                   </div>
                 </>
-              )}
+              ) : null}
             </div>
           )
         })}
-      </div>
-
-      <div className="protocol-box">
-        <div className="protocol-title">Training Protocol</div>
-        <div className="protocol-item">📦 <strong>Sets:</strong> 3–4 · <strong>Reps:</strong> 6–12 · <strong>Intensity:</strong> 60–80% 1RM</div>
-        <div className="protocol-item">⏱ <strong>Rest:</strong> 2–3 min compounds · 1 min accessories</div>
-        <div className="protocol-item">🎯 Stop 1–2 reps shy of failure for best recomp results</div>
       </div>
     </div>
   )

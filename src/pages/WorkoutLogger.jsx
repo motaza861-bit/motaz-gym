@@ -32,7 +32,7 @@ export default function WorkoutLogger() {
   const SESSIONS = program.sessions
   const [workoutLogs, setWorkoutLogs] = useStorage('motaz_workout_logs', [])
   const { selectedDate } = useSelectedDate()
-  const sessionKey = getTodaySession(selectedDate)
+  const sessionKey = getTodaySession(selectedDate, program.daySession)
   const session = SESSIONS[sessionKey]
 
   const [exerciseSets, setExerciseSets] = useState(() =>
