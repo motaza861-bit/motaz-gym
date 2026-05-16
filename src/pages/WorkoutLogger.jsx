@@ -47,6 +47,17 @@ export default function WorkoutLogger() {
     return () => clearInterval(id)
   }, [])
 
+  useEffect(() => {
+    setExerciseSets(
+      session ? Object.fromEntries(session.exercises.map(ex => [ex.name, buildInitialSets(ex)])) : {}
+    )
+    setSwappedExercises({})
+    setSwapTarget(null)
+    setSwapInput('')
+    setElapsed(0)
+    startedAt.current = Date.now()
+  }, [sessionKey])
+
   if (!session || sessionKey === 'rest') {
     return (
       <div className="page workout-logger">
