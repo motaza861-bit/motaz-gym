@@ -1,13 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-vi.mock('@google/generative-ai', () => ({
-  GoogleGenerativeAI: class {
-    getGenerativeModel() {
-      return {
-        generateContent: vi.fn().mockResolvedValue({
-          response: {
-            text: () => '{"food":"Grilled chicken breast","calories":165,"protein":31,"carbs":0,"fat":4}'
-          }
+vi.mock('groq-sdk', () => ({
+  default: class {
+    chat = {
+      completions: {
+        create: vi.fn().mockResolvedValue({
+          choices: [{
+            message: {
+              content: '{"food":"Grilled chicken breast","calories":165,"protein":31,"carbs":0,"fat":4}'
+            }
+          }]
         })
       }
     }

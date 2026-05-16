@@ -1,19 +1,21 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-const mockGenerateContent = vi.fn().mockResolvedValue({
-  response: {
-    text: () => JSON.stringify({
-      sessions: {
-        A: { name: 'Full Body A', focus: 'Push', muscles: 'Chest', exercises: [{ name: 'Bench Press', sets: 3, reps: '8-10', rest: 90, muscles: 'Chest' }] }
-      },
-      daySession: { '0': 'rest', '1': 'A', '2': 'rest', '3': 'A', '4': 'rest', '5': 'A', '6': 'rest' }
-    })
-  }
+const mockCreate = vi.fn().mockResolvedValue({
+  choices: [{
+    message: {
+      content: JSON.stringify({
+        sessions: {
+          A: { name: 'Full Body A', focus: 'Push', muscles: 'Chest', exercises: [{ name: 'Bench Press', sets: 3, reps: '8-10', rest: 90, muscles: 'Chest' }] }
+        },
+        daySession: { '0': 'rest', '1': 'A', '2': 'rest', '3': 'A', '4': 'rest', '5': 'A', '6': 'rest' }
+      })
+    }
+  }]
 })
 
-vi.mock('@google/generative-ai', () => ({
-  GoogleGenerativeAI: class {
-    getGenerativeModel() { return { generateContent: mockGenerateContent } }
+vi.mock('groq-sdk', () => ({
+  default: class {
+    chat = { completions: { create: mockCreate } }
   }
 }))
 
@@ -28,7 +30,7 @@ describe('generate-workout handler', () => {
   let handler
 
   beforeEach(async () => {
-    mockGenerateContent.mockClear()
+    mockCreate.mockClear()
     const mod = await import('../../api/generate-workout.js')
     handler = mod.default
   })

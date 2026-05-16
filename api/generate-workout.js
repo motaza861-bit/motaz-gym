@@ -1,6 +1,6 @@
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import Groq from 'groq-sdk'
 
-const MODEL = 'gemini-2.0-flash'
+const MODEL = 'llama-3.3-70b-versatile'
 
 const EQUIPMENT_GUIDE = {
   full: 'barbells, cables, machines, dumbbells — full commercial gym',
@@ -59,12 +59,16 @@ Return ONLY this JSON (no markdown fences, no explanation):
 
 Rules: 5-8 exercises per session. Cover all major muscle groups. rest is in seconds (60-180).`
 
-  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
-  const model = genAI.getGenerativeModel({ model: MODEL })
+  const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
 
   try {
-    const result = await model.generateContent(prompt)
-    const raw = result.response.text().trim()
+    const completion = await groq.chat.completions.create({
+      model: MODEL,
+      max_tokens: 2048,
+      messages: [{ role: 'user', content: prompt }],
+    })
+
+    const raw = completion.choices[0].message.content.trim()
     const jsonStr = raw.replace(/^```json?\n?/, '').replace(/\n?```$/, '')
     const data = JSON.parse(jsonStr)
 

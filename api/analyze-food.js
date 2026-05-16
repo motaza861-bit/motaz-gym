@@ -1,6 +1,6 @@
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import Groq from 'groq-sdk'
 
-const MODEL = 'gemini-2.0-flash'
+const MODEL = 'llama-3.2-11b-vision-preview'
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
 const MAX_BASE64_BYTES = 5 * 1024 * 1024 // ~3.75 MB decoded
 
@@ -23,16 +23,22 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Image too large' })
   }
 
-  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
-  const model = genAI.getGenerativeModel({ model: MODEL })
+  const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
 
   try {
-    const result = await model.generateContent([
-      { inlineData: { data: image, mimeType } },
-      'Analyse this food photo. Estimate the nutritional content for the portion visible. Return ONLY this JSON (no markdown, no explanation): {"food":"food name","calories":number,"protein":number,"carbs":number,"fat":number}. If you cannot identify any food, return {"error":"Could not identify food"}.',
-    ])
+    const completion = await groq.chat.completions.create({
+      model: MODEL,
+      max_tokens: 256,
+      messages: [{
+        role: 'user',
+        content: [
+          { type: 'image_url', image_url: { url: `data:${mimeType};base64,${image}` } },
+          { type: 'text', text: 'Analyse this food photo. Estimate the nutritional content for the portion visible. Return ONLY this JSON (no markdown, no explanation): {"food":"food name","calories":number,"protein":number,"carbs":number,"fat":number}. If you cannot identify any food, return {"error":"Could not identify food"}.' },
+        ],
+      }],
+    })
 
-    const raw = result.response.text().trim()
+    const raw = completion.choices[0].message.content.trim()
     const jsonStr = raw.replace(/^```json?\n?/, '').replace(/\n?```$/, '')
 
     let data
