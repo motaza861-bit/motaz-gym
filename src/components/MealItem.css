@@ -1,4 +1,3 @@
-/* src/components/MealItem.css */
 .meal-item {
   display: flex;
   align-items: center;
@@ -11,17 +10,27 @@
   cursor: pointer;
   transition: border-color 0.2s;
 }
-
 .meal-item.meal-eaten { border-color: rgba(76,175,80,0.3); }
 .meal-item:hover { border-color: var(--border-light); }
 
 .meal-emoji { font-size: 24px; flex-shrink: 0; }
-.meal-body { flex: 1; }
+.meal-body { flex: 1; min-width: 0; }
 .meal-name { font-size: 14px; font-weight: 700; }
 .meal-time { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
-.meal-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.meal-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
 .meal-kcal { font-size: 14px; font-weight: 800; color: var(--red); }
+
+.meal-actions { display: flex; gap: 2px; }
+.meal-action-btn {
+  background: var(--bg-input);
+  border-radius: 6px;
+  padding: 3px 6px;
+  font-size: 13px;
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+.meal-action-btn:hover { opacity: 1; }
 
 .meal-check {
   width: 24px; height: 24px;
@@ -31,5 +40,65 @@
   display: flex; align-items: center; justify-content: center;
   font-size: 12px; font-weight: 800;
 }
-
 .meal-check.checked { background: var(--green); border-color: var(--green); color: #fff; }
+
+/* Edit form */
+.meal-edit-form {
+  background: var(--bg-card);
+  border: 1px solid var(--red);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 10px;
+}
+.meal-edit-title {
+  font-size: 11px;
+  color: var(--red);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.meal-edit-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.meal-edit-full { grid-column: 1 / -1; }
+.meal-edit-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+.meal-edit-input {
+  background: var(--bg-input);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 7px 10px;
+  color: var(--text);
+  font-size: 13px;
+  width: 100%;
+}
+.meal-edit-input:focus { border-color: var(--red); outline: none; }
+.meal-edit-emoji { text-align: center; font-size: 18px; }
+.meal-edit-actions { display: flex; gap: 8px; justify-content: flex-end; }
+.meal-edit-cancel {
+  background: var(--bg-input);
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  padding: 8px 16px;
+  font-size: 13px;
+}
+.meal-edit-save {
+  background: var(--red);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  padding: 8px 20px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.meal-edit-save:hover { background: var(--red-dark); }
