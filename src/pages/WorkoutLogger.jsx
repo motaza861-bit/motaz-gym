@@ -148,6 +148,15 @@ export default function WorkoutLogger() {
         },
       }
     })
+    if (editingId !== 'new' && editingId !== updated.name) {
+      // exercise was renamed — move the in-progress sets to the new key
+      setExerciseSets(prev => {
+        const { [editingId]: old, ...rest } = prev
+        return { ...rest, [updated.name]: old ?? buildInitialSets(updated) }
+      })
+    } else if (editingId === 'new') {
+      setExerciseSets(prev => ({ ...prev, [updated.name]: buildInitialSets(updated) }))
+    }
     setEditingId(null)
   }
 
@@ -163,6 +172,7 @@ export default function WorkoutLogger() {
         },
       },
     }))
+    setExerciseSets(prev => { const { [name]: _, ...rest } = prev; return rest })
   }
 
   return (
@@ -234,7 +244,7 @@ export default function WorkoutLogger() {
         />
       )}
 
-      {editingId !== 'new' && (
+      {editingId === null && (
         <button className="add-exercise-btn" onClick={() => setEditingId('new')}>+ Add exercise</button>
       )}
 
