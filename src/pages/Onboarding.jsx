@@ -25,6 +25,14 @@ const EXPERIENCE_LEVELS = [
   { value: 'advanced', label: 'Advanced', desc: '3+ years training' },
 ]
 
+const SPLIT_OPTIONS = [
+  { value: 'fullbody',   label: 'Full Body',          desc: 'All muscles every session · 3 days/week' },
+  { value: 'upperlower', label: 'Upper / Lower',       desc: 'Upper & lower alternating · 4 days/week' },
+  { value: 'ppl',        label: 'Push / Pull / Legs',  desc: 'Push, pull, legs repeated · 6 days/week' },
+  { value: 'arnold',     label: 'Arnold Split',         desc: 'Chest+Back / Shoulders+Arms / Legs · 6 days/week' },
+  { value: 'bro',        label: 'Bro Split',            desc: 'One muscle group per day · 5 days/week' },
+]
+
 const EQUIPMENT_OPTIONS = [
   { value: 'full', label: 'Full Gym', desc: 'Barbells, cables, machines' },
   { value: 'home', label: 'Home Gym', desc: 'Dumbbells, pull-up bar' },
@@ -41,8 +49,8 @@ export default function Onboarding({ onComplete }) {
     weight: '',
     height: '',
     activityLevel: 'moderate',
-    daysPerWeek: 4,
     experience: 'intermediate',
+    split: 'ppl',
     equipment: 'full',
   })
   const [error, setError] = useState(null)
@@ -59,7 +67,7 @@ export default function Onboarding({ onComplete }) {
   async function generate() {
     if (generating) return
     setGenerating(true)
-    setStep(6)
+    setStep(7)
     setError(null)
     try {
       const res = await fetch('/api/generate-workout', {
@@ -68,7 +76,7 @@ export default function Onboarding({ onComplete }) {
         body: JSON.stringify({
           goal: form.goal,
           experience: form.experience,
-          daysPerWeek: form.daysPerWeek,
+          split: form.split,
           equipment: form.equipment,
           weight: parseFloat(form.weight) || null,
           age: parseInt(form.age) || null,
@@ -89,11 +97,11 @@ export default function Onboarding({ onComplete }) {
 
       setGeneratedData(data)
       setCalcedTargets(targets)
-      setStep(7)
+      setStep(8)
       setGenerating(false)
     } catch (e) {
       setError(e.message || 'Something went wrong. Please try again.')
-      setStep(5)
+      setStep(6)
       setGenerating(false)
     }
   }
@@ -111,19 +119,19 @@ export default function Onboarding({ onComplete }) {
       goal: form.goal,
     })
     try { localStorage.setItem('motaz_onboarded', '1') } catch {}
-    setStep(8)
+    setStep(9)
   }
 
-  const next = () => step === 5 ? generate() : setStep(s => s + 1)
+  const next = () => step === 6 ? generate() : setStep(s => s + 1)
   const back = () => setStep(s => s - 1)
 
   return (
     <div className="onboarding">
-      {step > 0 && step < 6 && (
+      {step > 0 && step < 7 && (
         <div className="ob-header">
           <button className="ob-back" onClick={back}>‹</button>
           <div className="ob-dots">
-            {[1,2,3,4,5].map(i => (
+            {[1,2,3,4,5,6].map(i => (
               <div key={i} className={`ob-dot${step >= i ? ' active' : ''}`} />
             ))}
           </div>
@@ -211,31 +219,35 @@ export default function Onboarding({ onComplete }) {
 
       {step === 4 && (
         <div className="ob-step">
-          <h2 className="ob-title">Training preferences</h2>
-          <div className="ob-section">
-            <label className="ob-section-label">Days per week</label>
-            <div className="ob-chips">
-              {[3,4,5,6].map(d => (
-                <button key={d} className={`ob-chip${form.daysPerWeek === d ? ' active' : ''}`} onClick={() => set('daysPerWeek', d)}>{d}</button>
-              ))}
-            </div>
-          </div>
-          <div className="ob-section">
-            <label className="ob-section-label">Experience level</label>
-            <div className="ob-list">
-              {EXPERIENCE_LEVELS.map(e => (
-                <button key={e.value} className={`ob-list-item${form.experience === e.value ? ' selected' : ''}`} onClick={() => set('experience', e.value)}>
-                  <div className="ob-list-label">{e.label}</div>
-                  <div className="ob-list-desc">{e.desc}</div>
-                </button>
-              ))}
-            </div>
+          <h2 className="ob-title">Experience level</h2>
+          <div className="ob-list">
+            {EXPERIENCE_LEVELS.map(e => (
+              <button key={e.value} className={`ob-list-item${form.experience === e.value ? ' selected' : ''}`} onClick={() => set('experience', e.value)}>
+                <div className="ob-list-label">{e.label}</div>
+                <div className="ob-list-desc">{e.desc}</div>
+              </button>
+            ))}
           </div>
           <button className="ob-btn-primary" onClick={next}>Continue</button>
         </div>
       )}
 
       {step === 5 && (
+        <div className="ob-step">
+          <h2 className="ob-title">Training split</h2>
+          <div className="ob-list">
+            {SPLIT_OPTIONS.map(s => (
+              <button key={s.value} className={`ob-list-item${form.split === s.value ? ' selected' : ''}`} onClick={() => set('split', s.value)}>
+                <div className="ob-list-label">{s.label}</div>
+                <div className="ob-list-desc">{s.desc}</div>
+              </button>
+            ))}
+          </div>
+          <button className="ob-btn-primary" onClick={next}>Continue</button>
+        </div>
+      )}
+
+      {step === 6 && (
         <div className="ob-step">
           <h2 className="ob-title">What equipment do you have?</h2>
           <div className="ob-cards">
@@ -253,7 +265,7 @@ export default function Onboarding({ onComplete }) {
         </div>
       )}
 
-      {step === 6 && (
+      {step === 7 && (
         <div className="ob-step ob-center">
           <div className="ob-spinner" />
           <h2 className="ob-title">Building your program…</h2>
@@ -261,7 +273,7 @@ export default function Onboarding({ onComplete }) {
         </div>
       )}
 
-      {step === 7 && generatedData && (
+      {step === 8 && generatedData && (
         <div className="ob-step ob-preview-step">
           <h2 className="ob-title">Your Program</h2>
           <p className="ob-subtitle">{Object.keys(generatedData.sessions).length} sessions · review and confirm</p>
@@ -287,13 +299,13 @@ export default function Onboarding({ onComplete }) {
             ))}
           </div>
           <div className="ob-preview-actions">
-            <button className="ob-btn-outline" onClick={() => { setGenerating(false); setStep(5) }}>Try Again</button>
+            <button className="ob-btn-outline" onClick={() => { setGenerating(false); setStep(6) }}>Try Again</button>
             <button className="ob-btn-confirm" onClick={confirm}>Save Program →</button>
           </div>
         </div>
       )}
 
-      {step === 8 && calcedTargets && (
+      {step === 9 && calcedTargets && (
         <div className="ob-step ob-center">
           <div className="ob-done-icon">✅</div>
           <h2 className="ob-title">Hi {form.name.trim()},<br/>you're all set!</h2>
