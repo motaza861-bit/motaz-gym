@@ -1,11 +1,14 @@
 import { useNavigate } from 'react-router-dom'
 import { useStorage } from '../hooks/useStorage'
+import { useSelectedDate } from '../context/DateContext'
 import { getTodaySession, getStreak, getWeekNumber, toLocalDateStr } from '../utils/dateHelpers'
 import { SESSIONS } from '../data/workoutProgram'
-import { MEALS, TARGETS } from '../data/nutritionPlan'
+import { useMeals } from '../hooks/useMeals'
+import { useTargets } from '../hooks/useTargets'
 import WorkoutCard from '../components/WorkoutCard'
 import MacroBar from '../components/MacroBar'
 import PRAlert from '../components/PRAlert'
+import DateStrip from '../components/DateStrip'
 import './Dashboard.css'
 
 const START_DATE = '2026-05-15'
@@ -13,19 +16,22 @@ const TRAINING_DAYS_SET = new Set([1, 2, 4, 5])
 
 export default function Dashboard() {
   const navigate = useNavigate()
+  const { selectedDate } = useSelectedDate()
   const [workoutLogs] = useStorage('motaz_workout_logs', [])
   const [nutritionLogs] = useStorage('motaz_nutrition_logs', [])
+  const [meals] = useMeals()
+  const [targets] = useTargets()
 
   const now = new Date()
-  const todayStr = toLocalDateStr(now)
-  const session = getTodaySession(now)
+  const selectedStr = toLocalDateStr(selectedDate)
+  const session = getTodaySession(selectedDate)
   const streak = getStreak(workoutLogs, now)
-  const weekNum = getWeekNumber(START_DATE, now)
+  const weekNum = getWeekNumber(START_DATE, selectedDate)
 
-  const todayNutrition = nutritionLogs.find(l => l.date === todayStr)
+  const todayNutrition = nutritionLogs.find(l => l.date === selectedStr)
   const eatenMealIds = new Set(todayNutrition?.meals?.filter(m => m.eaten).map(m => m.id) ?? [])
 
-  const eaten = MEALS.filter(m => eatenMealIds.has(m.id)).reduce(
+  const eaten = meals.filter(m => eatenMealIds.has(m.id)).reduce(
     (acc, m) => ({ protein: acc.protein + m.protein, carbs: acc.carbs + m.carbs, fat: acc.fat + m.fat }),
     { protein: 0, carbs: 0, fat: 0 }
   )
@@ -47,7 +53,7 @@ export default function Dashboard() {
     <div className="page dashboard">
       <div className="dash-header">
         <div>
-          <div className="dash-week">Week {weekNum} · {now.toLocaleDateString('en', { weekday: 'long' })}</div>
+          <div className="dash-week">Week {weekNum} · {selectedDate.toLocaleDateString('en', { weekday: 'long' })}</div>
           <div className="dash-greeting">Let's go, <span>Motaz 🔥</span></div>
         </div>
         <div className="dash-header-right">
@@ -55,6 +61,8 @@ export default function Dashboard() {
           <div className="dash-avatar">M</div>
         </div>
       </div>
+
+      <DateStrip />
 
       <div className="dash-pills">
         <div className="pill hot">🔥 {streak}-day streak</div>
@@ -79,9 +87,9 @@ export default function Dashboard() {
 
       <p className="section-title">Today's Nutrition</p>
       <div className="card">
-        <MacroBar label="Protein" value={eaten.protein} target={TARGETS.protein} color="var(--red)" unit="g" />
-        <MacroBar label="Carbs"   value={eaten.carbs}   target={TARGETS.carbs}   color="var(--orange)" unit="g" />
-        <MacroBar label="Fat"     value={eaten.fat}      target={TARGETS.fat}     color="var(--yellow)" unit="g" />
+        <MacroBar label="Protein" value={eaten.protein} target={targets.protein} color="var(--red)" unit="g" />
+        <MacroBar label="Carbs"   value={eaten.carbs}   target={targets.carbs}   color="var(--orange)" unit="g" />
+        <MacroBar label="Fat"     value={eaten.fat}      target={targets.fat}     color="var(--yellow)" unit="g" />
       </div>
 
       {latestPR && <PRAlert pr={latestPR} />}
