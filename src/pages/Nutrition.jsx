@@ -141,7 +141,7 @@ export default function Nutrition() {
 
       {scannerOpen && (
         <FoodScanner
-          onAdd={meal => setMeals(prev => [...prev, meal])}
+          onAdd={meal => setMeals(prev => [...prev, { ...meal, id: generateId() }])}
           onClose={() => setScannerOpen(false)}
         />
       )}
