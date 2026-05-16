@@ -149,7 +149,7 @@ export default function Settings() {
         {calcResult && (
           <div className="calc-result">
             <div className="calc-result-nums">
-              ~{calcResult.calories} kcal · {calcResult.protein}g P · {calcResult.carbs}g C · {calcResult.fat}g F
+              ~{calcResult.calories.toLocaleString('en').replace(/,/g, ' ')} kcal · {calcResult.protein}g P · {calcResult.carbs}g C · {calcResult.fat}g F
             </div>
             <button className="settings-btn" onClick={applyCalcResult}>Apply to targets ›</button>
           </div>
