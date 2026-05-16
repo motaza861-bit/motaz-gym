@@ -46,6 +46,7 @@ export default function Onboarding({ onComplete }) {
   })
   const [error, setError] = useState(null)
   const [result, setResult] = useState(null)
+  const [generating, setGenerating] = useState(false)
 
   const [, setExercises] = useStorage('motaz_exercises', DEFAULT_PROGRAM)
   const [, setTargets] = useTargets()
@@ -54,6 +55,8 @@ export default function Onboarding({ onComplete }) {
   const set = (key, val) => setForm(f => ({ ...f, [key]: val }))
 
   async function generate() {
+    if (generating) return
+    setGenerating(true)
     setStep(6)
     setError(null)
     try {
@@ -92,13 +95,15 @@ export default function Onboarding({ onComplete }) {
         activityLevel: form.activityLevel,
         goal: form.goal,
       })
-      localStorage.setItem('motaz_onboarded', '1')
+      try { localStorage.setItem('motaz_onboarded', '1') } catch {}
 
       setResult({ targets, sessionCount: Object.keys(data.sessions).length })
       setStep(7)
+      setGenerating(false)
     } catch (e) {
       setError(e.message || 'Something went wrong. Please try again.')
       setStep(5)
+      setGenerating(false)
     }
   }
 
@@ -223,7 +228,9 @@ export default function Onboarding({ onComplete }) {
             ))}
           </div>
           {error && <div className="ob-error">{error}</div>}
-          <button className="ob-btn-primary" onClick={next}>Build My Program</button>
+          <button className="ob-btn-primary" onClick={next} disabled={generating}>
+            {generating ? 'Building…' : 'Build My Program'}
+          </button>
         </div>
       )}
 
