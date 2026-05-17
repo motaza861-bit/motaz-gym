@@ -170,3 +170,70 @@
   text-align: center;
   margin: 0;
 }
+
+.scanner-food-name-input {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.scanner-portion-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.scanner-portion-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-weight: 700;
+  width: 52px;
+  text-align: right;
+}
+
+.scanner-portion-input {
+  width: 72px;
+  background: var(--bg-input);
+  border: 1px solid var(--accent-glow);
+  border-radius: var(--radius-sm);
+  padding: 6px 8px;
+  color: var(--accent);
+  font-size: 15px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.scanner-portion-unit {
+  font-size: 12px;
+  color: var(--text-muted);
+  width: 16px;
+}
+
+.scanner-macro-input {
+  background: var(--bg-input);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 4px 4px;
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 900;
+  text-align: center;
+  width: 100%;
+  margin-bottom: 2px;
+}
+
+.scanner-macro-input:focus {
+  border-color: var(--accent);
+  outline: none;
+}

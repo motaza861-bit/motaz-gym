@@ -15,10 +15,7 @@ function compressImage(file) {
       canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height)
       resolve(canvas.toDataURL('image/jpeg', 0.8).split(',')[1])
     }
-    img.onerror = () => {
-      URL.revokeObjectURL(url)
-      reject(new Error('Could not load image'))
-    }
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Could not load image')) }
     img.src = url
   })
 }
@@ -26,15 +23,14 @@ function compressImage(file) {
 export default function FoodScanner({ onAdd, onClose }) {
   const [state, setState] = useState('idle') // idle | loading | result | error
   const [preview, setPreview] = useState(null)
-  const [result, setResult] = useState(null)
+  const [edits, setEdits] = useState({ food: '', portionGrams: 0, calories: 0, protein: 0, carbs: 0, fat: 0 })
   const [errorMsg, setErrorMsg] = useState('')
   const inputRef = useRef(null)
   const previewUrlRef = useRef(null)
+  const originalRef = useRef(null) // stores unscaled API values for proportional scaling
 
   useEffect(() => {
-    return () => {
-      if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current)
-    }
+    return () => { if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current) }
   }, [])
 
   async function handleFile(e) {
@@ -55,12 +51,18 @@ export default function FoodScanner({ onAdd, onClose }) {
         body: JSON.stringify({ image: base64, mimeType: 'image/jpeg' }),
       })
       const data = await res.json()
+      if (!res.ok || data.error) throw new Error(data.error || 'Could not analyse image')
 
-      if (!res.ok || data.error) {
-        throw new Error(data.error || 'Could not analyse image')
+      const vals = {
+        food: data.food,
+        portionGrams: data.portionGrams ?? 100,
+        calories: data.calories,
+        protein: data.protein,
+        carbs: data.carbs,
+        fat: data.fat,
       }
-
-      setResult(data)
+      setEdits(vals)
+      originalRef.current = { ...vals }
       setState('result')
     } catch (err) {
       setErrorMsg(err.message || 'Something went wrong')
@@ -68,29 +70,44 @@ export default function FoodScanner({ onAdd, onClose }) {
     }
   }
 
+  function handlePortionChange(raw) {
+    const grams = parseFloat(raw) || 0
+    const orig = originalRef.current
+    if (!orig || orig.portionGrams === 0) {
+      setEdits(e => ({ ...e, portionGrams: grams }))
+      return
+    }
+    const ratio = grams / orig.portionGrams
+    setEdits({
+      food: orig.food,
+      portionGrams: grams,
+      calories: Math.round(orig.calories * ratio),
+      protein: Math.round(orig.protein * ratio),
+      carbs: Math.round(orig.carbs * ratio),
+      fat: Math.round(orig.fat * ratio),
+    })
+  }
+
   function handleAdd() {
-    if (!result) return
     onAdd({
       id: `scan_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
-      name: result.food,
+      name: edits.food || 'Scanned meal',
       emoji: '📸',
       time: '',
       description: 'Scanned meal',
-      calories: result.calories,
-      protein: result.protein,
-      carbs: result.carbs,
-      fat: result.fat,
+      calories: edits.calories,
+      protein: edits.protein,
+      carbs: edits.carbs,
+      fat: edits.fat,
     })
     onClose()
   }
 
   function retry() {
-    if (previewUrlRef.current) {
-      URL.revokeObjectURL(previewUrlRef.current)
-      previewUrlRef.current = null
-    }
+    if (previewUrlRef.current) { URL.revokeObjectURL(previewUrlRef.current); previewUrlRef.current = null }
     setPreview(null)
-    setResult(null)
+    setEdits({ food: '', portionGrams: 0, calories: 0, protein: 0, carbs: 0, fat: 0 })
+    originalRef.current = null
     setErrorMsg('')
     setState('idle')
     if (inputRef.current) inputRef.current.value = ''
@@ -104,13 +121,7 @@ export default function FoodScanner({ onAdd, onClose }) {
           <button className="scanner-close" aria-label="Close" onClick={onClose}>✕</button>
         </div>
 
-        <input
-          ref={inputRef}
-          type="file"
-          accept="image/*"
-          className="scanner-file-input"
-          onChange={handleFile}
-        />
+        <input ref={inputRef} type="file" accept="image/*" className="scanner-file-input" onChange={handleFile} />
 
         {state === 'idle' && (
           <button className="scanner-idle" onClick={() => inputRef.current?.click()}>
@@ -127,28 +138,49 @@ export default function FoodScanner({ onAdd, onClose }) {
           </div>
         )}
 
-        {state === 'result' && result && (
+        {state === 'result' && (
           <div className="scanner-result">
             {preview && <img src={preview} className="scanner-preview" alt="food" />}
-            <div className="scanner-food-name">{result.food}</div>
-            <div className="scanner-macros">
-              <div className="scanner-macro">
-                <span className="scanner-macro-val">{result.calories}</span>
-                <span className="scanner-macro-key">kcal</span>
-              </div>
-              <div className="scanner-macro">
-                <span className="scanner-macro-val">{result.protein}g</span>
-                <span className="scanner-macro-key">protein</span>
-              </div>
-              <div className="scanner-macro">
-                <span className="scanner-macro-val">{result.carbs}g</span>
-                <span className="scanner-macro-key">carbs</span>
-              </div>
-              <div className="scanner-macro">
-                <span className="scanner-macro-val">{result.fat}g</span>
-                <span className="scanner-macro-key">fat</span>
-              </div>
+
+            <input
+              className="scanner-food-name-input"
+              value={edits.food}
+              onChange={e => setEdits(ed => ({ ...ed, food: e.target.value }))}
+              placeholder="Food name"
+            />
+
+            <div className="scanner-portion-row">
+              <span className="scanner-portion-label">Portion</span>
+              <input
+                className="scanner-portion-input"
+                type="number"
+                inputMode="decimal"
+                value={edits.portionGrams || ''}
+                onChange={e => handlePortionChange(e.target.value)}
+              />
+              <span className="scanner-portion-unit">g</span>
             </div>
+
+            <div className="scanner-macros">
+              {[
+                ['kcal', 'calories'],
+                ['protein', 'protein'],
+                ['carbs', 'carbs'],
+                ['fat', 'fat'],
+              ].map(([label, key]) => (
+                <div key={key} className="scanner-macro">
+                  <input
+                    className="scanner-macro-input"
+                    type="number"
+                    inputMode="decimal"
+                    value={edits[key] || ''}
+                    onChange={e => setEdits(ed => ({ ...ed, [key]: parseFloat(e.target.value) || 0 }))}
+                  />
+                  <span className="scanner-macro-key">{label}</span>
+                </div>
+              ))}
+            </div>
+
             <div className="scanner-actions">
               <button className="scanner-btn-secondary" onClick={retry}>Try Again</button>
               <button className="scanner-btn-primary" onClick={handleAdd}>Add to Log</button>
