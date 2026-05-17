@@ -22,16 +22,16 @@ const GOAL_OPTIONS = [
 
 const DEFAULT_PROFILE = { weight: '', height: '', age: '', gender: 'male', activityLevel: 'moderate', goal: 'recomp' }
 
+const TILES = [
+  { key: 'appearance', icon: '🎨', label: 'Appearance', sub: 'Theme & colours' },
+  { key: 'training',   icon: '🏋️', label: 'Training',   sub: 'Workout program' },
+  { key: 'nutrition',  icon: '🥗', label: 'Nutrition',  sub: 'Macros & targets' },
+  { key: 'data',       icon: '💾', label: 'Data',       sub: 'Backup & restore' },
+]
+
 export default function Settings() {
   const [theme, setThemeState] = useState(() => readTheme())
   const [importStatus, setImportStatus] = useState(null)
-
-  function updateTheme(patch) {
-    const next = { ...theme, ...patch }
-    setThemeState(next)
-    saveTheme(next)
-    applyTheme(next)
-  }
   const timerRef = useRef(null)
   const [targets, setTargets] = useTargets()
   const [targetDraft, setTargetDraft] = useState(() => ({ ...targets }))
@@ -39,11 +39,29 @@ export default function Settings() {
   const [calcResult, setCalcResult] = useState(null)
   const [bodyWeightLogs] = useStorage('motaz_body_weight_logs', [])
 
+  const sectionRefs = {
+    appearance: useRef(null),
+    training:   useRef(null),
+    nutrition:  useRef(null),
+    data:       useRef(null),
+  }
+
   const latestWeight = bodyWeightLogs.length
     ? [...bodyWeightLogs].sort((a, b) => b.date.localeCompare(a.date))[0].weight
     : null
 
   useEffect(() => () => { if (timerRef.current) clearTimeout(timerRef.current) }, [])
+
+  function scrollTo(key) {
+    sectionRefs[key].current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  function updateTheme(patch) {
+    const next = { ...theme, ...patch }
+    setThemeState(next)
+    saveTheme(next)
+    applyTheme(next)
+  }
 
   async function handleImport(e) {
     const file = e.target.files?.[0]
@@ -96,203 +114,227 @@ export default function Settings() {
     <div className="page settings-page">
       <h1 className="settings-title">Settings ⚙️</h1>
 
-      <p className="section-title">Appearance</p>
-      <div className="card settings-card">
+      {/* Navigation tiles */}
+      <div className="settings-tiles">
+        {TILES.map(t => (
+          <button key={t.key} className="settings-tile" onClick={() => scrollTo(t.key)}>
+            <span className="settings-tile-icon">{t.icon}</span>
+            <span className="settings-tile-label">{t.label}</span>
+            <span className="settings-tile-sub">{t.sub}</span>
+          </button>
+        ))}
+      </div>
 
-        <div className="appearance-section">
-          <div className="appearance-label">Accent colour</div>
-          <div className="accent-presets">
-            {ACCENT_PRESETS.map(p => (
-              <button
-                key={p.hex}
-                className={`accent-dot${theme.accent === p.hex ? ' active' : ''}`}
-                style={{ '--dot-color': p.hex }}
-                onClick={() => updateTheme({ accent: p.hex })}
-                title={p.label}
-              />
-            ))}
-            <label className="accent-custom" title="Custom colour">
-              <input
-                type="color"
-                value={theme.accent}
-                onChange={e => updateTheme({ accent: e.target.value })}
-              />
-              <span className="accent-custom-icon">🎨</span>
+      {/* Appearance */}
+      <div ref={sectionRefs.appearance}>
+        <div className="settings-section-header">
+          <span className="settings-section-icon">🎨</span>
+          <span className="settings-section-label">Appearance</span>
+        </div>
+        <div className="card settings-card">
+          <div className="appearance-section">
+            <div className="appearance-label">Accent colour</div>
+            <div className="accent-presets">
+              {ACCENT_PRESETS.map(p => (
+                <button
+                  key={p.hex}
+                  className={`accent-dot${theme.accent === p.hex ? ' active' : ''}`}
+                  style={{ '--dot-color': p.hex }}
+                  onClick={() => updateTheme({ accent: p.hex })}
+                  title={p.label}
+                />
+              ))}
+              <label className="accent-custom" title="Custom colour">
+                <input type="color" value={theme.accent} onChange={e => updateTheme({ accent: e.target.value })} />
+                <span className="accent-custom-icon">🎨</span>
+              </label>
+            </div>
+          </div>
+          <div className="appearance-divider" />
+          <div className="appearance-section">
+            <div className="appearance-label">Card style</div>
+            <div className="card-style-toggle">
+              {['glass', 'flat'].map(style => (
+                <button
+                  key={style}
+                  className={`card-style-btn${theme.cardStyle === style ? ' active' : ''}`}
+                  onClick={() => updateTheme({ cardStyle: style })}
+                >
+                  {style.charAt(0).toUpperCase() + style.slice(1)}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="appearance-divider" />
+          <div className="appearance-section">
+            <div className="appearance-label">Background</div>
+            <div className="bg-swatches">
+              {Object.entries(BG_PRESETS).map(([key, preset]) => (
+                <button
+                  key={key}
+                  className={`bg-swatch${theme.bgPreset === key ? ' active' : ''}`}
+                  style={{ background: preset.bg }}
+                  onClick={() => updateTheme({ bgPreset: key })}
+                >
+                  <span className="bg-swatch-label">{preset.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Training */}
+      <div ref={sectionRefs.training}>
+        <div className="settings-section-header">
+          <span className="settings-section-icon">🏋️</span>
+          <span className="settings-section-label">Training</span>
+        </div>
+        <div className="settings-card card">
+          <div className="settings-card-title">Workout Program</div>
+          <p className="settings-card-desc">Regenerate your AI workout program with updated preferences.</p>
+          <button
+            className="settings-btn settings-btn-outline"
+            onClick={() => {
+              if (window.confirm('This will replace your current workout program. Continue?')) {
+                try { localStorage.removeItem('motaz_onboarded') } catch {}
+                window.location.reload()
+              }
+            }}
+          >
+            Regenerate Program
+          </button>
+        </div>
+      </div>
+
+      {/* Nutrition */}
+      <div ref={sectionRefs.nutrition}>
+        <div className="settings-section-header">
+          <span className="settings-section-icon">🥗</span>
+          <span className="settings-section-label">Nutrition</span>
+        </div>
+        <div className="card settings-card">
+          <div className="settings-card-title">Macro Calculator</div>
+          <div className="calc-grid">
+            <label className="calc-label">
+              Weight (kg)
+              <input className="calc-input" type="number" inputMode="decimal"
+                value={profile.weight}
+                placeholder={latestWeight ? String(latestWeight) : 'kg'}
+                onChange={e => setProfileField('weight', e.target.value)} />
             </label>
-          </div>
-        </div>
-
-        <div className="appearance-divider" />
-
-        <div className="appearance-section">
-          <div className="appearance-label">Card style</div>
-          <div className="card-style-toggle">
-            {['glass', 'flat'].map(style => (
-              <button
-                key={style}
-                className={`card-style-btn${theme.cardStyle === style ? ' active' : ''}`}
-                onClick={() => updateTheme({ cardStyle: style })}
-              >
-                {style.charAt(0).toUpperCase() + style.slice(1)}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="appearance-divider" />
-
-        <div className="appearance-section">
-          <div className="appearance-label">Background</div>
-          <div className="bg-swatches">
-            {Object.entries(BG_PRESETS).map(([key, preset]) => (
-              <button
-                key={key}
-                className={`bg-swatch${theme.bgPreset === key ? ' active' : ''}`}
-                style={{ background: preset.bg }}
-                onClick={() => updateTheme({ bgPreset: key })}
-              >
-                <span className="bg-swatch-label">{preset.label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-      </div>
-
-      <p className="section-title">Workout Program</p>
-      <div className="settings-card">
-        <div className="settings-card-title">Workout Program</div>
-        <p className="settings-card-desc">Regenerate your AI workout program with updated preferences.</p>
-        <button
-          className="settings-btn settings-btn-outline"
-          onClick={() => {
-            if (window.confirm('This will replace your current workout program. Continue?')) {
-              try { localStorage.removeItem('motaz_onboarded') } catch {}
-              window.location.reload()
-            }
-          }}
-        >
-          Regenerate Program
-        </button>
-      </div>
-
-      <p className="section-title">Macro Calculator</p>
-      <div className="card settings-card">
-        <div className="calc-grid">
-          <label className="calc-label">
-            Weight (kg)
-            <input className="calc-input" type="number" inputMode="decimal"
-              value={profile.weight}
-              placeholder={latestWeight ? String(latestWeight) : 'kg'}
-              onChange={e => setProfileField('weight', e.target.value)} />
-          </label>
-          <label className="calc-label">
-            Height (cm)
-            <input className="calc-input" type="number" inputMode="decimal"
-              value={profile.height} placeholder="cm"
-              onChange={e => setProfileField('height', e.target.value)} />
-          </label>
-          <label className="calc-label">
-            Age
-            <input className="calc-input" type="number" inputMode="numeric"
-              value={profile.age} placeholder="years"
-              onChange={e => setProfileField('age', e.target.value)} />
-          </label>
-          <label className="calc-label">
-            Gender
-            <div className="calc-toggle">
-              {['male', 'female'].map(g => (
-                <button key={g}
-                  className={`calc-toggle-btn ${profile.gender === g ? 'active' : ''}`}
-                  onClick={() => setProfileField('gender', g)}>
-                  {g === 'male' ? 'Male' : 'Female'}
-                </button>
-              ))}
-            </div>
-          </label>
-          <label className="calc-label calc-full">
-            Activity Level
-            <select className="calc-select" value={profile.activityLevel}
-              onChange={e => setProfileField('activityLevel', e.target.value)}>
-              {ACTIVITY_OPTIONS.map(o => (
-                <option key={o.value} value={o.value}>{o.label}</option>
-              ))}
-            </select>
-          </label>
-          <label className="calc-label calc-full">
-            Goal
-            <div className="calc-toggle">
-              {GOAL_OPTIONS.map(o => (
-                <button key={o.value}
-                  className={`calc-toggle-btn ${profile.goal === o.value ? 'active' : ''}`}
-                  onClick={() => setProfileField('goal', o.value)}>
-                  {o.label}
-                </button>
-              ))}
-            </div>
-          </label>
-        </div>
-
-        <button className="settings-btn calc-calc-btn" onClick={handleCalc}>Calculate</button>
-
-        {calcResult && (
-          <div className="calc-result">
-            <div className="calc-result-nums">
-              ~{calcResult.calories.toLocaleString('en').replace(/,/g, ' ')} kcal · {calcResult.protein}g P · {calcResult.carbs}g C · {calcResult.fat}g F
-            </div>
-            <button className="settings-btn" onClick={applyCalcResult}>Apply to targets ›</button>
-          </div>
-        )}
-      </div>
-
-      <p className="section-title">Daily Targets</p>
-      <div className="card settings-card">
-        <div className="calc-grid">
-          {[
-            ['calories', 'Calories (kcal)'],
-            ['protein',  'Protein (g)'],
-            ['carbs',    'Carbs (g)'],
-            ['fat',      'Fat (g)'],
-          ].map(([key, label]) => (
-            <label key={key} className="calc-label">
-              {label}
+            <label className="calc-label">
+              Height (cm)
+              <input className="calc-input" type="number" inputMode="decimal"
+                value={profile.height} placeholder="cm"
+                onChange={e => setProfileField('height', e.target.value)} />
+            </label>
+            <label className="calc-label">
+              Age
               <input className="calc-input" type="number" inputMode="numeric"
-                value={targetDraft[key] ?? ''}
-                onChange={e => setTargetDraft(d => ({ ...d, [key]: e.target.value }))} />
+                value={profile.age} placeholder="years"
+                onChange={e => setProfileField('age', e.target.value)} />
             </label>
-          ))}
-        </div>
-        <button className="settings-btn" onClick={saveTargets}>Save Targets</button>
-      </div>
-
-      <p className="section-title">Data Backup</p>
-      <div className="card settings-card">
-        <div className="settings-item">
-          <div className="settings-item-info">
-            <div className="settings-item-label">Export Backup</div>
-            <div className="settings-item-sub">Download all data as a .json file</div>
+            <label className="calc-label">
+              Gender
+              <div className="calc-toggle">
+                {['male', 'female'].map(g => (
+                  <button key={g}
+                    className={`calc-toggle-btn ${profile.gender === g ? 'active' : ''}`}
+                    onClick={() => setProfileField('gender', g)}>
+                    {g === 'male' ? 'Male' : 'Female'}
+                  </button>
+                ))}
+              </div>
+            </label>
+            <label className="calc-label calc-full">
+              Activity Level
+              <select className="calc-select" value={profile.activityLevel}
+                onChange={e => setProfileField('activityLevel', e.target.value)}>
+                {ACTIVITY_OPTIONS.map(o => (
+                  <option key={o.value} value={o.value}>{o.label}</option>
+                ))}
+              </select>
+            </label>
+            <label className="calc-label calc-full">
+              Goal
+              <div className="calc-toggle">
+                {GOAL_OPTIONS.map(o => (
+                  <button key={o.value}
+                    className={`calc-toggle-btn ${profile.goal === o.value ? 'active' : ''}`}
+                    onClick={() => setProfileField('goal', o.value)}>
+                    {o.label}
+                  </button>
+                ))}
+              </div>
+            </label>
           </div>
-          <button className="settings-btn" onClick={exportAllData}>Export</button>
-        </div>
-        <div className="settings-divider" />
-        <div className="settings-item">
-          <div className="settings-item-info">
-            <div className="settings-item-label">Import Backup</div>
-            <div className="settings-item-sub">
-              {importStatus === 'success' ? '✅ Imported — reloading...' :
-               importStatus === 'error'   ? '❌ Invalid or corrupt file' :
-               'Restore from a previously exported .json file'}
+          <button className="settings-btn calc-calc-btn" onClick={handleCalc}>Calculate</button>
+          {calcResult && (
+            <div className="calc-result">
+              <div className="calc-result-nums">
+                ~{calcResult.calories.toLocaleString('en').replace(/,/g, ' ')} kcal · {calcResult.protein}g P · {calcResult.carbs}g C · {calcResult.fat}g F
+              </div>
+              <button className="settings-btn" onClick={applyCalcResult}>Apply to targets ›</button>
             </div>
+          )}
+        </div>
+
+        <div className="card settings-card">
+          <div className="settings-card-title">Daily Targets</div>
+          <div className="calc-grid">
+            {[
+              ['calories', 'Calories (kcal)'],
+              ['protein',  'Protein (g)'],
+              ['carbs',    'Carbs (g)'],
+              ['fat',      'Fat (g)'],
+            ].map(([key, label]) => (
+              <label key={key} className="calc-label">
+                {label}
+                <input className="calc-input" type="number" inputMode="numeric"
+                  value={targetDraft[key] ?? ''}
+                  onChange={e => setTargetDraft(d => ({ ...d, [key]: e.target.value }))} />
+              </label>
+            ))}
           </div>
-          <label className="settings-btn" role="button" tabIndex={0}
-            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') e.currentTarget.click() }}>
-            Import
-            <input type="file" accept=".json" onChange={handleImport} style={{ display: 'none' }} />
-          </label>
+          <button className="settings-btn" onClick={saveTargets}>Save Targets</button>
         </div>
       </div>
 
-      <p className="section-title">About</p>
+      {/* Data */}
+      <div ref={sectionRefs.data}>
+        <div className="settings-section-header">
+          <span className="settings-section-icon">💾</span>
+          <span className="settings-section-label">Data</span>
+        </div>
+        <div className="card settings-card">
+          <div className="settings-item">
+            <div className="settings-item-info">
+              <div className="settings-item-label">Export Backup</div>
+              <div className="settings-item-sub">Download all data as a .json file</div>
+            </div>
+            <button className="settings-btn" onClick={exportAllData}>Export</button>
+          </div>
+          <div className="settings-divider" />
+          <div className="settings-item">
+            <div className="settings-item-info">
+              <div className="settings-item-label">Import Backup</div>
+              <div className="settings-item-sub">
+                {importStatus === 'success' ? '✅ Imported — reloading...' :
+                 importStatus === 'error'   ? '❌ Invalid or corrupt file' :
+                 'Restore from a previously exported .json file'}
+              </div>
+            </div>
+            <label className="settings-btn" role="button" tabIndex={0}
+              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') e.currentTarget.click() }}>
+              Import
+              <input type="file" accept=".json" onChange={handleImport} style={{ display: 'none' }} />
+            </label>
+          </div>
+        </div>
+      </div>
+
+      {/* About */}
       <div className="card settings-card">
         <div className="settings-about">
           <div className="settings-about-name">IronMind</div>
