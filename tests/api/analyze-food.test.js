@@ -59,11 +59,11 @@ describe('analyze-food handler', () => {
     expect(typeof payload.portionGrams).toBe('number')
   })
 
-  it('uses llama-4-maverick model', async () => {
+  it('uses llama-4-scout model', async () => {
     const res = mockRes()
     await handler({ method: 'POST', body: { image: 'base64data', mimeType: 'image/jpeg' } }, res)
     expect(mockCreate).toHaveBeenCalledWith(
-      expect.objectContaining({ model: 'meta-llama/llama-4-maverick-17b-128e-instruct' })
+      expect.objectContaining({ model: 'meta-llama/llama-4-scout-17b-16e-instruct' })
     )
   })
 })
