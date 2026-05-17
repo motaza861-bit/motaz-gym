@@ -15,7 +15,7 @@
 }
 
 .bw-btn {
-  background: var(--red);
+  background: var(--accent);
   color: #fff;
   font-weight: 800;
   font-size: 14px;
@@ -54,9 +54,9 @@
 }
 
 .chart-tab.active {
-  background: rgba(255,60,60,0.12);
-  border-color: rgba(255,60,60,0.35);
-  color: var(--red);
+  background: rgba(255,255,255,0.04);
+  border-color: var(--accent-glow);
+  color: var(--accent);
 }
 
 .pr-row {
@@ -71,5 +71,5 @@
 }
 
 .pr-row-name { flex: 1; font-size: 13px; font-weight: 700; }
-.pr-row-weight { font-size: 16px; font-weight: 900; color: var(--red); }
+.pr-row-weight { font-size: 16px; font-weight: 900; color: var(--accent); }
 .pr-row-date { font-size: 11px; color: var(--text-muted); }

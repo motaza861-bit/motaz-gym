@@ -132,7 +132,7 @@
   border: 1px solid var(--border-light);
   border-radius: 6px;
   padding: 4px 10px;
-  color: var(--red);
+  color: var(--accent);
   font-size: 13px;
   font-weight: 800;
   text-align: center;

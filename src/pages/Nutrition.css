@@ -42,7 +42,7 @@
   margin-bottom: 10px;
   transition: border-color 0.2s, color 0.2s;
 }
-.add-meal-btn:hover { border-color: var(--red); color: var(--red); }
+.add-meal-btn:hover { border-color: var(--accent); color: var(--accent); }
 
 .nutrition-header-row {
   display: flex;

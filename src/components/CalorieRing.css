@@ -14,9 +14,9 @@
   align-items: center; justify-content: center;
 }
 
-.calorie-ring-eaten { font-size: 22px; font-weight: 900; color: var(--red); }
+.calorie-ring-eaten { font-size: 22px; font-weight: 900; color: var(--accent); }
 .calorie-ring-label { font-size: 11px; color: var(--text-muted); }
 
 .calorie-ring-remaining { font-size: 18px; font-weight: 800; }
 .calorie-ring-target { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
-.calorie-ring-pct { font-size: 12px; color: var(--red); font-weight: 700; margin-top: 2px; }
+.calorie-ring-pct { font-size: 12px; color: var(--accent); font-weight: 700; margin-top: 2px; }

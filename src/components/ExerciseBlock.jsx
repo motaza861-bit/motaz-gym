@@ -2,7 +2,7 @@
 import './ExerciseBlock.css'
 
 const SET_TYPES = ['S', 'W', 'T', 'D']
-const TYPE_COLORS = { S: 'var(--text-muted)', W: 'var(--orange)', T: 'var(--red)', D: 'var(--yellow)' }
+const TYPE_COLORS = { S: 'var(--text-muted)', W: 'var(--orange)', T: 'var(--accent)', D: 'var(--yellow)' }
 
 export default function ExerciseBlock({ exercise, sets, onSetUpdate, previousSets, onSwap, onEdit, onDelete }) {
   const hasPrev = previousSets?.some(s => s.weight > 0)

@@ -100,7 +100,7 @@ export default function Nutrition() {
           </span>
           <button className="adjust-btn" onClick={() => adjustCalories(100)}>+100</button>
         </div>
-        <MacroBar label="Protein" value={eaten.protein} target={targets.protein} color="var(--red)" unit="g" />
+        <MacroBar label="Protein" value={eaten.protein} target={targets.protein} color="var(--accent)" unit="g" />
         <MacroBar label="Carbs"   value={eaten.carbs}   target={targets.carbs}   color="var(--orange)" unit="g" />
         <MacroBar label="Fat"     value={eaten.fat}      target={targets.fat}     color="var(--yellow)" unit="g" />
       </div>

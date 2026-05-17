@@ -19,7 +19,7 @@
   margin-top: 4px;
 }
 
-.dash-greeting span { color: var(--red); }
+.dash-greeting span { color: var(--accent); }
 
 .dash-header-right { display: flex; align-items: center; gap: 10px; }
 
@@ -29,9 +29,10 @@
 .dash-avatar {
   width: 44px; height: 44px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--red), #ff6b00);
+  background: linear-gradient(135deg, var(--accent-dark), var(--accent));
   display: flex; align-items: center; justify-content: center;
   font-weight: 900; font-size: 18px;
+  color: #000;
 }
 
 .dash-pills {
@@ -50,10 +51,17 @@
 }
 
 .pill.hot {
-  border-color: rgba(255,60,60,0.3);
-  background: rgba(255,60,60,0.08);
-  color: var(--red);
+  border-color: var(--accent-glow);
+  background: rgba(255,255,255,0.04);
+  color: var(--accent);
   font-weight: 700;
+}
+
+.dash-macro-card {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  gap: 8px;
 }
 
 .rest-card {

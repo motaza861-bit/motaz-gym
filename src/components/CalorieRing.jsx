@@ -16,7 +16,7 @@ export default function CalorieRing({ eaten, target }) {
           <circle cx="60" cy="60" r={RADIUS} fill="none" stroke="var(--border-light)" strokeWidth="12" />
           <circle
             cx="60" cy="60" r={RADIUS}
-            fill="none" stroke="var(--red)" strokeWidth="12"
+            fill="none" stroke="var(--accent)" strokeWidth="12"
             strokeDasharray={CIRCUMFERENCE}
             strokeDashoffset={offset}
             strokeLinecap="round"

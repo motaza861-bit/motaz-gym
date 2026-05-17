@@ -19,7 +19,7 @@
 .meal-time { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
 .meal-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
-.meal-kcal { font-size: 14px; font-weight: 800; color: var(--red); }
+.meal-kcal { font-size: 14px; font-weight: 800; color: var(--accent); }
 
 .meal-actions { display: flex; gap: 2px; }
 .meal-action-btn {
@@ -45,14 +45,14 @@
 /* Edit form */
 .meal-edit-form {
   background: var(--bg-card);
-  border: 1px solid var(--red);
+  border: 1px solid var(--accent);
   border-radius: var(--radius);
   padding: 16px;
   margin-bottom: 10px;
 }
 .meal-edit-title {
   font-size: 11px;
-  color: var(--red);
+  color: var(--accent);
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: 700;
@@ -83,7 +83,7 @@
   font-size: 13px;
   width: 100%;
 }
-.meal-edit-input:focus { border-color: var(--red); outline: none; }
+.meal-edit-input:focus { border-color: var(--accent); outline: none; }
 .meal-edit-emoji { text-align: center; font-size: 18px; }
 .meal-edit-actions { display: flex; gap: 8px; justify-content: flex-end; }
 .meal-edit-cancel {
@@ -94,11 +94,11 @@
   font-size: 13px;
 }
 .meal-edit-save {
-  background: var(--red);
+  background: var(--accent);
   color: #fff;
   border-radius: var(--radius-sm);
   padding: 8px 20px;
   font-size: 13px;
   font-weight: 700;
 }
-.meal-edit-save:hover { background: var(--red-dark); }
+.meal-edit-save:hover { background: var(--accent-dark); }

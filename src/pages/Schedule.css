@@ -12,7 +12,7 @@
 }
 
 .day-card.today {
-  border-color: rgba(255,60,60,0.4);
+  border-color: var(--accent-glow);
   background: linear-gradient(135deg, #1a0000, #111);
 }
 
@@ -28,7 +28,7 @@
 .day-name { font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
 
 .today-badge {
-  background: var(--red);
+  background: var(--accent);
   color: #fff;
   font-size: 10px;
   font-weight: 700;
@@ -37,9 +37,9 @@
 }
 
 .session-badge {
-  background: rgba(255,60,60,0.15);
-  color: var(--red);
-  border: 1px solid rgba(255,60,60,0.3);
+  background: rgba(255,255,255,0.04);
+  color: var(--accent);
+  border: 1px solid var(--accent-glow);
   font-size: 12px;
   font-weight: 800;
   padding: 3px 10px;
@@ -47,7 +47,7 @@
 }
 
 .day-rest { font-size: 13px; color: var(--text-muted); }
-.day-focus { font-size: 12px; color: var(--red); font-weight: 700; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+.day-focus { font-size: 12px; color: var(--accent); font-weight: 700; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
 .day-muscles { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; }
 
 .day-exercises { display: flex; flex-direction: column; gap: 5px; }
@@ -59,7 +59,7 @@
   color: #bbb;
 }
 
-.day-ex-sets { color: var(--red); font-weight: 700; }
+.day-ex-sets { color: var(--accent); font-weight: 700; }
 
 .protocol-box {
   background: var(--bg-card);
@@ -71,7 +71,7 @@
 .protocol-title {
   font-size: 12px;
   font-weight: 800;
-  color: var(--red);
+  color: var(--accent);
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-bottom: 10px;

@@ -6,7 +6,7 @@ import { getTodaySession, getStreak, getWeekNumber, toLocalDateStr } from '../ut
 import { useMeals } from '../hooks/useMeals'
 import { useTargets } from '../hooks/useTargets'
 import WorkoutCard from '../components/WorkoutCard'
-import MacroBar from '../components/MacroBar'
+import MacroRing from '../components/MacroRing'
 import PRAlert from '../components/PRAlert'
 import DateStrip from '../components/DateStrip'
 import './Dashboard.css'
@@ -98,10 +98,10 @@ export default function Dashboard() {
       )}
 
       <p className="section-title">Today's Nutrition</p>
-      <div className="card">
-        <MacroBar label="Protein" value={eaten.protein} target={targets.protein} color="var(--red)" unit="g" />
-        <MacroBar label="Carbs"   value={eaten.carbs}   target={targets.carbs}   color="var(--orange)" unit="g" />
-        <MacroBar label="Fat"     value={eaten.fat}      target={targets.fat}     color="var(--yellow)" unit="g" />
+      <div className="card dash-macro-card">
+        <MacroRing label="Protein" value={eaten.protein} target={targets.protein} color="var(--accent)" />
+        <MacroRing label="Carbs"   value={eaten.carbs}   target={targets.carbs}   color="var(--orange)" />
+        <MacroRing label="Fat"     value={eaten.fat}      target={targets.fat}     color="var(--yellow)" />
       </div>
 
       {latestPR && <PRAlert pr={latestPR} />}

@@ -3,6 +3,7 @@ import { exportAllData, importAllData } from '../hooks/useStorage'
 import { useStorage } from '../hooks/useStorage'
 import { useTargets } from '../hooks/useTargets'
 import { calcMacros } from '../utils/macroCalculator'
+import { applyTheme, readTheme, saveTheme, ACCENT_PRESETS, BG_PRESETS } from '../hooks/useTheme'
 import './Settings.css'
 
 const ACTIVITY_OPTIONS = [
@@ -22,7 +23,15 @@ const GOAL_OPTIONS = [
 const DEFAULT_PROFILE = { weight: '', height: '', age: '', gender: 'male', activityLevel: 'moderate', goal: 'recomp' }
 
 export default function Settings() {
+  const [theme, setThemeState] = useState(() => readTheme())
   const [importStatus, setImportStatus] = useState(null)
+
+  function updateTheme(patch) {
+    const next = { ...theme, ...patch }
+    setThemeState(next)
+    saveTheme(next)
+    applyTheme(next)
+  }
   const timerRef = useRef(null)
   const [targets, setTargets] = useTargets()
   const [targetDraft, setTargetDraft] = useState(() => ({ ...targets }))
@@ -86,6 +95,69 @@ export default function Settings() {
   return (
     <div className="page settings-page">
       <h1 className="settings-title">Settings ⚙️</h1>
+
+      <p className="section-title">Appearance</p>
+      <div className="card settings-card">
+
+        <div className="appearance-section">
+          <div className="appearance-label">Accent colour</div>
+          <div className="accent-presets">
+            {ACCENT_PRESETS.map(p => (
+              <button
+                key={p.hex}
+                className={`accent-dot${theme.accent === p.hex ? ' active' : ''}`}
+                style={{ '--dot-color': p.hex }}
+                onClick={() => updateTheme({ accent: p.hex })}
+                title={p.label}
+              />
+            ))}
+            <label className="accent-custom" title="Custom colour">
+              <input
+                type="color"
+                value={theme.accent}
+                onChange={e => updateTheme({ accent: e.target.value })}
+              />
+              <span className="accent-custom-icon">🎨</span>
+            </label>
+          </div>
+        </div>
+
+        <div className="appearance-divider" />
+
+        <div className="appearance-section">
+          <div className="appearance-label">Card style</div>
+          <div className="card-style-toggle">
+            {['glass', 'flat'].map(style => (
+              <button
+                key={style}
+                className={`card-style-btn${theme.cardStyle === style ? ' active' : ''}`}
+                onClick={() => updateTheme({ cardStyle: style })}
+              >
+                {style.charAt(0).toUpperCase() + style.slice(1)}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="appearance-divider" />
+
+        <div className="appearance-section">
+          <div className="appearance-label">Background</div>
+          <div className="bg-swatches">
+            {Object.entries(BG_PRESETS).map(([key, preset]) => (
+              <button
+                key={key}
+                className={`bg-swatch${theme.bgPreset === key ? ' active' : ''}`}
+                style={{ background: preset.bg }}
+                onClick={() => updateTheme({ bgPreset: key })}
+              >
+                <span className="bg-swatch-label">{preset.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+      </div>
 
       <p className="section-title">Workout Program</p>
       <div className="settings-card">
