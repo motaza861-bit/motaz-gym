@@ -72,13 +72,20 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  const { goal, experience, split = 'ppl', equipment, weight, age } = req.body
+  const { goal, experience, split = 'ppl', equipment, weight, age, customSplit } = req.body
 
   if (!goal || !experience || !equipment) {
     return res.status(400).json({ error: 'Missing required fields' })
   }
 
-  const splitGuide = SPLIT_GUIDE[split] ?? SPLIT_GUIDE.ppl
+  const isCustom = split === 'custom' && customSplit?.trim()
+  const splitGuide = isCustom
+    ? {
+        name: 'Custom',
+        structure: `The user has described their own training split:\n"${customSplit.trim()}"\n\nCreate sessions based exactly on what the user described. Name each session A, B, C, etc. following the pattern they described. Determine the appropriate daySession mapping (0=Sunday through 6=Saturday) based on how many training days the user specified.`,
+        daySession: null,
+      }
+    : (SPLIT_GUIDE[split] ?? SPLIT_GUIDE.ppl)
 
   const prompt = `You are an expert strength and conditioning coach. Create a personalised ${splitGuide.name} workout program.
 
@@ -105,7 +112,7 @@ Return ONLY this JSON (no markdown fences, no explanation):
       ]
     }
   },
-  "daySession": ${JSON.stringify(splitGuide.daySession)}
+  "daySession": ${splitGuide.daySession ? JSON.stringify(splitGuide.daySession) : '{ "0": "A", "1": "B", "2": "C", "3": "rest", "4": "rest", "5": "rest", "6": "rest" }'}
 }
 
 Rules:
@@ -132,8 +139,10 @@ Rules:
       throw new Error('Invalid response structure')
     }
 
-    // Enforce the correct daySession regardless of what the AI returned
-    data.daySession = splitGuide.daySession
+    // Enforce the correct daySession for preset splits; trust AI for custom
+    if (splitGuide.daySession) {
+      data.daySession = splitGuide.daySession
+    }
 
     return res.status(200).json(data)
   } catch (err) {

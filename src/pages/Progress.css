@@ -73,3 +73,102 @@
 .pr-row-name { flex: 1; font-size: 13px; font-weight: 700; }
 .pr-row-weight { font-size: 16px; font-weight: 900; color: var(--accent); }
 .pr-row-date { font-size: 11px; color: var(--text-muted); }
+
+/* Stats summary */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 8px;
+  border-right: 1px solid var(--border-light);
+}
+.stat-item:last-child { border-right: none; }
+.stat-val { font-size: 22px; font-weight: 900; color: var(--accent); }
+.stat-key { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; text-align: center; }
+
+/* History tab */
+.hist-row {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+.hist-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+.hist-info { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+.hist-date { font-size: 13px; font-weight: 700; color: var(--text); }
+.hist-session-badge {
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+.hist-meta { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
+.hist-tag {
+  background: var(--bg-input);
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  padding: 2px 6px;
+}
+.hist-pr { background: rgba(255,204,0,0.12); color: var(--yellow); }
+.hist-chevron { font-size: 10px; color: var(--text-muted); flex-shrink: 0; }
+.hist-exercises {
+  padding: 0 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-top: 1px solid var(--border-light);
+  padding-top: 10px;
+}
+.hist-ex { display: flex; justify-content: space-between; align-items: center; }
+.hist-ex-name { font-size: 12px; color: var(--text); }
+.hist-ex-top { font-size: 12px; font-weight: 700; color: var(--accent); }
+
+/* 1RM Calculator */
+.orm-inputs { display: flex; gap: 10px; margin-bottom: 14px; }
+.orm-field { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.orm-label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.orm-result { margin-top: 4px; }
+.orm-result-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-light);
+}
+.orm-result-label { font-size: 13px; color: var(--text-muted); }
+.orm-result-val { font-size: 28px; font-weight: 900; color: var(--accent); }
+.orm-pct-table { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.orm-pct-row {
+  background: var(--bg-input);
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.orm-pct { font-size: 10px; color: var(--text-muted); font-weight: 600; }
+.orm-pct-val { font-size: 14px; font-weight: 800; color: var(--text); }

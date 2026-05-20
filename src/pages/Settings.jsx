@@ -4,6 +4,8 @@ import { useStorage } from '../hooks/useStorage'
 import { useTargets } from '../hooks/useTargets'
 import { calcMacros } from '../utils/macroCalculator'
 import { applyTheme, readTheme, saveTheme, ACCENT_PRESETS, BG_PRESETS } from '../hooks/useTheme'
+import { useLanguage } from '../context/LanguageContext'
+import { requestPermission, scheduleNotifications } from '../utils/notifications'
 import './Settings.css'
 
 const ACTIVITY_OPTIONS = [
@@ -22,14 +24,8 @@ const GOAL_OPTIONS = [
 
 const DEFAULT_PROFILE = { weight: '', height: '', age: '', gender: 'male', activityLevel: 'moderate', goal: 'recomp' }
 
-const TILES = [
-  { key: 'appearance', icon: '🎨', label: 'Appearance', sub: 'Theme & colours' },
-  { key: 'training',   icon: '🏋️', label: 'Training',   sub: 'Workout program' },
-  { key: 'nutrition',  icon: '🥗', label: 'Nutrition',  sub: 'Macros & targets' },
-  { key: 'data',       icon: '💾', label: 'Data',       sub: 'Backup & restore' },
-]
-
 export default function Settings() {
+  const { t, lang, setLang } = useLanguage()
   const [theme, setThemeState] = useState(() => readTheme())
   const [importStatus, setImportStatus] = useState(null)
   const timerRef = useRef(null)
@@ -39,11 +35,26 @@ export default function Settings() {
   const [calcResult, setCalcResult] = useState(null)
   const [bodyWeightLogs] = useStorage('motaz_body_weight_logs', [])
 
+  const [notifPrefs, setNotifPrefs] = useStorage('motaz_notifications', { enabled: false, workoutTime: '07:00', foodTime: '20:00' })
+  const [notifStatus, setNotifStatus] = useState(() => {
+    if (!('Notification' in window)) return 'unsupported'
+    return Notification.permission // 'default' | 'granted' | 'denied'
+  })
+
+  const TILES = [
+    { key: 'appearance',    icon: '🎨', label: t('st.appearance'), sub: t('st.appearance_sub') },
+    { key: 'training',      icon: '🏋️', label: t('st.training'),   sub: t('st.training_sub') },
+    { key: 'nutrition',     icon: '🥗', label: t('st.nutrition'),  sub: t('st.nutrition_sub') },
+    { key: 'notifications', icon: '🔔', label: t('st.notifications'), sub: t('st.notif_sub') },
+    { key: 'data',          icon: '💾', label: t('st.data'),       sub: t('st.data_sub') },
+  ]
+
   const sectionRefs = {
-    appearance: useRef(null),
-    training:   useRef(null),
-    nutrition:  useRef(null),
-    data:       useRef(null),
+    appearance:    useRef(null),
+    training:      useRef(null),
+    nutrition:     useRef(null),
+    notifications: useRef(null),
+    data:          useRef(null),
   }
 
   const latestWeight = bodyWeightLogs.length
@@ -110,17 +121,33 @@ export default function Settings() {
     setCalcResult(null)
   }
 
+  async function enableNotifications() {
+    const perm = await requestPermission()
+    setNotifStatus(perm)
+    if (perm === 'granted') {
+      const next = { ...notifPrefs, enabled: true }
+      setNotifPrefs(next)
+      scheduleNotifications(next)
+    }
+  }
+
+  function updateNotifPref(patch) {
+    const next = { ...notifPrefs, ...patch }
+    setNotifPrefs(next)
+    if (next.enabled) scheduleNotifications(next)
+  }
+
   return (
     <div className="page settings-page">
-      <h1 className="settings-title">Settings ⚙️</h1>
+      <h1 className="settings-title">{t('st.title')}</h1>
 
       {/* Navigation tiles */}
       <div className="settings-tiles">
-        {TILES.map(t => (
-          <button key={t.key} className="settings-tile" onClick={() => scrollTo(t.key)}>
-            <span className="settings-tile-icon">{t.icon}</span>
-            <span className="settings-tile-label">{t.label}</span>
-            <span className="settings-tile-sub">{t.sub}</span>
+        {TILES.map(tile => (
+          <button key={tile.key} className="settings-tile" onClick={() => scrollTo(tile.key)}>
+            <span className="settings-tile-icon">{tile.icon}</span>
+            <span className="settings-tile-label">{tile.label}</span>
+            <span className="settings-tile-sub">{tile.sub}</span>
           </button>
         ))}
       </div>
@@ -129,11 +156,11 @@ export default function Settings() {
       <div ref={sectionRefs.appearance}>
         <div className="settings-section-header">
           <span className="settings-section-icon">🎨</span>
-          <span className="settings-section-label">Appearance</span>
+          <span className="settings-section-label">{t('st.appearance')}</span>
         </div>
         <div className="card settings-card">
           <div className="appearance-section">
-            <div className="appearance-label">Accent colour</div>
+            <div className="appearance-label">{t('st.accent')}</div>
             <div className="accent-presets">
               {ACCENT_PRESETS.map(p => (
                 <button
@@ -152,22 +179,22 @@ export default function Settings() {
           </div>
           <div className="appearance-divider" />
           <div className="appearance-section">
-            <div className="appearance-label">Card style</div>
+            <div className="appearance-label">{t('st.card_style')}</div>
             <div className="card-style-toggle">
-              {['glass', 'flat'].map(style => (
+              {[['glass', t('st.glass')], ['flat', t('st.flat')]].map(([style, label]) => (
                 <button
                   key={style}
                   className={`card-style-btn${theme.cardStyle === style ? ' active' : ''}`}
                   onClick={() => updateTheme({ cardStyle: style })}
                 >
-                  {style.charAt(0).toUpperCase() + style.slice(1)}
+                  {label}
                 </button>
               ))}
             </div>
           </div>
           <div className="appearance-divider" />
           <div className="appearance-section">
-            <div className="appearance-label">Background</div>
+            <div className="appearance-label">{t('st.background')}</div>
             <div className="bg-swatches">
               {Object.entries(BG_PRESETS).map(([key, preset]) => (
                 <button
@@ -181,6 +208,21 @@ export default function Settings() {
               ))}
             </div>
           </div>
+          <div className="appearance-divider" />
+          <div className="appearance-section">
+            <div className="appearance-label">{t('st.language')}</div>
+            <div className="card-style-toggle">
+              {[['en', 'English'], ['ar', 'العربية']].map(([code, label]) => (
+                <button
+                  key={code}
+                  className={`card-style-btn${lang === code ? ' active' : ''}`}
+                  onClick={() => setLang(code)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -188,21 +230,21 @@ export default function Settings() {
       <div ref={sectionRefs.training}>
         <div className="settings-section-header">
           <span className="settings-section-icon">🏋️</span>
-          <span className="settings-section-label">Training</span>
+          <span className="settings-section-label">{t('st.training')}</span>
         </div>
         <div className="settings-card card">
-          <div className="settings-card-title">Workout Program</div>
-          <p className="settings-card-desc">Regenerate your AI workout program with updated preferences.</p>
+          <div className="settings-card-title">{t('st.workout_program')}</div>
+          <p className="settings-card-desc">{t('st.regen_desc')}</p>
           <button
             className="settings-btn settings-btn-outline"
             onClick={() => {
-              if (window.confirm('This will replace your current workout program. Continue?')) {
+              if (window.confirm(t('st.regen_confirm'))) {
                 try { localStorage.removeItem('motaz_onboarded') } catch {}
                 window.location.reload()
               }
             }}
           >
-            Regenerate Program
+            {t('st.regen_btn')}
           </button>
         </div>
       </div>
@@ -211,44 +253,44 @@ export default function Settings() {
       <div ref={sectionRefs.nutrition}>
         <div className="settings-section-header">
           <span className="settings-section-icon">🥗</span>
-          <span className="settings-section-label">Nutrition</span>
+          <span className="settings-section-label">{t('st.nutrition')}</span>
         </div>
         <div className="card settings-card">
-          <div className="settings-card-title">Macro Calculator</div>
+          <div className="settings-card-title">{t('st.macro_calc')}</div>
           <div className="calc-grid">
             <label className="calc-label">
-              Weight (kg)
+              {t('calc.weight_kg')}
               <input className="calc-input" type="number" inputMode="decimal"
                 value={profile.weight}
                 placeholder={latestWeight ? String(latestWeight) : 'kg'}
                 onChange={e => setProfileField('weight', e.target.value)} />
             </label>
             <label className="calc-label">
-              Height (cm)
+              {t('calc.height_cm')}
               <input className="calc-input" type="number" inputMode="decimal"
                 value={profile.height} placeholder="cm"
                 onChange={e => setProfileField('height', e.target.value)} />
             </label>
             <label className="calc-label">
-              Age
+              {t('calc.age')}
               <input className="calc-input" type="number" inputMode="numeric"
                 value={profile.age} placeholder="years"
                 onChange={e => setProfileField('age', e.target.value)} />
             </label>
             <label className="calc-label">
-              Gender
+              {t('calc.gender')}
               <div className="calc-toggle">
-                {['male', 'female'].map(g => (
+                {[['male', t('calc.male')], ['female', t('calc.female')]].map(([g, label]) => (
                   <button key={g}
                     className={`calc-toggle-btn ${profile.gender === g ? 'active' : ''}`}
                     onClick={() => setProfileField('gender', g)}>
-                    {g === 'male' ? 'Male' : 'Female'}
+                    {label}
                   </button>
                 ))}
               </div>
             </label>
             <label className="calc-label calc-full">
-              Activity Level
+              {t('calc.activity')}
               <select className="calc-select" value={profile.activityLevel}
                 onChange={e => setProfileField('activityLevel', e.target.value)}>
                 {ACTIVITY_OPTIONS.map(o => (
@@ -257,7 +299,7 @@ export default function Settings() {
               </select>
             </label>
             <label className="calc-label calc-full">
-              Goal
+              {t('calc.goal')}
               <div className="calc-toggle">
                 {GOAL_OPTIONS.map(o => (
                   <button key={o.value}
@@ -269,25 +311,25 @@ export default function Settings() {
               </div>
             </label>
           </div>
-          <button className="settings-btn calc-calc-btn" onClick={handleCalc}>Calculate</button>
+          <button className="settings-btn calc-calc-btn" onClick={handleCalc}>{t('st.calculate')}</button>
           {calcResult && (
             <div className="calc-result">
               <div className="calc-result-nums">
                 ~{calcResult.calories.toLocaleString('en').replace(/,/g, ' ')} kcal · {calcResult.protein}g P · {calcResult.carbs}g C · {calcResult.fat}g F
               </div>
-              <button className="settings-btn" onClick={applyCalcResult}>Apply to targets ›</button>
+              <button className="settings-btn" onClick={applyCalcResult}>{t('st.apply_targets')}</button>
             </div>
           )}
         </div>
 
         <div className="card settings-card">
-          <div className="settings-card-title">Daily Targets</div>
+          <div className="settings-card-title">{t('st.daily_targets')}</div>
           <div className="calc-grid">
             {[
-              ['calories', 'Calories (kcal)'],
-              ['protein',  'Protein (g)'],
-              ['carbs',    'Carbs (g)'],
-              ['fat',      'Fat (g)'],
+              ['calories', t('calc.calories')],
+              ['protein',  t('calc.protein')],
+              ['carbs',    t('calc.carbs')],
+              ['fat',      t('calc.fat')],
             ].map(([key, label]) => (
               <label key={key} className="calc-label">
                 {label}
@@ -297,7 +339,53 @@ export default function Settings() {
               </label>
             ))}
           </div>
-          <button className="settings-btn" onClick={saveTargets}>Save Targets</button>
+          <button className="settings-btn" onClick={saveTargets}>{t('st.save_targets')}</button>
+        </div>
+      </div>
+
+      {/* Notifications */}
+      <div ref={sectionRefs.notifications}>
+        <div className="settings-section-header">
+          <span className="settings-section-icon">🔔</span>
+          <span className="settings-section-label">{t('st.notifications')}</span>
+        </div>
+        <div className="card settings-card">
+          {notifStatus === 'unsupported' && (
+            <p className="settings-card-desc">{t('st.notif_unsupported')}</p>
+          )}
+          {notifStatus === 'denied' && (
+            <p className="settings-card-desc" style={{ color: 'var(--accent)' }}>{t('st.notif_denied')}</p>
+          )}
+          {notifStatus !== 'unsupported' && notifStatus !== 'denied' && (
+            <>
+              {notifPrefs.enabled ? (
+                <button className="settings-btn" onClick={() => updateNotifPref({ enabled: false })}>
+                  {t('st.notif_enabled')}
+                </button>
+              ) : (
+                <button className="settings-btn" onClick={enableNotifications}>
+                  {t('st.notif_enable')}
+                </button>
+              )}
+              {notifPrefs.enabled && (
+                <div className="notif-times calc-grid" style={{ marginTop: 12 }}>
+                  <label className="calc-label">
+                    {t('st.notif_workout')}
+                    <input type="time" className="calc-input"
+                      value={notifPrefs.workoutTime}
+                      onChange={e => updateNotifPref({ workoutTime: e.target.value })} />
+                  </label>
+                  <label className="calc-label">
+                    {t('st.notif_food')}
+                    <input type="time" className="calc-input"
+                      value={notifPrefs.foodTime}
+                      onChange={e => updateNotifPref({ foodTime: e.target.value })} />
+                  </label>
+                </div>
+              )}
+              <p className="settings-card-desc" style={{ marginTop: 10 }}>{t('st.notif_note')}</p>
+            </>
+          )}
         </div>
       </div>
 
@@ -305,29 +393,29 @@ export default function Settings() {
       <div ref={sectionRefs.data}>
         <div className="settings-section-header">
           <span className="settings-section-icon">💾</span>
-          <span className="settings-section-label">Data</span>
+          <span className="settings-section-label">{t('st.data')}</span>
         </div>
         <div className="card settings-card">
           <div className="settings-item">
             <div className="settings-item-info">
-              <div className="settings-item-label">Export Backup</div>
-              <div className="settings-item-sub">Download all data as a .json file</div>
+              <div className="settings-item-label">{t('st.export_label')}</div>
+              <div className="settings-item-sub">{t('st.export_sub')}</div>
             </div>
-            <button className="settings-btn" onClick={exportAllData}>Export</button>
+            <button className="settings-btn" onClick={exportAllData}>{t('st.export')}</button>
           </div>
           <div className="settings-divider" />
           <div className="settings-item">
             <div className="settings-item-info">
-              <div className="settings-item-label">Import Backup</div>
+              <div className="settings-item-label">{t('st.import_label')}</div>
               <div className="settings-item-sub">
-                {importStatus === 'success' ? '✅ Imported — reloading...' :
-                 importStatus === 'error'   ? '❌ Invalid or corrupt file' :
-                 'Restore from a previously exported .json file'}
+                {importStatus === 'success' ? t('st.import_success') :
+                 importStatus === 'error'   ? t('st.import_error') :
+                 t('st.import_sub')}
               </div>
             </div>
             <label className="settings-btn" role="button" tabIndex={0}
               onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') e.currentTarget.click() }}>
-              Import
+              {t('st.import')}
               <input type="file" accept=".json" onChange={handleImport} style={{ display: 'none' }} />
             </label>
           </div>

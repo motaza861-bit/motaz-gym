@@ -3,6 +3,7 @@ import { useStorage } from '../hooks/useStorage'
 import { useTargets } from '../hooks/useTargets'
 import { calcMacros } from '../utils/macroCalculator'
 import { DEFAULT_PROGRAM } from '../data/workoutProgram'
+import { useLanguage } from '../context/LanguageContext'
 import './Onboarding.css'
 
 const GOALS = [
@@ -31,6 +32,7 @@ const SPLIT_OPTIONS = [
   { value: 'ppl',        label: 'Push / Pull / Legs',  desc: 'Push, pull, legs repeated · 6 days/week' },
   { value: 'arnold',     label: 'Arnold Split',         desc: 'Chest+Back / Shoulders+Arms / Legs · 6 days/week' },
   { value: 'bro',        label: 'Bro Split',            desc: 'One muscle group per day · 5 days/week' },
+  { value: 'custom',     label: 'Custom',               desc: 'Describe your own split' },
 ]
 
 const EQUIPMENT_OPTIONS = [
@@ -40,6 +42,7 @@ const EQUIPMENT_OPTIONS = [
 ]
 
 export default function Onboarding({ onComplete }) {
+  const { t } = useLanguage()
   const [step, setStep] = useState(0)
   const [form, setForm] = useState({
     name: '',
@@ -51,10 +54,13 @@ export default function Onboarding({ onComplete }) {
     activityLevel: 'moderate',
     experience: 'intermediate',
     split: 'ppl',
+    customSplit: '',
     equipment: 'full',
   })
   const [error, setError] = useState(null)
   const [generatedData, setGeneratedData] = useState(null)
+  const [draftData, setDraftData] = useState(null)
+  const [editingSession, setEditingSession] = useState(null)
   const [calcedTargets, setCalcedTargets] = useState(null)
   const [generating, setGenerating] = useState(false)
 
@@ -63,6 +69,35 @@ export default function Onboarding({ onComplete }) {
   const [, setProfile] = useStorage('motaz_profile', {})
 
   const set = (key, val) => setForm(f => ({ ...f, [key]: val }))
+
+  function cycleDay(dayIdx) {
+    const keys = Object.keys(draftData.sessions)
+    const options = [...keys, 'rest']
+    const current = draftData.daySession?.[dayIdx] ?? 'rest'
+    const nextIdx = (options.indexOf(current) + 1) % options.length
+    setDraftData(d => ({ ...d, daySession: { ...d.daySession, [dayIdx]: options[nextIdx] } }))
+  }
+
+  function updateExercise(sessionKey, i, field, value) {
+    setDraftData(d => {
+      const exs = d.sessions[sessionKey].exercises.map((ex, idx) => idx === i ? { ...ex, [field]: value } : ex)
+      return { ...d, sessions: { ...d.sessions, [sessionKey]: { ...d.sessions[sessionKey], exercises: exs } } }
+    })
+  }
+
+  function deleteExercise(sessionKey, i) {
+    setDraftData(d => {
+      const exs = d.sessions[sessionKey].exercises.filter((_, idx) => idx !== i)
+      return { ...d, sessions: { ...d.sessions, [sessionKey]: { ...d.sessions[sessionKey], exercises: exs } } }
+    })
+  }
+
+  function addExercise(sessionKey) {
+    setDraftData(d => {
+      const exs = [...d.sessions[sessionKey].exercises, { name: '', sets: 3, reps: '8-12', rest: 90, muscles: '' }]
+      return { ...d, sessions: { ...d.sessions, [sessionKey]: { ...d.sessions[sessionKey], exercises: exs } } }
+    })
+  }
 
   async function generate() {
     if (generating) return
@@ -77,6 +112,7 @@ export default function Onboarding({ onComplete }) {
           goal: form.goal,
           experience: form.experience,
           split: form.split,
+          customSplit: form.customSplit,
           equipment: form.equipment,
           weight: parseFloat(form.weight) || null,
           age: parseInt(form.age) || null,
@@ -96,6 +132,8 @@ export default function Onboarding({ onComplete }) {
       })
 
       setGeneratedData(data)
+      setDraftData(JSON.parse(JSON.stringify(data)))
+      setEditingSession(null)
       setCalcedTargets(targets)
       setStep(8)
       setGenerating(false)
@@ -107,7 +145,7 @@ export default function Onboarding({ onComplete }) {
   }
 
   function confirm() {
-    setExercises({ sessions: generatedData.sessions, daySession: generatedData.daySession })
+    setExercises({ sessions: draftData.sessions, daySession: draftData.daySession })
     setTargets(calcedTargets)
     setProfile({
       name: form.name.trim(),
@@ -122,6 +160,7 @@ export default function Onboarding({ onComplete }) {
     setStep(9)
   }
 
+  const splitContinueOk = form.split !== 'custom' || form.customSplit.trim().length > 0
   const next = () => step === 6 ? generate() : setStep(s => s + 1)
   const back = () => setStep(s => s - 1)
 
@@ -141,27 +180,29 @@ export default function Onboarding({ onComplete }) {
       {step === 0 && (
         <div className="ob-step">
           <div className="ob-welcome-icon">💪</div>
-          <h1 className="ob-title">Welcome to<br/>IronMind</h1>
-          <p className="ob-subtitle">Answer a few questions and we'll build a workout program and nutrition targets specifically for you.</p>
+          <h1 className="ob-title">{t('ob.welcome_title').replace('\\n', '\n').split('\n').map((line, i) => (
+            <span key={i}>{line}{i === 0 ? <br /> : ''}</span>
+          ))}</h1>
+          <p className="ob-subtitle">{t('ob.welcome_sub')}</p>
           <div className="ob-field">
-            <label className="ob-label" htmlFor="ob-name">Your name</label>
+            <label className="ob-label" htmlFor="ob-name">{t('ob.your_name')}</label>
             <input
               id="ob-name"
               className="ob-input"
               type="text"
-              placeholder="Enter your name"
+              placeholder={t('ob.name_ph')}
               value={form.name}
               onChange={e => set('name', e.target.value)}
               autoComplete="given-name"
             />
           </div>
-          <button className="ob-btn-primary" onClick={next} disabled={!form.name.trim()}>Get Started</button>
+          <button className="ob-btn-primary" onClick={next} disabled={!form.name.trim()}>{t('ob.get_started')}</button>
         </div>
       )}
 
       {step === 1 && (
         <div className="ob-step">
-          <h2 className="ob-title">What's your goal?</h2>
+          <h2 className="ob-title">{t('ob.goal_title')}</h2>
           <div className="ob-cards">
             {GOALS.map(g => (
               <button key={g.value} className={`ob-card${form.goal === g.value ? ' selected' : ''}`} onClick={() => set('goal', g.value)}>
@@ -170,41 +211,41 @@ export default function Onboarding({ onComplete }) {
               </button>
             ))}
           </div>
-          <button className="ob-btn-primary" onClick={next}>Continue</button>
+          <button className="ob-btn-primary" onClick={next}>{t('ob.continue')}</button>
         </div>
       )}
 
       {step === 2 && (
         <div className="ob-step">
-          <h2 className="ob-title">About you</h2>
+          <h2 className="ob-title">{t('ob.stats_title')}</h2>
           <div className="ob-toggle">
-            {['male','female'].map(g => (
+            {[['male', t('calc.male')], ['female', t('calc.female')]].map(([g, label]) => (
               <button key={g} className={`ob-toggle-btn${form.gender === g ? ' active' : ''}`} onClick={() => set('gender', g)}>
-                {g.charAt(0).toUpperCase() + g.slice(1)}
+                {label}
               </button>
             ))}
           </div>
           <div className="ob-fields">
             <div className="ob-field">
-              <label className="ob-label">Age</label>
+              <label className="ob-label">{t('calc.age')}</label>
               <input className="ob-input" type="number" inputMode="numeric" placeholder="25" value={form.age} onChange={e => set('age', e.target.value)} />
             </div>
             <div className="ob-field">
-              <label className="ob-label">Weight (kg)</label>
+              <label className="ob-label">{t('calc.weight_kg')}</label>
               <input className="ob-input" type="number" inputMode="decimal" placeholder="75" value={form.weight} onChange={e => set('weight', e.target.value)} />
             </div>
             <div className="ob-field">
-              <label className="ob-label">Height (cm)</label>
+              <label className="ob-label">{t('calc.height_cm')}</label>
               <input className="ob-input" type="number" inputMode="decimal" placeholder="175" value={form.height} onChange={e => set('height', e.target.value)} />
             </div>
           </div>
-          <button className="ob-btn-primary" onClick={next} disabled={!form.age || !form.weight || !form.height}>Continue</button>
+          <button className="ob-btn-primary" onClick={next} disabled={!form.age || !form.weight || !form.height}>{t('ob.continue')}</button>
         </div>
       )}
 
       {step === 3 && (
         <div className="ob-step">
-          <h2 className="ob-title">Activity level</h2>
+          <h2 className="ob-title">{t('ob.activity_title')}</h2>
           <div className="ob-list">
             {ACTIVITY_LEVELS.map(a => (
               <button key={a.value} className={`ob-list-item${form.activityLevel === a.value ? ' selected' : ''}`} onClick={() => set('activityLevel', a.value)}>
@@ -213,13 +254,13 @@ export default function Onboarding({ onComplete }) {
               </button>
             ))}
           </div>
-          <button className="ob-btn-primary" onClick={next}>Continue</button>
+          <button className="ob-btn-primary" onClick={next}>{t('ob.continue')}</button>
         </div>
       )}
 
       {step === 4 && (
         <div className="ob-step">
-          <h2 className="ob-title">Experience level</h2>
+          <h2 className="ob-title">{t('ob.experience_title')}</h2>
           <div className="ob-list">
             {EXPERIENCE_LEVELS.map(e => (
               <button key={e.value} className={`ob-list-item${form.experience === e.value ? ' selected' : ''}`} onClick={() => set('experience', e.value)}>
@@ -228,13 +269,13 @@ export default function Onboarding({ onComplete }) {
               </button>
             ))}
           </div>
-          <button className="ob-btn-primary" onClick={next}>Continue</button>
+          <button className="ob-btn-primary" onClick={next}>{t('ob.continue')}</button>
         </div>
       )}
 
       {step === 5 && (
         <div className="ob-step">
-          <h2 className="ob-title">Training split</h2>
+          <h2 className="ob-title">{t('ob.split_title')}</h2>
           <div className="ob-list">
             {SPLIT_OPTIONS.map(s => (
               <button key={s.value} className={`ob-list-item${form.split === s.value ? ' selected' : ''}`} onClick={() => set('split', s.value)}>
@@ -243,13 +284,25 @@ export default function Onboarding({ onComplete }) {
               </button>
             ))}
           </div>
-          <button className="ob-btn-primary" onClick={next}>Continue</button>
+          {form.split === 'custom' && (
+            <div className="ob-field" style={{ marginTop: 12 }}>
+              <label className="ob-label">{t('ob.custom_split_label')}</label>
+              <textarea
+                className="ob-input ob-textarea"
+                placeholder={t('ob.custom_split_ph')}
+                value={form.customSplit}
+                rows={3}
+                onChange={e => set('customSplit', e.target.value)}
+              />
+            </div>
+          )}
+          <button className="ob-btn-primary" onClick={next} disabled={!splitContinueOk}>{t('ob.continue')}</button>
         </div>
       )}
 
       {step === 6 && (
         <div className="ob-step">
-          <h2 className="ob-title">What equipment do you have?</h2>
+          <h2 className="ob-title">{t('ob.equipment_title')}</h2>
           <div className="ob-cards">
             {EQUIPMENT_OPTIONS.map(e => (
               <button key={e.value} className={`ob-card${form.equipment === e.value ? ' selected' : ''}`} onClick={() => set('equipment', e.value)}>
@@ -260,7 +313,7 @@ export default function Onboarding({ onComplete }) {
           </div>
           {error && <div className="ob-error">{error}</div>}
           <button className="ob-btn-primary" onClick={next} disabled={generating}>
-            {generating ? 'Building…' : 'Build My Program'}
+            {generating ? t('ob.building') : t('ob.build')}
           </button>
         </div>
       )}
@@ -268,17 +321,32 @@ export default function Onboarding({ onComplete }) {
       {step === 7 && (
         <div className="ob-step ob-center">
           <div className="ob-spinner" />
-          <h2 className="ob-title">Building your program…</h2>
-          <p className="ob-subtitle">This takes about 10 seconds.</p>
+          <h2 className="ob-title">{t('ob.generating_title')}</h2>
+          <p className="ob-subtitle">{t('ob.generating_sub')}</p>
         </div>
       )}
 
-      {step === 8 && generatedData && (
+      {step === 8 && draftData && (
         <div className="ob-step ob-preview-step">
-          <h2 className="ob-title">Your Program</h2>
-          <p className="ob-subtitle">{Object.keys(generatedData.sessions).length} sessions · review and confirm</p>
+          <h2 className="ob-title">{t('ob.program_title')}</h2>
+          <p className="ob-subtitle">{t('ob.preview_sub', { n: Object.keys(draftData.sessions).length })}</p>
+
+          {draftData.daySession && (
+            <div className="ob-day-editor">
+              {['S','M','T','W','T','F','S'].map((label, i) => {
+                const val = draftData.daySession[i] ?? 'rest'
+                return (
+                  <button key={i} className={`ob-day-btn${val !== 'rest' ? ' ob-day-active' : ''}`} onClick={() => cycleDay(i)}>
+                    <span className="ob-day-label">{label}</span>
+                    <span className="ob-day-val">{val === 'rest' ? '—' : val}</span>
+                  </button>
+                )
+              })}
+            </div>
+          )}
+
           <div className="ob-program-preview">
-            {Object.entries(generatedData.sessions).map(([key, session]) => (
+            {Object.entries(draftData.sessions).map(([key, session]) => (
               <div key={key} className="ob-session-card">
                 <div className="ob-session-header">
                   <span className="ob-session-key">{key}</span>
@@ -286,21 +354,58 @@ export default function Onboarding({ onComplete }) {
                     <div className="ob-session-name">{session.name}</div>
                     <div className="ob-session-focus">{session.focus} · {session.muscles}</div>
                   </div>
+                  <button
+                    className={`ob-edit-toggle${editingSession === key ? ' ob-edit-toggle-active' : ''}`}
+                    onClick={() => setEditingSession(editingSession === key ? null : key)}
+                  >
+                    {editingSession === key ? t('ob.done_editing') : '✏️'}
+                  </button>
                 </div>
-                <div className="ob-exercise-list">
-                  {session.exercises.map((ex, i) => (
-                    <div key={i} className="ob-exercise">
-                      <span className="ob-exercise-name">{ex.name}</span>
-                      <span className="ob-exercise-meta">{ex.sets}×{ex.reps}</span>
-                    </div>
-                  ))}
-                </div>
+
+                {editingSession === key ? (
+                  <div className="ob-ex-edit-list">
+                    {session.exercises.map((ex, i) => (
+                      <div key={i} className="ob-ex-edit-row">
+                        <input
+                          className="ob-ex-name-input"
+                          value={ex.name}
+                          placeholder={t('ob.ex_name_ph')}
+                          onChange={e => updateExercise(key, i, 'name', e.target.value)}
+                        />
+                        <input
+                          className="ob-ex-sets-input"
+                          type="number"
+                          inputMode="numeric"
+                          value={ex.sets}
+                          onChange={e => updateExercise(key, i, 'sets', parseInt(e.target.value) || 1)}
+                        />
+                        <input
+                          className="ob-ex-reps-input"
+                          value={ex.reps}
+                          onChange={e => updateExercise(key, i, 'reps', e.target.value)}
+                        />
+                        <button className="ob-ex-del-btn" onClick={() => deleteExercise(key, i)}>✕</button>
+                      </div>
+                    ))}
+                    <button className="ob-add-ex-btn" onClick={() => addExercise(key)}>{t('ob.add_exercise')}</button>
+                  </div>
+                ) : (
+                  <div className="ob-exercise-list">
+                    {session.exercises.map((ex, i) => (
+                      <div key={i} className="ob-exercise">
+                        <span className="ob-exercise-name">{ex.name}</span>
+                        <span className="ob-exercise-meta">{ex.sets}×{ex.reps}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
           </div>
+
           <div className="ob-preview-actions">
-            <button className="ob-btn-outline" onClick={() => { setGenerating(false); setStep(6) }}>Try Again</button>
-            <button className="ob-btn-confirm" onClick={confirm}>Save Program →</button>
+            <button className="ob-btn-outline" onClick={() => { setGenerating(false); setStep(6) }}>{t('ob.try_again')}</button>
+            <button className="ob-btn-confirm" onClick={confirm}>{t('ob.save_program')}</button>
           </div>
         </div>
       )}
@@ -308,11 +413,15 @@ export default function Onboarding({ onComplete }) {
       {step === 9 && calcedTargets && (
         <div className="ob-step ob-center">
           <div className="ob-done-icon">✅</div>
-          <h2 className="ob-title">Hi {form.name.trim()},<br/>you're all set!</h2>
+          <h2 className="ob-title">
+            {t('ob.done_title', { name: form.name.trim() }).split('\n').map((line, i) => (
+              <span key={i}>{line}{i === 0 ? <br /> : ''}</span>
+            ))}
+          </h2>
           <div className="ob-summary">
             <div className="ob-summary-item">
-              <span className="ob-summary-val">{Object.keys(generatedData.sessions).length}</span>
-              <span className="ob-summary-key">sessions</span>
+              <span className="ob-summary-val">{Object.keys(draftData.sessions).length}</span>
+              <span className="ob-summary-key">{t('ob.sessions')}</span>
             </div>
             <div className="ob-summary-item">
               <span className="ob-summary-val">{calcedTargets.calories.toLocaleString('en').replace(/,/g, ' ')}</span>
@@ -323,7 +432,7 @@ export default function Onboarding({ onComplete }) {
               <span className="ob-summary-key">protein</span>
             </div>
           </div>
-          <button className="ob-btn-primary" onClick={onComplete}>Let's Go →</button>
+          <button className="ob-btn-primary" onClick={onComplete}>{t('ob.lets_go')}</button>
         </div>
       )}
     </div>

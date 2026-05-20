@@ -9,6 +9,8 @@ import Progress from './pages/Progress'
 import Schedule from './pages/Schedule'
 import Settings from './pages/Settings'
 import Onboarding from './pages/Onboarding'
+import FoodSearchPage from './pages/FoodSearchPage'
+import FoodScannerPage from './pages/FoodScannerPage'
 
 export default function App() {
   useTheme()
@@ -34,6 +36,9 @@ export default function App() {
         <Route path="/workout" element={<WorkoutLogger />} />
         <Route path="/nutrition" element={<Nutrition />} />
         <Route path="/progress" element={<Progress />} />
+        <Route path="/classes" element={<Navigate to="/workout" replace />} />
+        <Route path="/food-search" element={<FoodSearchPage />} />
+        <Route path="/food-scan" element={<FoodScannerPage />} />
         <Route path="/schedule" element={<Schedule />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />

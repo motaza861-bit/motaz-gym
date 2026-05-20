@@ -5,6 +5,7 @@ import { useSelectedDate } from '../context/DateContext'
 import { getTodaySession, getStreak, getWeekNumber, toLocalDateStr } from '../utils/dateHelpers'
 import { useMeals } from '../hooks/useMeals'
 import { useTargets } from '../hooks/useTargets'
+import { useLanguage } from '../context/LanguageContext'
 import WorkoutCard from '../components/WorkoutCard'
 import MacroRing from '../components/MacroRing'
 import PRAlert from '../components/PRAlert'
@@ -12,6 +13,7 @@ import DateStrip from '../components/DateStrip'
 import './Dashboard.css'
 
 export default function Dashboard() {
+  const { t, lang } = useLanguage()
   const navigate = useNavigate()
   const { selectedDate } = useSelectedDate()
   const [program] = useExercises()
@@ -34,11 +36,21 @@ export default function Dashboard() {
 
   const todayNutrition = nutritionLogs.find(l => l.date === selectedStr)
   const eatenMealIds = new Set(todayNutrition?.meals?.filter(m => m.eaten).map(m => m.id) ?? [])
+  const quickLogs = todayNutrition?.quickLogs ?? []
 
-  const eaten = meals.filter(m => eatenMealIds.has(m.id)).reduce(
+  const mealSum = meals.filter(m => eatenMealIds.has(m.id)).reduce(
     (acc, m) => ({ protein: acc.protein + m.protein, carbs: acc.carbs + m.carbs, fat: acc.fat + m.fat }),
     { protein: 0, carbs: 0, fat: 0 }
   )
+  const quickSum = quickLogs.reduce(
+    (acc, l) => ({ protein: acc.protein + (l.protein ?? 0), carbs: acc.carbs + (l.carbs ?? 0), fat: acc.fat + (l.fat ?? 0) }),
+    { protein: 0, carbs: 0, fat: 0 }
+  )
+  const eaten = {
+    protein: mealSum.protein + quickSum.protein,
+    carbs:   mealSum.carbs   + quickSum.carbs,
+    fat:     mealSum.fat     + quickSum.fat,
+  }
 
   const trainingDays = new Set(
     Object.entries(program.daySession)
@@ -52,7 +64,7 @@ export default function Dashboard() {
     }
     return 1
   })()
-  const nextTrainingLabel = daysUntilNext === 1 ? 'tomorrow' : `in ${daysUntilNext} days`
+  const nextTrainingLabel = daysUntilNext === 1 ? t('dash.tomorrow') : t('dash.in_days', { n: daysUntilNext })
 
   const latestPR = workoutLogs
     .flatMap(log => log.prs ?? [])
@@ -65,8 +77,8 @@ export default function Dashboard() {
     <div className="page dashboard">
       <div className="dash-header">
         <div>
-          <div className="dash-week">Week {weekNum} · {selectedDate.toLocaleDateString('en', { weekday: 'long' })}</div>
-          <div className="dash-greeting">Let's go, <span>{userName} 🔥</span></div>
+          <div className="dash-week">{t('dash.week')} {weekNum} · {selectedDate.toLocaleDateString(lang, { weekday: 'long' })}</div>
+          <div className="dash-greeting">{t('dash.greeting')} <span>{userName} 🔥</span></div>
         </div>
         <div className="dash-header-right">
           <button className="dash-settings-btn" onClick={() => navigate('/settings')} title="Settings">⚙️</button>
@@ -77,8 +89,8 @@ export default function Dashboard() {
       <DateStrip />
 
       <div className="dash-pills">
-        <div className="pill hot">🔥 {streak}-day streak</div>
-        <div className="pill">💪 {workoutLogs.filter(l => l.completed).length} sessions</div>
+        <div className="pill hot">🔥 {streak}-{t('dash.streak')}</div>
+        <div className="pill">💪 {workoutLogs.filter(l => l.completed).length} {t('dash.sessions')}</div>
       </div>
 
       {sessionKey !== 'rest' && session && (
@@ -92,12 +104,12 @@ export default function Dashboard() {
       {(!session || sessionKey === 'rest') && (
         <div className="card rest-card">
           <div className="rest-emoji">😴</div>
-          <div className="rest-title">Rest Day</div>
-          <div className="rest-sub">Recover well — you train again {nextTrainingLabel}</div>
+          <div className="rest-title">{t('dash.rest_title')}</div>
+          <div className="rest-sub">{t('dash.rest_sub')} {nextTrainingLabel}</div>
         </div>
       )}
 
-      <p className="section-title">Today's Nutrition</p>
+      <p className="section-title">{t('dash.todays_nutrition')}</p>
       <div className="card dash-macro-card">
         <MacroRing label="Protein" value={eaten.protein} target={targets.protein} color="var(--accent)" />
         <MacroRing label="Carbs"   value={eaten.carbs}   target={targets.carbs}   color="var(--orange)" />

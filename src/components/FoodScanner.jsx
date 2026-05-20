@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useLanguage } from '../context/LanguageContext'
 import './FoodScanner.css'
 
 function compressImage(file) {
@@ -21,6 +22,7 @@ function compressImage(file) {
 }
 
 export default function FoodScanner({ onAdd, onClose }) {
+  const { t } = useLanguage()
   const [state, setState] = useState('idle') // idle | loading | result | error
   const [preview, setPreview] = useState(null)
   const [edits, setEdits] = useState({ food: '', portionGrams: 0, calories: 0, protein: 0, carbs: 0, fat: 0 })
@@ -117,7 +119,7 @@ export default function FoodScanner({ onAdd, onClose }) {
     <div className="scanner-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
       <div className="scanner-modal">
         <div className="scanner-header">
-          <span className="scanner-title">Scan Food</span>
+          <span className="scanner-title">{t('fs.title')}</span>
           <button className="scanner-close" aria-label="Close" onClick={onClose}>✕</button>
         </div>
 
@@ -126,7 +128,7 @@ export default function FoodScanner({ onAdd, onClose }) {
         {state === 'idle' && (
           <button className="scanner-idle" onClick={() => inputRef.current?.click()}>
             <div className="scanner-camera-icon">📷</div>
-            <p className="scanner-hint">Tap to take a photo of your food</p>
+            <p className="scanner-hint">{t('fs.tap_photo')}</p>
           </button>
         )}
 
@@ -134,56 +136,58 @@ export default function FoodScanner({ onAdd, onClose }) {
           <div className="scanner-loading">
             {preview && <img src={preview} className="scanner-preview" alt="food" />}
             <div className="scanner-spinner" />
-            <p className="scanner-hint">Analysing…</p>
+            <p className="scanner-hint">{t('fs.analysing')}</p>
           </div>
         )}
 
         {state === 'result' && (
           <div className="scanner-result">
-            {preview && <img src={preview} className="scanner-preview" alt="food" />}
+            <div className="scanner-result-scroll">
+              {preview && <img src={preview} className="scanner-preview" alt="food" />}
 
-            <input
-              className="scanner-food-name-input"
-              value={edits.food}
-              onChange={e => setEdits(ed => ({ ...ed, food: e.target.value }))}
-              placeholder="Food name"
-            />
-
-            <div className="scanner-portion-row">
-              <span className="scanner-portion-label">Portion</span>
               <input
-                className="scanner-portion-input"
-                type="number"
-                inputMode="decimal"
-                value={edits.portionGrams || ''}
-                onChange={e => handlePortionChange(e.target.value)}
+                className="scanner-food-name-input"
+                value={edits.food}
+                onChange={e => setEdits(ed => ({ ...ed, food: e.target.value }))}
+                placeholder={t('fs.food_name_ph')}
               />
-              <span className="scanner-portion-unit">g</span>
-            </div>
 
-            <div className="scanner-macros">
-              {[
-                ['kcal', 'calories'],
-                ['protein', 'protein'],
-                ['carbs', 'carbs'],
-                ['fat', 'fat'],
-              ].map(([label, key]) => (
-                <div key={key} className="scanner-macro">
-                  <input
-                    className="scanner-macro-input"
-                    type="number"
-                    inputMode="decimal"
-                    value={edits[key] || ''}
-                    onChange={e => setEdits(ed => ({ ...ed, [key]: parseFloat(e.target.value) || 0 }))}
-                  />
-                  <span className="scanner-macro-key">{label}</span>
-                </div>
-              ))}
+              <div className="scanner-portion-row">
+                <span className="scanner-portion-label">{t('fs.portion')}</span>
+                <input
+                  className="scanner-portion-input"
+                  type="number"
+                  inputMode="decimal"
+                  value={edits.portionGrams || ''}
+                  onChange={e => handlePortionChange(e.target.value)}
+                />
+                <span className="scanner-portion-unit">g</span>
+              </div>
+
+              <div className="scanner-macros">
+                {[
+                  ['kcal', 'calories'],
+                  ['protein', 'protein'],
+                  ['carbs', 'carbs'],
+                  ['fat', 'fat'],
+                ].map(([label, key]) => (
+                  <div key={key} className="scanner-macro">
+                    <input
+                      className="scanner-macro-input"
+                      type="number"
+                      inputMode="decimal"
+                      value={edits[key] || ''}
+                      onChange={e => setEdits(ed => ({ ...ed, [key]: parseFloat(e.target.value) || 0 }))}
+                    />
+                    <span className="scanner-macro-key">{label}</span>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="scanner-actions">
-              <button className="scanner-btn-secondary" onClick={retry}>Try Again</button>
-              <button className="scanner-btn-primary" onClick={handleAdd}>Add to Log</button>
+              <button className="scanner-btn-secondary" onClick={retry}>{t('fs.try_again')}</button>
+              <button className="scanner-btn-primary" onClick={handleAdd}>{t('fs.add_to_log')}</button>
             </div>
           </div>
         )}
@@ -192,7 +196,7 @@ export default function FoodScanner({ onAdd, onClose }) {
           <div className="scanner-error">
             {preview && <img src={preview} className="scanner-preview" alt="food" />}
             <p className="scanner-error-msg">{errorMsg}</p>
-            <button className="scanner-btn-primary" onClick={retry}>Try Again</button>
+            <button className="scanner-btn-primary" onClick={retry}>{t('fs.try_again')}</button>
           </div>
         )}
       </div>

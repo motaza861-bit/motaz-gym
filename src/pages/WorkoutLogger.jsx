@@ -4,11 +4,13 @@ import { useSelectedDate } from '../context/DateContext'
 import { getTodaySession, toLocalDateStr } from '../utils/dateHelpers'
 import { detectPR } from '../utils/prDetector'
 import { useExercises } from '../hooks/useExercises'
+import { useLanguage } from '../context/LanguageContext'
 import ExerciseBlock from '../components/ExerciseBlock'
 import ExerciseEditForm from '../components/ExerciseEditForm'
 import RestTimer from '../components/RestTimer'
 import DateStrip from '../components/DateStrip'
 import './WorkoutLogger.css'
+import './Classes.css'
 
 function buildInitialSets(exercise) {
   return Array.from({ length: exercise.sets }, () => ({
@@ -27,13 +29,21 @@ function getPreviousSets(exerciseName, workoutLogs, excludeDate) {
   return null
 }
 
+function generateClsId() {
+  return `cls_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`
+}
+
 export default function WorkoutLogger() {
+  const { t } = useLanguage()
   const [program, setProgram] = useExercises()
   const SESSIONS = program.sessions
   const [workoutLogs, setWorkoutLogs] = useStorage('motaz_workout_logs', [])
+  const [classes, setClasses] = useStorage('motaz_classes', [])
   const { selectedDate } = useSelectedDate()
   const sessionKey = getTodaySession(selectedDate, program.daySession)
   const session = SESSIONS[sessionKey]
+
+  const [wlTab, setWlTab] = useState('workout')
 
   const [exerciseSets, setExerciseSets] = useState(() =>
     session ? Object.fromEntries(session.exercises.map(ex => [ex.name, buildInitialSets(ex)])) : {}
@@ -43,8 +53,15 @@ export default function WorkoutLogger() {
   const [swapInput, setSwapInput] = useState('')
   const [activeRest, setActiveRest] = useState(null)
   const [elapsed, setElapsed] = useState(0)
-  const [editingId, setEditingId] = useState(null) // null | exercise.name | 'new'
+  const [editingId, setEditingId] = useState(null)
+  const [tweakOpen, setTweakOpen] = useState(false)
+  const [tweakText, setTweakText] = useState('')
+  const [tweakStatus, setTweakStatus] = useState(null) // null | 'loading' | 'success' | 'error'
   const startedAt = useRef(Date.now())
+
+  // Classes state
+  const [clsAdding, setClsAdding] = useState(false)
+  const [clsForm, setClsForm] = useState({ name: '', duration: '', note: '' })
 
   useEffect(() => {
     const id = setInterval(() => setElapsed(s => s + 1), 1000)
@@ -60,24 +77,64 @@ export default function WorkoutLogger() {
     setSwapInput('')
     setElapsed(0)
     setEditingId(null)
+    setTweakOpen(false)
+    setTweakText('')
+    setTweakStatus(null)
     startedAt.current = Date.now()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionKey])
+
+  const dateStr = toLocalDateStr(selectedDate)
+  const dayClasses = classes.filter(c => c.date === dateStr)
+
+  function saveClass() {
+    if (!clsForm.name.trim()) return
+    setClasses(prev => [...prev, {
+      id: generateClsId(),
+      date: dateStr,
+      name: clsForm.name.trim(),
+      duration: clsForm.duration ? parseInt(clsForm.duration) : null,
+      note: clsForm.note.trim() || null,
+    }])
+    setClsForm({ name: '', duration: '', note: '' })
+    setClsAdding(false)
+  }
+
+  function deleteClass(id) {
+    if (!window.confirm(t('cl.delete_confirm'))) return
+    setClasses(prev => prev.filter(c => c.id !== id))
+  }
+
+  const tabRow = (
+    <div className="wl-tab-row">
+      <button
+        className={`wl-tab${wlTab === 'workout' ? ' wl-tab-active' : ''}`}
+        onClick={() => setWlTab('workout')}
+      >🏋️ {t('nav.workout')}</button>
+      <button
+        className={`wl-tab${wlTab === 'classes' ? ' wl-tab-active' : ''}`}
+        onClick={() => setWlTab('classes')}
+      >🧘 {t('nav.classes')}</button>
+    </div>
+  )
 
   if (!session || sessionKey === 'rest') {
     return (
       <div className="page workout-logger">
         <DateStrip />
-        <div className="logger-rest">
-          <div className="logger-rest-emoji">😴</div>
-          <h2>Rest Day</h2>
-          <p>No training today — recover and come back tomorrow.</p>
-        </div>
+        {tabRow}
+        {wlTab === 'workout' && (
+          <div className="logger-rest">
+            <div className="logger-rest-emoji">😴</div>
+            <h2>{t('wl.rest_title')}</h2>
+            <p>{t('wl.rest_sub')}</p>
+          </div>
+        )}
+        {wlTab === 'classes' && renderClasses()}
       </div>
     )
   }
 
-  const dateStr = toLocalDateStr(selectedDate)
   const mins = Math.floor(elapsed / 60)
   const secs = elapsed % 60
   const elapsedDisplay = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`
@@ -105,7 +162,7 @@ export default function WorkoutLogger() {
   }
 
   function handleFinish() {
-    if (!window.confirm('Finish workout and save? This will overwrite any previous log for this date.')) return
+    if (!window.confirm(t('wl.finish_confirm'))) return
 
     const exercises = session.exercises.map(ex => ({
       name: swappedExercises[ex.name] ?? ex.name,
@@ -130,8 +187,8 @@ export default function WorkoutLogger() {
     setWorkoutLogs(prev => [...prev.filter(l => l.date !== dateStr), log])
 
     alert(prs.length
-      ? `Workout saved! 🏆 ${prs.length} new PR${prs.length > 1 ? 's' : ''}!`
-      : 'Workout saved! Great work 💪'
+      ? t('wl.saved_prs', { n: prs.length, s: prs.length > 1 ? 's' : '' })
+      : t('wl.saved')
     )
   }
 
@@ -149,7 +206,6 @@ export default function WorkoutLogger() {
       }
     })
     if (editingId !== 'new' && editingId !== updated.name) {
-      // exercise was renamed — move the in-progress sets to the new key
       setExerciseSets(prev => {
         const { [editingId]: old, ...rest } = prev
         return { ...rest, [updated.name]: old ?? buildInitialSets(updated) }
@@ -161,7 +217,7 @@ export default function WorkoutLogger() {
   }
 
   function deleteExercise(name) {
-    if (!window.confirm(`Delete "${name}"?`)) return
+    if (!window.confirm(t('wl.delete_confirm', { name }))) return
     setProgram(prev => ({
       ...prev,
       sessions: {
@@ -175,82 +231,218 @@ export default function WorkoutLogger() {
     setExerciseSets(prev => { const { [name]: _, ...rest } = prev; return rest })
   }
 
+  async function applyTweak() {
+    if (!tweakText.trim() || tweakStatus === 'loading') return
+    setTweakStatus('loading')
+    try {
+      const res = await fetch('/api/edit-workout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ currentProgram: program, feedback: tweakText }),
+      })
+      const data = await res.json()
+      if (!res.ok || data.error) throw new Error(data.error || 'Failed')
+      setProgram({ sessions: data.sessions, daySession: data.daySession })
+      setTweakStatus('success')
+      setTweakText('')
+      setTimeout(() => setTweakStatus(null), 3000)
+    } catch {
+      setTweakStatus('error')
+      setTimeout(() => setTweakStatus(null), 3000)
+    }
+  }
+
+  function renderClasses() {
+    return (
+      <div className="wl-classes">
+        <h2 className="classes-title">{t('cl.title')}</h2>
+
+        {dayClasses.length === 0 && !clsAdding && (
+          <p className="classes-empty">{t('cl.empty')}</p>
+        )}
+
+        {dayClasses.map(cls => (
+          <div key={cls.id} className="class-card card">
+            <div className="class-card-main">
+              <div className="class-card-name">{cls.name}</div>
+              {(cls.duration || cls.note) && (
+                <div className="class-card-meta">
+                  {cls.duration && <span>{cls.duration} min</span>}
+                  {cls.duration && cls.note && <span className="class-meta-sep">·</span>}
+                  {cls.note && <span>{cls.note}</span>}
+                </div>
+              )}
+            </div>
+            <button className="class-delete-btn" onClick={() => deleteClass(cls.id)} aria-label="Delete">🗑</button>
+          </div>
+        ))}
+
+        {clsAdding && (
+          <div className="class-add-form card">
+            <div className="class-form-field">
+              <label className="class-form-label">{t('cl.class_name')}</label>
+              <input
+                className="class-form-input"
+                type="text"
+                placeholder={t('cl.class_name_ph')}
+                value={clsForm.name}
+                autoFocus
+                onChange={e => setClsForm(f => ({ ...f, name: e.target.value }))}
+                onKeyDown={e => e.key === 'Enter' && saveClass()}
+              />
+            </div>
+            <div className="class-form-field">
+              <label className="class-form-label">{t('cl.duration')}</label>
+              <input
+                className="class-form-input"
+                type="number"
+                inputMode="numeric"
+                placeholder="60"
+                value={clsForm.duration}
+                onChange={e => setClsForm(f => ({ ...f, duration: e.target.value }))}
+              />
+            </div>
+            <div className="class-form-field">
+              <label className="class-form-label">{t('cl.note')}</label>
+              <input
+                className="class-form-input"
+                type="text"
+                value={clsForm.note}
+                onChange={e => setClsForm(f => ({ ...f, note: e.target.value }))}
+              />
+            </div>
+            <div className="class-form-actions">
+              <button className="class-btn-cancel" onClick={() => { setClsAdding(false); setClsForm({ name: '', duration: '', note: '' }) }}>
+                {t('cl.cancel')}
+              </button>
+              <button className="class-btn-save" onClick={saveClass} disabled={!clsForm.name.trim()}>
+                {t('cl.save')}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {!clsAdding && (
+          <button className="class-add-btn" onClick={() => setClsAdding(true)}>
+            {t('cl.add')}
+          </button>
+        )}
+      </div>
+    )
+  }
+
   return (
     <div className="page workout-logger">
       <DateStrip />
-      <div className="logger-header">
-        <div>
-          <div className="logger-title">{session.name}</div>
-          <div className="logger-sub">{session.muscles}</div>
-        </div>
-        <div className="logger-timer">⏱ {elapsedDisplay}</div>
-      </div>
+      {tabRow}
 
-      {session.exercises.map(ex => {
-        const effectiveName = swappedExercises[ex.name] ?? ex.name
-        const previousSets = getPreviousSets(effectiveName, workoutLogs, dateStr)
+      {wlTab === 'workout' && (
+        <>
+          <div className="logger-header">
+            <div>
+              <div className="logger-title">{session.name}</div>
+              <div className="logger-sub">{session.muscles}</div>
+            </div>
+            <div className="logger-timer">⏱ {elapsedDisplay}</div>
+          </div>
 
-        return (
-          <div key={ex.name}>
-            {editingId === ex.name ? (
-              <ExerciseEditForm
-                exercise={ex}
-                onSave={saveExercise}
-                onCancel={() => setEditingId(null)}
-              />
-            ) : swapTarget === ex.name ? (
-              <div className="swap-overlay card">
-                <div className="swap-title">Replace exercise</div>
-                <input
-                  className="swap-input"
-                  type="text"
-                  value={swapInput}
-                  placeholder={effectiveName}
-                  autoFocus
-                  onChange={e => setSwapInput(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && confirmSwap(ex.name)}
-                />
-                <div className="swap-actions">
-                  <button className="swap-cancel" onClick={() => { setSwapTarget(null); setSwapInput('') }}>Cancel</button>
-                  <button className="swap-confirm" onClick={() => confirmSwap(ex.name)}>Swap</button>
-                </div>
+          {session.exercises.map(ex => {
+            const effectiveName = swappedExercises[ex.name] ?? ex.name
+            const previousSets = getPreviousSets(effectiveName, workoutLogs, dateStr)
+
+            return (
+              <div key={ex.name}>
+                {editingId === ex.name ? (
+                  <ExerciseEditForm
+                    exercise={ex}
+                    onSave={saveExercise}
+                    onCancel={() => setEditingId(null)}
+                  />
+                ) : swapTarget === ex.name ? (
+                  <div className="swap-overlay card">
+                    <div className="swap-title">{t('wl.replace')}</div>
+                    <input
+                      className="swap-input"
+                      type="text"
+                      value={swapInput}
+                      placeholder={effectiveName}
+                      autoFocus
+                      onChange={e => setSwapInput(e.target.value)}
+                      onKeyDown={e => e.key === 'Enter' && confirmSwap(ex.name)}
+                    />
+                    <div className="swap-actions">
+                      <button className="swap-cancel" onClick={() => { setSwapTarget(null); setSwapInput('') }}>{t('wl.cancel')}</button>
+                      <button className="swap-confirm" onClick={() => confirmSwap(ex.name)}>{t('wl.swap')}</button>
+                    </div>
+                  </div>
+                ) : (
+                  <ExerciseBlock
+                    exercise={{ ...ex, name: effectiveName }}
+                    sets={exerciseSets[ex.name] ?? []}
+                    onSetUpdate={(i, field, val) => handleSetUpdate(ex.name, i, field, val)}
+                    previousSets={previousSets}
+                    onSwap={swappedExercises[ex.name] ? undefined : () => { setSwapTarget(ex.name); setSwapInput(effectiveName) }}
+                    onEdit={() => setEditingId(ex.name)}
+                    onDelete={() => deleteExercise(ex.name)}
+                  />
+                )}
+                {activeRest?.exerciseName === ex.name && activeRest.seconds > 0 && (
+                  <RestTimer
+                    seconds={activeRest.seconds}
+                    onDone={() => setActiveRest(null)}
+                  />
+                )}
               </div>
-            ) : (
-              <ExerciseBlock
-                exercise={{ ...ex, name: effectiveName }}
-                sets={exerciseSets[ex.name] ?? []}
-                onSetUpdate={(i, field, val) => handleSetUpdate(ex.name, i, field, val)}
-                previousSets={previousSets}
-                onSwap={swappedExercises[ex.name] ? undefined : () => { setSwapTarget(ex.name); setSwapInput(effectiveName) }}
-                onEdit={() => setEditingId(ex.name)}
-                onDelete={() => deleteExercise(ex.name)}
-              />
-            )}
-            {activeRest?.exerciseName === ex.name && activeRest.seconds > 0 && (
-              <RestTimer
-                seconds={activeRest.seconds}
-                onDone={() => setActiveRest(null)}
-              />
+            )
+          })}
+
+          {editingId === 'new' && (
+            <ExerciseEditForm
+              exercise={null}
+              onSave={saveExercise}
+              onCancel={() => setEditingId(null)}
+            />
+          )}
+
+          {editingId === null && (
+            <button className="add-exercise-btn" onClick={() => setEditingId('new')}>{t('wl.add_exercise')}</button>
+          )}
+
+          {/* AI Tweak Panel */}
+          <div className="tweak-panel card">
+            <button className="tweak-header" onClick={() => setTweakOpen(o => !o)}>
+              <span className="tweak-title">🤖 {t('wl.tweak_title')}</span>
+              <span className="tweak-chevron">{tweakOpen ? '▲' : '▼'}</span>
+            </button>
+            {tweakOpen && (
+              <div className="tweak-body">
+                <textarea
+                  className="tweak-input"
+                  value={tweakText}
+                  placeholder={t('wl.tweak_placeholder')}
+                  rows={3}
+                  onChange={e => setTweakText(e.target.value)}
+                />
+                {tweakStatus === 'success' && <p className="tweak-msg tweak-success">{t('wl.tweak_success')}</p>}
+                {tweakStatus === 'error'   && <p className="tweak-msg tweak-error">{t('wl.tweak_error')}</p>}
+                <button
+                  className="settings-btn tweak-btn"
+                  onClick={applyTweak}
+                  disabled={!tweakText.trim() || tweakStatus === 'loading'}
+                >
+                  {tweakStatus === 'loading' ? t('wl.tweak_applying') : t('wl.tweak_btn')}
+                </button>
+              </div>
             )}
           </div>
-        )
-      })}
 
-      {editingId === 'new' && (
-        <ExerciseEditForm
-          exercise={null}
-          onSave={saveExercise}
-          onCancel={() => setEditingId(null)}
-        />
+          <button className="btn-primary" onClick={handleFinish}>
+            {t('wl.finish')}
+          </button>
+        </>
       )}
 
-      {editingId === null && (
-        <button className="add-exercise-btn" onClick={() => setEditingId('new')}>+ Add exercise</button>
-      )}
-
-      <button className="btn-primary" onClick={handleFinish}>
-        ✅ Finish Workout
-      </button>
+      {wlTab === 'classes' && renderClasses()}
     </div>
   )
 }

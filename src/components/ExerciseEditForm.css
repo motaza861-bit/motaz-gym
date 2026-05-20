@@ -89,3 +89,41 @@
 }
 
 .ex-edit-cancel:hover { border-color: var(--text-muted); }
+
+/* Muscle auto-detection */
+.ex-edit-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ex-muscle-spinner {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border: 1.5px solid var(--border-light);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: ex-spin 0.7s linear infinite;
+}
+
+@keyframes ex-spin {
+  to { transform: rotate(360deg); }
+}
+
+.ex-muscle-tag {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.ex-muscle-done  { color: var(--accent); background: rgba(76,175,80,0.12); }
+.ex-muscle-error { color: var(--text-muted); background: var(--bg); }
+
+.ex-input-loading {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

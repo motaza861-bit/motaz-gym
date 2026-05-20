@@ -1,10 +1,12 @@
 // src/components/ExerciseBlock.jsx
+import { useLanguage } from '../context/LanguageContext'
 import './ExerciseBlock.css'
 
 const SET_TYPES = ['S', 'W', 'T', 'D']
 const TYPE_COLORS = { S: 'var(--text-muted)', W: 'var(--orange)', T: 'var(--accent)', D: 'var(--yellow)' }
 
 export default function ExerciseBlock({ exercise, sets, onSetUpdate, previousSets, onSwap, onEdit, onDelete }) {
+  const { t } = useLanguage()
   const hasPrev = previousSets?.some(s => s.weight > 0)
 
   return (
@@ -12,7 +14,7 @@ export default function ExerciseBlock({ exercise, sets, onSetUpdate, previousSet
       <div className="ex-block-header">
         <div>
           <div className="ex-block-name">{exercise.name}</div>
-          <div className="ex-block-meta">{exercise.sets} sets · {exercise.reps} reps · {exercise.rest}s rest</div>
+          <div className="ex-block-meta">{t('ex.sets_reps_rest', { sets: exercise.sets, reps: exercise.reps, rest: exercise.rest })}</div>
         </div>
         <div className="ex-block-header-actions">
           {onSwap && (
@@ -27,10 +29,10 @@ export default function ExerciseBlock({ exercise, sets, onSetUpdate, previousSet
         </div>
       </div>
 
-      {hasPrev && <div className="ex-ghost-hint">Placeholders = last session</div>}
+      {hasPrev && <div className="ex-ghost-hint">{t('ex.prev_hint')}</div>}
 
       <div className="ex-set-header">
-        <span>Type</span><span>#</span><span>kg</span><span>Reps</span><span>✓</span>
+        <span>{t('ex.type')}</span><span>{t('ex.num')}</span><span>kg</span><span>Reps</span><span>✓</span>
       </div>
 
       {sets.map((set, i) => {
@@ -73,7 +75,7 @@ export default function ExerciseBlock({ exercise, sets, onSetUpdate, previousSet
             </div>
             {set.completed && (
               <div className="set-rpe-row">
-                <span className="set-rpe-label">RPE</span>
+                <span className="set-rpe-label">{t('ex.rpe')}</span>
                 <input
                   className="set-rpe-input"
                   type="number"
