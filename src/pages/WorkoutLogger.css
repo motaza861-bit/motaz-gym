@@ -47,6 +47,13 @@
   font-weight: 800;
   color: var(--accent);
   white-space: nowrap;
+  cursor: pointer;
+}
+.logger-timer--idle {
+  opacity: 0.55;
+}
+.logger-timer--running {
+  opacity: 1;
 }
 
 .logger-rest {

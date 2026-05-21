@@ -53,6 +53,7 @@ export default function WorkoutLogger() {
   const [swapInput, setSwapInput] = useState('')
   const [activeRest, setActiveRest] = useState(null)
   const [elapsed, setElapsed] = useState(0)
+  const [timerRunning, setTimerRunning] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [tweakOpen, setTweakOpen] = useState(false)
   const [tweakText, setTweakText] = useState('')
@@ -64,9 +65,10 @@ export default function WorkoutLogger() {
   const [clsForm, setClsForm] = useState({ name: '', duration: '', note: '' })
 
   useEffect(() => {
+    if (!timerRunning) return
     const id = setInterval(() => setElapsed(s => s + 1), 1000)
     return () => clearInterval(id)
-  }, [])
+  }, [timerRunning])
 
   useEffect(() => {
     setExerciseSets(
@@ -76,6 +78,7 @@ export default function WorkoutLogger() {
     setSwapTarget(null)
     setSwapInput('')
     setElapsed(0)
+    setTimerRunning(false)
     setEditingId(null)
     setTweakOpen(false)
     setTweakText('')
@@ -343,7 +346,13 @@ export default function WorkoutLogger() {
               <div className="logger-title">{session.name}</div>
               <div className="logger-sub">{session.muscles}</div>
             </div>
-            <div className="logger-timer">⏱ {elapsedDisplay}</div>
+            <button
+              className={`logger-timer${timerRunning ? ' logger-timer--running' : ' logger-timer--idle'}`}
+              onClick={() => setTimerRunning(r => !r)}
+              aria-label={timerRunning ? 'Pause timer' : 'Start timer'}
+            >
+              {timerRunning ? `⏱ ${elapsedDisplay}` : elapsed > 0 ? `▶ ${elapsedDisplay}` : '▶ Start'}
+            </button>
           </div>
 
           {session.exercises.map(ex => {
