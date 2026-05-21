@@ -269,9 +269,10 @@ export default function Progress() {
             <input className="bw-input" type="number" inputMode="decimal" placeholder="kg"
               value={ormWeight} onChange={e => setOrmWeight(e.target.value)} />
           </div>
-          <div className="orm-field">
+          <div className="orm-field orm-field--reps">
             <label className="orm-label">{t('pr.one_rm_reps')}</label>
             <input className="bw-input" type="number" inputMode="numeric" placeholder="reps"
+              min="1" max="30"
               value={ormReps} onChange={e => setOrmReps(e.target.value)} />
           </div>
         </div>
