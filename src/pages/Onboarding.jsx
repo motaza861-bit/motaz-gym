@@ -420,16 +420,20 @@ export default function Onboarding({ onComplete }) {
           </h2>
           <div className="ob-summary">
             <div className="ob-summary-item">
-              <span className="ob-summary-val">{Object.keys(draftData.sessions).length}</span>
-              <span className="ob-summary-key">{t('ob.sessions')}</span>
-            </div>
-            <div className="ob-summary-item">
-              <span className="ob-summary-val">{calcedTargets.calories.toLocaleString('en').replace(/,/g, ' ')}</span>
-              <span className="ob-summary-key">kcal/day</span>
+              <span className="ob-summary-val">{calcedTargets.calories}</span>
+              <span className="ob-summary-key">kcal / day</span>
             </div>
             <div className="ob-summary-item">
               <span className="ob-summary-val">{calcedTargets.protein}g</span>
               <span className="ob-summary-key">protein</span>
+            </div>
+            <div className="ob-summary-item">
+              <span className="ob-summary-val">{calcedTargets.carbs}g</span>
+              <span className="ob-summary-key">carbs</span>
+            </div>
+            <div className="ob-summary-item">
+              <span className="ob-summary-val">{calcedTargets.fat}g</span>
+              <span className="ob-summary-key">fat</span>
             </div>
           </div>
           <button className="ob-btn-primary" onClick={onComplete}>{t('ob.lets_go')}</button>

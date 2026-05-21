@@ -276,9 +276,11 @@
 }
 
 .ob-summary {
-  display: flex;
-  gap: 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
   margin: 8px 0 16px;
+  width: 100%;
 }
 
 .ob-summary-item {
