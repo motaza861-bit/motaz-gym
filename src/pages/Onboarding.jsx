@@ -116,6 +116,7 @@ export default function Onboarding({ onComplete }) {
           equipment: form.equipment,
           weight: parseFloat(form.weight) || null,
           age: parseInt(form.age) || null,
+          gender: form.gender,
         }),
       })
       if (!res.ok) throw new Error('Generation failed')

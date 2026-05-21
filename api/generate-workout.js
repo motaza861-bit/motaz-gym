@@ -20,6 +20,14 @@ const EXP_GUIDE = {
   advanced: '4-5 sets, higher intensity, include advanced techniques where appropriate',
 }
 
+// Exercises to never assign to beginners
+const BEGINNER_BLACKLIST = [
+  'Bulgarian Split Squat', 'Deficit Deadlift', 'Pause Squat', 'Snatch',
+  'Clean and Jerk', 'Power Clean', 'Zercher Squat', 'Front Squat',
+  'Overhead Squat', 'Pendlay Row', 'Meadows Row', 'Dead Bug',
+  'Dragon Flag', 'Nordic Curl', 'Sissy Squat',
+]
+
 const SPLIT_GUIDE = {
   fullbody: {
     name: 'Full Body',
@@ -72,7 +80,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  const { goal, experience, split = 'ppl', equipment, weight, age, customSplit } = req.body
+  const { goal, experience, split = 'ppl', equipment, weight, age, gender, customSplit } = req.body
 
   if (!goal || !experience || !equipment) {
     return res.status(400).json({ error: 'Missing required fields' })
@@ -87,12 +95,19 @@ export default async function handler(req, res) {
       }
     : (SPLIT_GUIDE[split] ?? SPLIT_GUIDE.ppl)
 
-  const prompt = `You are an expert strength and conditioning coach. Create a personalised ${splitGuide.name} workout program.
+  const beginnerNote = experience === 'beginner'
+    ? `NEVER use any of these exercises for beginners: ${BEGINNER_BLACKLIST.join(', ')}. Stick to standard barbell, dumbbell, and machine movements with straightforward technique.`
+    : ''
+
+  const systemMessage = `You are an expert strength and conditioning coach with 20 years of experience designing evidence-based training programs. You produce programs that are safe, effective, and appropriate for the user's exact profile. You always return valid JSON with no extra text, no markdown, no explanation — only the JSON object.`
+
+  const userPrompt = `Create a personalised ${splitGuide.name} workout program for this user.
 
 User profile:
 - Goal: ${goal} — ${GOAL_GUIDE[goal] ?? ''}
 - Experience: ${experience} — ${EXP_GUIDE[experience] ?? ''}
 - Equipment: ${equipment} — ${EQUIPMENT_GUIDE[equipment] ?? ''}
+- Gender: ${gender ?? 'unknown'}
 - Age: ${age ?? 'unknown'}, Weight: ${weight ?? 'unknown'}kg
 
 Training split — follow this EXACTLY:
@@ -100,7 +115,9 @@ ${splitGuide.structure}
 
 Week key: 0=Sunday, 1=Monday, 2=Tuesday, 3=Wednesday, 4=Thursday, 5=Friday, 6=Saturday.
 
-Return ONLY this JSON (no markdown fences, no explanation):
+${beginnerNote}
+
+Return ONLY this JSON structure:
 {
   "sessions": {
     "A": {
@@ -128,18 +145,20 @@ Rules:
     const completion = await groq.chat.completions.create({
       model: MODEL,
       max_tokens: 2048,
-      messages: [{ role: 'user', content: prompt }],
+      response_format: { type: 'json_object' },
+      messages: [
+        { role: 'system', content: systemMessage },
+        { role: 'user', content: userPrompt },
+      ],
     })
 
     const raw = completion.choices[0].message.content.trim()
-    const jsonStr = raw.replace(/^```json?\n?/, '').replace(/\n?```$/, '')
-    const data = JSON.parse(jsonStr)
+    const data = JSON.parse(raw)
 
     if (!data.sessions || !data.daySession) {
       throw new Error('Invalid response structure')
     }
 
-    // Enforce the correct daySession for preset splits; trust AI for custom
     if (splitGuide.daySession) {
       data.daySession = splitGuide.daySession
     }
