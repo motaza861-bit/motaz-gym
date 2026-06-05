@@ -1,28 +1,8 @@
-// src/hooks/useStorage.js
-import { useState, useCallback } from 'react'
+import { useSyncedStorage } from './useSyncedStorage'
 
-export function useStorage(key, defaultValue) {
-  const [value, setValueState] = useState(() => {
-    try {
-      const stored = localStorage.getItem(key)
-      return stored !== null ? JSON.parse(stored) : defaultValue
-    } catch {
-      return defaultValue
-    }
-  })
+export const useStorage = useSyncedStorage
 
-  const setValue = useCallback((update) => {
-    setValueState(prev => {
-      const next = typeof update === 'function' ? update(prev) : update
-      try { localStorage.setItem(key, JSON.stringify(next)) } catch {}
-      return next
-    })
-  }, [key])
-
-  return [value, setValue]
-}
-
-const DATA_KEYS = ['motaz_workout_logs', 'motaz_nutrition_logs', 'motaz_body_weight_logs', 'motaz_meals', 'motaz_targets', 'motaz_profile', 'motaz_exercises', 'motaz_custom_foods']
+const DATA_KEYS = ['workout_logs', 'nutrition_logs', 'body_weight_logs', 'meals', 'targets', 'profile', 'exercises', 'custom_foods']
 
 export function exportAllData() {
   const snapshot = {}
@@ -36,7 +16,7 @@ export function exportAllData() {
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
-  a.download = `motaz-gym-backup-${new Date().toISOString().split('T')[0]}.json`
+  a.download = `ironmind-backup-${new Date().toISOString().split('T')[0]}.json`
   document.body.appendChild(a)
   a.click()
   document.body.removeChild(a)

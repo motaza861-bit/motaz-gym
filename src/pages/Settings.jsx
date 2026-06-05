@@ -31,9 +31,9 @@ export default function Settings() {
   const timerRef = useRef(null)
   const [targets, setTargets] = useTargets()
   const [targetDraft, setTargetDraft] = useState(() => ({ ...targets }))
-  const [profile, setProfile] = useStorage('motaz_profile', DEFAULT_PROFILE)
+  const [profile, setProfile] = useStorage('profile', DEFAULT_PROFILE)
   const [calcResult, setCalcResult] = useState(null)
-  const [bodyWeightLogs] = useStorage('motaz_body_weight_logs', [])
+  const [bodyWeightLogs] = useStorage('body_weight_logs', [])
 
   const [notifPrefs, setNotifPrefs] = useStorage('motaz_notifications', { enabled: false, workoutTime: '07:00', foodTime: '20:00' })
   const [notifStatus, setNotifStatus] = useState(() => {

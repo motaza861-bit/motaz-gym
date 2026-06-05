@@ -64,9 +64,9 @@ export default function Onboarding({ onComplete }) {
   const [calcedTargets, setCalcedTargets] = useState(null)
   const [generating, setGenerating] = useState(false)
 
-  const [, setExercises] = useStorage('motaz_exercises', DEFAULT_PROGRAM)
+  const [, setExercises] = useStorage('exercises', DEFAULT_PROGRAM)
   const [, setTargets] = useTargets()
-  const [, setProfile] = useStorage('motaz_profile', {})
+  const [, setProfile] = useStorage('profile', {})
 
   const set = (key, val) => setForm(f => ({ ...f, [key]: val }))
 

@@ -37,7 +37,7 @@ export default function WorkoutLogger() {
   const { t } = useLanguage()
   const [program, setProgram] = useExercises()
   const SESSIONS = program.sessions
-  const [workoutLogs, setWorkoutLogs] = useStorage('motaz_workout_logs', [])
+  const [workoutLogs, setWorkoutLogs] = useStorage('workout_logs', [])
   const [classes, setClasses] = useStorage('motaz_classes', [])
   const { selectedDate } = useSelectedDate()
   const sessionKey = getTodaySession(selectedDate, program.daySession)

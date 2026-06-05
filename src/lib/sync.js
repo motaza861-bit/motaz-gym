@@ -75,11 +75,20 @@ export async function pullAll(keys) {
 
 const LEGACY_PREFIX = 'motaz_'
 
+// Only the data keys migrate. Preferences (lang/theme/notifications/classes/onboarded)
+// stay device-local — they're not part of the cloud-synced data model.
+const MIGRATABLE_KEYS = new Set([
+  'workout_logs', 'nutrition_logs', 'body_weight_logs',
+  'meals', 'targets', 'profile', 'exercises', 'custom_foods',
+])
+
 export function findLocalLegacyKeys() {
   const out = []
   for (let i = 0; i < localStorage.length; i++) {
     const k = localStorage.key(i)
-    if (k && k.startsWith(LEGACY_PREFIX)) out.push(k)
+    if (!k || !k.startsWith(LEGACY_PREFIX)) continue
+    const newKey = k.slice(LEGACY_PREFIX.length)
+    if (MIGRATABLE_KEYS.has(newKey)) out.push(k)
   }
   return out
 }

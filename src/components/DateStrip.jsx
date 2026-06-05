@@ -22,7 +22,7 @@ const DAYS = buildDays()
 
 export default function DateStrip() {
   const { selectedDate, setSelectedDate } = useSelectedDate()
-  const [workoutLogs] = useStorage('motaz_workout_logs', [])
+  const [workoutLogs] = useStorage('workout_logs', [])
   const scrollRef = useRef(null)
 
   const completedDates = new Set(workoutLogs.filter(l => l.completed).map(l => l.date))

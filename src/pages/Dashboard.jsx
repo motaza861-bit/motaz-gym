@@ -17,9 +17,9 @@ export default function Dashboard() {
   const navigate = useNavigate()
   const { selectedDate } = useSelectedDate()
   const [program] = useExercises()
-  const [workoutLogs] = useStorage('motaz_workout_logs', [])
-  const [nutritionLogs] = useStorage('motaz_nutrition_logs', [])
-  const [profile] = useStorage('motaz_profile', {})
+  const [workoutLogs] = useStorage('workout_logs', [])
+  const [nutritionLogs] = useStorage('nutrition_logs', [])
+  const [profile] = useStorage('profile', {})
   const [meals] = useMeals()
   const [targets] = useTargets()
 

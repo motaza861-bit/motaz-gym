@@ -21,7 +21,7 @@ export default function Nutrition() {
   const navigate = useNavigate()
   const location = useLocation()
   const { selectedDate } = useSelectedDate()
-  const [nutritionLogs, setNutritionLogs] = useStorage('motaz_nutrition_logs', [])
+  const [nutritionLogs, setNutritionLogs] = useStorage('nutrition_logs', [])
   const [meals, setMeals] = useMeals()
   const [targets] = useTargets()
   const [editingId, setEditingId] = useState(null)
