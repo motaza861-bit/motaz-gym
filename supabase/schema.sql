@@ -57,3 +57,17 @@ create policy "users update own data"
 
 create policy "users delete own data"
   on public.user_data for delete using (auth.uid() = user_id);
+
+-- Server-side account deletion: deletes from auth.users, cascade removes profiles + user_data.
+create or replace function public.delete_my_account()
+returns void
+language plpgsql
+security definer
+as $$
+begin
+  delete from auth.users where id = auth.uid();
+end;
+$$;
+
+revoke all on function public.delete_my_account from public;
+grant execute on function public.delete_my_account to authenticated;

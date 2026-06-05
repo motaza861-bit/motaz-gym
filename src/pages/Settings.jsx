@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { exportAllData, importAllData } from '../hooks/useStorage'
 import { useStorage } from '../hooks/useStorage'
+import { supabase } from '../lib/supabase'
 import { useTargets } from '../hooks/useTargets'
 import { calcMacros } from '../utils/macroCalculator'
 import { applyTheme, readTheme, saveTheme, ACCENT_PRESETS, BG_PRESETS } from '../hooks/useTheme'
@@ -25,6 +27,7 @@ const GOAL_OPTIONS = [
 const DEFAULT_PROFILE = { weight: '', height: '', age: '', gender: 'male', activityLevel: 'moderate', goal: 'recomp' }
 
 export default function Settings() {
+  const navigate = useNavigate()
   const { t, lang, setLang } = useLanguage()
   const [theme, setThemeState] = useState(() => readTheme())
   const [importStatus, setImportStatus] = useState(null)
@@ -427,8 +430,42 @@ export default function Settings() {
         <div className="settings-about">
           <div className="settings-about-name">IronMind</div>
           <div className="settings-about-sub">AI-powered workout & nutrition tracker</div>
-          <div className="settings-about-sub">React + Vite · No backend · Local storage only</div>
+          <div className="settings-about-sub">React + Vite · Supabase · Synced across devices</div>
         </div>
+      </div>
+
+      {/* Account */}
+      <div className="settings-section danger-zone">
+        <h3>Account</h3>
+        <button
+          className="settings-btn"
+          onClick={async () => {
+            await supabase.auth.signOut()
+            localStorage.clear()
+            navigate('/login', { replace: true })
+          }}
+        >
+          Log out
+        </button>
+        <button
+          className="settings-btn danger"
+          onClick={async () => {
+            const { data } = await supabase.auth.getUser()
+            const email = data?.user?.email ?? ''
+            const confirm1 = window.prompt(`Type your email (${email}) to permanently delete your account and all data:`)
+            if (!confirm1 || confirm1.trim().toLowerCase() !== email.toLowerCase()) {
+              alert('Email did not match. Cancelled.')
+              return
+            }
+            const { error } = await supabase.rpc('delete_my_account')
+            if (error) { alert('Failed: ' + error.message); return }
+            await supabase.auth.signOut()
+            localStorage.clear()
+            navigate('/signup', { replace: true })
+          }}
+        >
+          Delete my account
+        </button>
       </div>
     </div>
   )
