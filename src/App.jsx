@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { useTheme } from './hooks/useTheme'
 import AuthGuard from './components/AuthGuard'
+import InstallPrompt from './components/InstallPrompt'
 import BottomNav from './components/BottomNav'
 import Dashboard from './pages/Dashboard'
 import WorkoutLogger from './pages/WorkoutLogger'
@@ -48,6 +49,7 @@ export default function App() {
           <Route path="/onboarding" element={<Onboarding onComplete={() => window.location.assign('/dashboard')} />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
+        <InstallPrompt />
       </AuthGuard>
     </BrowserRouter>
   )
