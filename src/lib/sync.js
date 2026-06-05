@@ -71,6 +71,39 @@ export async function pullAll(keys) {
   }
 }
 
+// --- First-login migration ---
+
+const LEGACY_PREFIX = 'motaz_'
+
+export function findLocalLegacyKeys() {
+  const out = []
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i)
+    if (k && k.startsWith(LEGACY_PREFIX)) out.push(k)
+  }
+  return out
+}
+
+export async function migrateLegacyToCloud() {
+  const userId = await getUserId()
+  if (!userId) return
+  const legacy = findLocalLegacyKeys()
+  for (const legacyKey of legacy) {
+    const newKey = legacyKey.slice(LEGACY_PREFIX.length)
+    let value
+    try { value = JSON.parse(localStorage.getItem(legacyKey)) } catch { continue }
+    const err = await upsertOne(userId, newKey, value)
+    if (!err) {
+      localStorage.setItem(newKey, JSON.stringify(value))
+      localStorage.removeItem(legacyKey)
+    }
+  }
+}
+
+export function discardLegacy() {
+  for (const k of findLocalLegacyKeys()) localStorage.removeItem(k)
+}
+
 // Browser hooks — flush on online + focus.
 if (typeof window !== 'undefined') {
   window.addEventListener('online', () => { flushQueue() })
