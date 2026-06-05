@@ -1,0 +1,35 @@
+.auth-loading {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.migration-modal-bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: grid;
+  place-items: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.migration-modal {
+  background: #121821;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 24px;
+  max-width: 420px;
+  width: 100%;
+}
+
+.migration-modal h2 { margin: 0 0 8px; font-size: 20px; }
+.migration-modal p { opacity: 0.85; margin: 0 0 18px; font-size: 14px; line-height: 1.5; }
+.migration-actions { display: flex; gap: 10px; }
+.migration-actions button {
+  flex: 1; padding: 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);
+  background: transparent; color: inherit; cursor: pointer; font-size: 14px; font-weight: 600;
+}
+.migration-actions .primary { background: var(--accent, #5ee2c4); color: #0a0a0a; border-color: transparent; }
