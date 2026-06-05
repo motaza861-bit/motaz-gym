@@ -1,6 +1,6 @@
-import { useState } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { useTheme } from './hooks/useTheme'
+import AuthGuard from './components/AuthGuard'
 import BottomNav from './components/BottomNav'
 import Dashboard from './pages/Dashboard'
 import WorkoutLogger from './pages/WorkoutLogger'
@@ -11,39 +11,44 @@ import Settings from './pages/Settings'
 import Onboarding from './pages/Onboarding'
 import FoodSearchPage from './pages/FoodSearchPage'
 import FoodScannerPage from './pages/FoodScannerPage'
+import Login from './pages/Login'
+import Signup from './pages/Signup'
+import ForgotPassword from './pages/ForgotPassword'
+import ResetPassword from './pages/ResetPassword'
+import VerifyEmail from './pages/VerifyEmail'
+import Privacy from './pages/Privacy'
+import Terms from './pages/Terms'
 
 export default function App() {
   useTheme()
-  const [onboarded, setOnboarded] = useState(() => !!localStorage.getItem('motaz_onboarded'))
-
-  if (!onboarded) {
-    return (
-      <>
-        <div className="bg-orb bg-orb-tr" />
-        <div className="bg-orb bg-orb-bl" />
-        <Onboarding onComplete={() => setOnboarded(true)} />
-      </>
-    )
-  }
-
   return (
     <BrowserRouter>
       <div className="bg-orb bg-orb-tr" />
       <div className="bg-orb bg-orb-bl" />
-      <Routes>
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/workout" element={<WorkoutLogger />} />
-        <Route path="/nutrition" element={<Nutrition />} />
-        <Route path="/progress" element={<Progress />} />
-        <Route path="/classes" element={<Navigate to="/workout" replace />} />
-        <Route path="/food-search" element={<FoodSearchPage />} />
-        <Route path="/food-scan" element={<FoodScannerPage />} />
-        <Route path="/schedule" element={<Schedule />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
-      </Routes>
-      <BottomNav />
+      <AuthGuard>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
+
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/dashboard" element={<><Dashboard /><BottomNav /></>} />
+          <Route path="/workout" element={<><WorkoutLogger /><BottomNav /></>} />
+          <Route path="/nutrition" element={<><Nutrition /><BottomNav /></>} />
+          <Route path="/progress" element={<><Progress /><BottomNav /></>} />
+          <Route path="/classes" element={<Navigate to="/workout" replace />} />
+          <Route path="/food-search" element={<><FoodSearchPage /><BottomNav /></>} />
+          <Route path="/food-scan" element={<><FoodScannerPage /><BottomNav /></>} />
+          <Route path="/schedule" element={<><Schedule /><BottomNav /></>} />
+          <Route path="/settings" element={<><Settings /><BottomNav /></>} />
+          <Route path="/onboarding" element={<Onboarding onComplete={() => window.location.assign('/dashboard')} />} />
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
+      </AuthGuard>
     </BrowserRouter>
   )
 }
