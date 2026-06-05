@@ -10,7 +10,7 @@ const SYNC_KEYS = [
 ]
 
 const PUBLIC_PATHS = new Set([
-  '/login', '/signup', '/forgot-password', '/reset-password', '/privacy', '/terms',
+  '/login', '/signup', '/forgot-password', '/reset-password', '/verify-email', '/privacy', '/terms',
 ])
 
 export default function AuthGuard({ children }) {

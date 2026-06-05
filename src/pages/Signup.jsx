@@ -25,7 +25,7 @@ export default function Signup() {
       setError(error.message)
       return
     }
-    navigate('/verify-email')
+    navigate('/verify-email', { state: { email } })
   }
 
   return (
