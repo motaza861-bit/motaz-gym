@@ -26,5 +26,6 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: './src/test-setup.js',
+    exclude: ['node_modules', 'dist', '.git', '.idea', '.cache', '.claude/**', '.worktrees/**'],
   },
 })
