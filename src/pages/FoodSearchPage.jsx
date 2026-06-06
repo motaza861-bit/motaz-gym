@@ -24,7 +24,7 @@ export default function FoodSearchPage() {
   const { t } = useLanguage()
   const navigate = useNavigate()
 
-  const [customFoods, setCustomFoods] = useStorage('motaz_custom_foods', [])
+  const [customFoods, setCustomFoods] = useStorage('custom_foods', [])
 
   const [query, setQuery] = useState('')
   const [customResults, setCustomResults] = useState([])

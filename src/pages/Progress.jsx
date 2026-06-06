@@ -56,8 +56,8 @@ function HistoryRow({ log }) {
 
 export default function Progress() {
   const { t } = useLanguage()
-  const [workoutLogs] = useStorage('motaz_workout_logs', [])
-  const [bodyWeightLogs, setBodyWeightLogs] = useStorage('motaz_body_weight_logs', [])
+  const [workoutLogs] = useStorage('workout_logs', [])
+  const [bodyWeightLogs, setBodyWeightLogs] = useStorage('body_weight_logs', [])
   const [newWeight, setNewWeight] = useState('')
   const [chartTab, setChartTab] = useState('strength')
   const [ormWeight, setOrmWeight] = useState('')
