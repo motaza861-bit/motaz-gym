@@ -1,0 +1,84 @@
+.barcode-scanner {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+}
+
+.bs-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  color: white;
+  background: rgba(0,0,0,0.5);
+  z-index: 1;
+}
+
+.bs-close, .bs-switch {
+  background: rgba(255,255,255,0.1);
+  color: white;
+  border: 0;
+  border-radius: 8px;
+  font-size: 18px;
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+}
+
+.bs-video-wrap {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bs-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.bs-crosshair {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.bs-crosshair-box {
+  width: 70%;
+  max-width: 320px;
+  aspect-ratio: 2 / 1;
+  border: 2px solid rgba(94, 226, 196, 0.9);
+  border-radius: 12px;
+  box-shadow: 0 0 0 9999px rgba(0,0,0,0.4);
+}
+
+.bs-hint {
+  position: absolute;
+  bottom: 32px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: white;
+  font-size: 14px;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.bs-error {
+  color: #ff8b8b;
+  background: rgba(255, 80, 80, 0.1);
+  border: 1px solid rgba(255, 80, 80, 0.3);
+  padding: 12px;
+  border-radius: 10px;
+  margin: 16px;
+  font-size: 14px;
+}
