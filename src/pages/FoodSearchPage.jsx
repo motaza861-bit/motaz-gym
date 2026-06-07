@@ -43,6 +43,9 @@ export default function FoodSearchPage() {
   const [scannerOpen, setScannerOpen] = useState(false)
   const [scanError, setScanError] = useState('')
 
+  const [aiLoading, setAiLoading] = useState(false)
+  const [aiError, setAiError] = useState('')
+
   const inputRef = useRef(null)
   const debounceRef = useRef(null)
 
@@ -163,6 +166,30 @@ export default function FoodSearchPage() {
   }
 
   // ── Food add helpers ──────────────────────────────────────────────────────
+
+  async function estimateWithAI() {
+    const q = query.trim()
+    if (!q) return
+    setAiLoading(true)
+    setAiError('')
+    try {
+      const res = await fetch('/api/estimate-food', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: q }),
+      })
+      const data = await res.json()
+      if (res.ok && !data.error) {
+        selectFood(data)
+        return
+      }
+      setAiError(data.error || 'Could not estimate. Try a different name.')
+    } catch {
+      setAiError('Could not reach the server.')
+    } finally {
+      setAiLoading(false)
+    }
+  }
 
   async function onBarcodeDetect(code) {
     setScannerOpen(false)
@@ -411,6 +438,15 @@ export default function FoodSearchPage() {
               </div>
             )}
           </div>
+
+          <button
+            className="fpage-ai-btn"
+            onClick={estimateWithAI}
+            disabled={!query.trim() || aiLoading}
+          >
+            {aiLoading ? 'Estimating…' : '✨ Can\'t find it? Estimate with AI'}
+          </button>
+          {aiError && <div className="fpage-scan-error">{aiError}</div>}
         </>
       ) : (
         <div className="fsearch-portion-scroll">
@@ -421,6 +457,12 @@ export default function FoodSearchPage() {
               {selected.brand && <div className="fsearch-portion-brand">{selected.brand}</div>}
             </div>
           </div>
+
+          {selected?._aiEstimate && (
+            <div className="fpage-ai-badge">
+              ✨ AI estimate — verify before saving. All fields are editable.
+            </div>
+          )}
 
           <div className="fsearch-portion-label">{t('nu.portion_g')}</div>
           <div className="fsearch-portion-row">

@@ -319,3 +319,28 @@
   color: #ff8b8b;
   font-size: 13px;
 }
+
+.fpage-ai-btn {
+  display: block;
+  width: calc(100% - 24px);
+  margin: 16px 12px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 0;
+  background: var(--accent, #5ee2c4);
+  color: #0a0a0a;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.fpage-ai-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.fpage-ai-badge {
+  background: rgba(255, 204, 0, 0.1);
+  border: 1px solid rgba(255, 204, 0, 0.4);
+  color: #ffd34a;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  margin: 12px 0;
+}
