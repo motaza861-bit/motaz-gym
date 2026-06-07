@@ -2,7 +2,7 @@ import { useSyncedStorage } from './useSyncedStorage'
 
 export const useStorage = useSyncedStorage
 
-const DATA_KEYS = ['workout_logs', 'nutrition_logs', 'body_weight_logs', 'meals', 'targets', 'profile', 'exercises', 'custom_foods']
+const DATA_KEYS = ['workout_logs', 'nutrition_logs', 'body_weight_logs', 'meals', 'targets', 'profile', 'exercises', 'custom_foods', 'big_three_logs']
 
 export function exportAllData() {
   const snapshot = {}

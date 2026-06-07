@@ -23,9 +23,20 @@ const DAYS = buildDays()
 export default function DateStrip() {
   const { selectedDate, setSelectedDate } = useSelectedDate()
   const [workoutLogs] = useStorage('workout_logs', [])
+  const [nutritionLogs] = useStorage('nutrition_logs', [])
   const scrollRef = useRef(null)
 
-  const completedDates = new Set(workoutLogs.filter(l => l.completed).map(l => l.date))
+  const workoutDates = new Set(workoutLogs.filter(l => l.completed).map(l => l.date))
+  const nutritionDates = new Set(
+    nutritionLogs
+      .filter(l =>
+        (l.meals?.some(m => m.eaten)) ||
+        ((l.quickLogs?.length ?? 0) > 0) ||
+        ((l.calorieBump ?? 0) !== 0)
+      )
+      .map(l => l.date)
+  )
+
   const todayStr = toLocalDateStr(new Date())
   const selectedStr = toLocalDateStr(selectedDate)
 
@@ -41,7 +52,7 @@ export default function DateStrip() {
         const str = toLocalDateStr(day)
         const isSelected = str === selectedStr
         const isToday = str === todayStr
-        const hasLog = completedDates.has(str)
+        const hasLog = workoutDates.has(str) || nutritionDates.has(str)
         return (
           <button
             key={str}

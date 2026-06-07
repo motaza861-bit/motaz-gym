@@ -36,6 +36,7 @@ export default function Nutrition() {
     setNutritionLogs(prev => {
       const existing = prev.find(l => l.date === dateStr)
       const base = existing ?? { date: dateStr, meals: [], quickLogs: [], calorieBump: 0 }
+      if ((base.quickLogs ?? []).some(q => q.id === entry.id)) return prev
       const updated = { ...base, quickLogs: [...(base.quickLogs ?? []), entry] }
       return existing ? prev.map(l => l.date === dateStr ? updated : l) : [...prev, updated]
     })

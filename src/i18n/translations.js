@@ -186,16 +186,6 @@ export const translations = {
     'st.import_error': '❌ Invalid or corrupt file',
     'st.language': 'Language',
     'st.language_sub': 'App language',
-    'st.notifications': 'Notifications',
-    'st.notif_sub': 'Workout & food reminders',
-    'st.notif_enable': '🔔 Enable Reminders',
-    'st.notif_enabled': '✓ Reminders On — tap to disable',
-    'st.notif_workout': 'Workout reminder',
-    'st.notif_food': 'Log food reminder',
-    'st.notif_denied': 'Notifications are blocked — enable them in your browser settings.',
-    'st.notif_unsupported': 'Notifications are not supported in this browser.',
-    'st.notif_note': 'Reminders fire while the app is open in the browser.',
-
     // Calc
     'calc.weight_kg': 'Weight (kg)',
     'calc.height_cm': 'Height (cm)',
@@ -440,16 +430,6 @@ export const translations = {
     'st.import_error': '❌ ملف غير صالح أو تالف',
     'st.language': 'اللغة',
     'st.language_sub': 'لغة التطبيق',
-    'st.notifications': 'الإشعارات',
-    'st.notif_sub': 'تذكيرات التمرين والطعام',
-    'st.notif_enable': '🔔 تفعيل التذكيرات',
-    'st.notif_enabled': '✓ التذكيرات مفعّلة — اضغط لإيقافها',
-    'st.notif_workout': 'تذكير التمرين',
-    'st.notif_food': 'تذكير تسجيل الطعام',
-    'st.notif_denied': 'الإشعارات محجوبة — فعّلها من إعدادات المتصفح.',
-    'st.notif_unsupported': 'الإشعارات غير مدعومة في هذا المتصفح.',
-    'st.notif_note': 'تُرسل التذكيرات عندما يكون التطبيق مفتوحًا في المتصفح.',
-
     // Calc
     'calc.weight_kg': 'الوزن (كغ)',
     'calc.height_cm': 'الطول (سم)',

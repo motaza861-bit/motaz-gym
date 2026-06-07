@@ -427,7 +427,10 @@ export default function FoodSearchPage() {
 
           <div className="fsearch-portion-note">{t('nu.per_100g')}: {selected.per100g.calories} kcal</div>
 
-          <button className="fpage-add-btn" onClick={handleAdd}>{t('nu.add_to_today')}</button>
+          <div className="fpage-actions">
+            <button className="fpage-cancel-btn" onClick={() => setSelected(null)}>Cancel</button>
+            <button className="fpage-add-btn" onClick={handleAdd}>{t('nu.add_to_today')}</button>
+          </div>
         </div>
       )}
     </div>

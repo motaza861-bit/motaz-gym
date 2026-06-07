@@ -7,7 +7,6 @@ import { useTargets } from '../hooks/useTargets'
 import { calcMacros } from '../utils/macroCalculator'
 import { applyTheme, readTheme, saveTheme, ACCENT_PRESETS, BG_PRESETS } from '../hooks/useTheme'
 import { useLanguage } from '../context/LanguageContext'
-import { requestPermission, scheduleNotifications } from '../utils/notifications'
 import './Settings.css'
 
 const ACTIVITY_OPTIONS = [
@@ -38,17 +37,10 @@ export default function Settings() {
   const [calcResult, setCalcResult] = useState(null)
   const [bodyWeightLogs] = useStorage('body_weight_logs', [])
 
-  const [notifPrefs, setNotifPrefs] = useStorage('motaz_notifications', { enabled: false, workoutTime: '07:00', foodTime: '20:00' })
-  const [notifStatus, setNotifStatus] = useState(() => {
-    if (!('Notification' in window)) return 'unsupported'
-    return Notification.permission // 'default' | 'granted' | 'denied'
-  })
-
   const TILES = [
     { key: 'appearance',    icon: '🎨', label: t('st.appearance'), sub: t('st.appearance_sub') },
     { key: 'training',      icon: '🏋️', label: t('st.training'),   sub: t('st.training_sub') },
     { key: 'nutrition',     icon: '🥗', label: t('st.nutrition'),  sub: t('st.nutrition_sub') },
-    { key: 'notifications', icon: '🔔', label: t('st.notifications'), sub: t('st.notif_sub') },
     { key: 'data',          icon: '💾', label: t('st.data'),       sub: t('st.data_sub') },
   ]
 
@@ -56,7 +48,6 @@ export default function Settings() {
     appearance:    useRef(null),
     training:      useRef(null),
     nutrition:     useRef(null),
-    notifications: useRef(null),
     data:          useRef(null),
   }
 
@@ -122,22 +113,6 @@ export default function Settings() {
     setTargets(calcResult)
     setTargetDraft({ ...calcResult })
     setCalcResult(null)
-  }
-
-  async function enableNotifications() {
-    const perm = await requestPermission()
-    setNotifStatus(perm)
-    if (perm === 'granted') {
-      const next = { ...notifPrefs, enabled: true }
-      setNotifPrefs(next)
-      scheduleNotifications(next)
-    }
-  }
-
-  function updateNotifPref(patch) {
-    const next = { ...notifPrefs, ...patch }
-    setNotifPrefs(next)
-    if (next.enabled) scheduleNotifications(next)
   }
 
   return (
@@ -343,52 +318,6 @@ export default function Settings() {
             ))}
           </div>
           <button className="settings-btn" onClick={saveTargets}>{t('st.save_targets')}</button>
-        </div>
-      </div>
-
-      {/* Notifications */}
-      <div ref={sectionRefs.notifications}>
-        <div className="settings-section-header">
-          <span className="settings-section-icon">🔔</span>
-          <span className="settings-section-label">{t('st.notifications')}</span>
-        </div>
-        <div className="card settings-card">
-          {notifStatus === 'unsupported' && (
-            <p className="settings-card-desc">{t('st.notif_unsupported')}</p>
-          )}
-          {notifStatus === 'denied' && (
-            <p className="settings-card-desc" style={{ color: 'var(--accent)' }}>{t('st.notif_denied')}</p>
-          )}
-          {notifStatus !== 'unsupported' && notifStatus !== 'denied' && (
-            <>
-              {notifPrefs.enabled ? (
-                <button className="settings-btn" onClick={() => updateNotifPref({ enabled: false })}>
-                  {t('st.notif_enabled')}
-                </button>
-              ) : (
-                <button className="settings-btn" onClick={enableNotifications}>
-                  {t('st.notif_enable')}
-                </button>
-              )}
-              {notifPrefs.enabled && (
-                <div className="notif-times calc-grid" style={{ marginTop: 12 }}>
-                  <label className="calc-label">
-                    {t('st.notif_workout')}
-                    <input type="time" className="calc-input"
-                      value={notifPrefs.workoutTime}
-                      onChange={e => updateNotifPref({ workoutTime: e.target.value })} />
-                  </label>
-                  <label className="calc-label">
-                    {t('st.notif_food')}
-                    <input type="time" className="calc-input"
-                      value={notifPrefs.foodTime}
-                      onChange={e => updateNotifPref({ foodTime: e.target.value })} />
-                  </label>
-                </div>
-              )}
-              <p className="settings-card-desc" style={{ marginTop: 10 }}>{t('st.notif_note')}</p>
-            </>
-          )}
         </div>
       </div>
 
