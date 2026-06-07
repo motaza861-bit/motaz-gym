@@ -80,6 +80,7 @@ const LEGACY_PREFIX = 'motaz_'
 const MIGRATABLE_KEYS = new Set([
   'workout_logs', 'nutrition_logs', 'body_weight_logs',
   'meals', 'targets', 'profile', 'exercises', 'custom_foods',
+  'big_three_logs',
 ])
 
 export function findLocalLegacyKeys() {

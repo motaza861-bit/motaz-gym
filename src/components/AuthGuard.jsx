@@ -7,6 +7,7 @@ import './AuthGuard.css'
 const SYNC_KEYS = [
   'workout_logs', 'nutrition_logs', 'body_weight_logs',
   'meals', 'targets', 'profile', 'exercises', 'custom_foods',
+  'big_three_logs',
 ]
 
 const PUBLIC_PATHS = new Set([
