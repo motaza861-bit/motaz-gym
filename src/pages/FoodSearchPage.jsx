@@ -5,6 +5,7 @@ import { useStorage } from '../hooks/useStorage'
 import saudiFoods from '../data/saudiFoods.json'
 import '../components/FoodSearch.css'
 import './FoodSearchPage.css'
+import BarcodeScanner from '../components/BarcodeScanner'
 
 const EMOJI_PRESETS = ['🍗','🥩','🐟','🥚','🥛','🍚','🥦','🍎','🥜','🍫']
 
@@ -38,6 +39,9 @@ export default function FoodSearchPage() {
   const [editingId, setEditingId] = useState(null)
   const [formData, setFormData] = useState(EMPTY_FORM)
   const [formError, setFormError] = useState(null)
+
+  const [scannerOpen, setScannerOpen] = useState(false)
+  const [scanError, setScanError] = useState('')
 
   const inputRef = useRef(null)
   const debounceRef = useRef(null)
@@ -160,6 +164,26 @@ export default function FoodSearchPage() {
 
   // ── Food add helpers ──────────────────────────────────────────────────────
 
+  async function onBarcodeDetect(code) {
+    setScannerOpen(false)
+    setScanError('')
+    try {
+      const res = await fetch('/api/lookup-barcode', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ barcode: code }),
+      })
+      const data = await res.json()
+      if (data.found && data.food) {
+        selectFood(data.food)
+        return
+      }
+      setScanError(`Barcode ${code} not found. Try the "Add custom food" button to add it manually.`)
+    } catch {
+      setScanError('Could not reach the server. Try again.')
+    }
+  }
+
   function selectFood(food) {
     setSelected(food)
     setPortionG(food.defaultPortion ?? 100)
@@ -219,6 +243,13 @@ export default function FoodSearchPage() {
 
       {!selected ? (
         <>
+          <button
+            className="fpage-barcode-btn"
+            onClick={() => { setScanError(''); setScannerOpen(true) }}
+          >
+            📊 Scan barcode
+          </button>
+
           <div className="fsearch-input-row">
             <span className="fsearch-input-icon">🔍</span>
             <input
@@ -433,6 +464,14 @@ export default function FoodSearchPage() {
           </div>
         </div>
       )}
+
+      {scannerOpen && (
+        <BarcodeScanner
+          onDetect={onBarcodeDetect}
+          onClose={() => setScannerOpen(false)}
+        />
+      )}
+      {scanError && <div className="fpage-scan-error">{scanError}</div>}
     </div>
   )
 }
