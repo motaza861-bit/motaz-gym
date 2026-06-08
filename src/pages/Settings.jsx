@@ -7,6 +7,7 @@ import { calcMacros } from '../utils/macroCalculator'
 import { applyTheme, readTheme, saveTheme, ACCENT_PRESETS, BG_PRESETS } from '../hooks/useTheme'
 import { useLanguage } from '../context/LanguageContext'
 import ProfileCard from '../components/ProfileCard'
+import ChangePasswordForm from '../components/ChangePasswordForm'
 import './Settings.css'
 
 const ACTIVITY_OPTIONS = [
@@ -34,6 +35,8 @@ export default function Settings() {
   const [profile, setProfile] = useStorage('profile', DEFAULT_PROFILE)
   const [calcResult, setCalcResult] = useState(null)
   const [bodyWeightLogs] = useStorage('body_weight_logs', [])
+  const [showChangePassword, setShowChangePassword] = useState(false)
+  const [cpFlash, setCpFlash] = useState(false)
 
   const TILES = [
     { key: 'appearance',    icon: '🎨', label: t('st.appearance'),    sub: t('st.appearance_sub') },
@@ -263,6 +266,22 @@ export default function Settings() {
         >
           Log out
         </button>
+        <button
+          className="settings-btn"
+          onClick={() => setShowChangePassword(s => !s)}
+        >
+          {t('st.change_password')}
+        </button>
+        {showChangePassword && (
+          <ChangePasswordForm onClose={({ ok }) => {
+            setShowChangePassword(false)
+            if (ok) {
+              setCpFlash(true)
+              setTimeout(() => setCpFlash(false), 2500)
+            }
+          }} />
+        )}
+        {cpFlash && <div className="cp-success">{t('st.cp_success')}</div>}
         <button
           className="settings-btn danger"
           onClick={async () => {
