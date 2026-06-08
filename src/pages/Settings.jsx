@@ -1,6 +1,5 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { exportAllData, importAllData } from '../hooks/useStorage'
 import { useStorage } from '../hooks/useStorage'
 import { supabase } from '../lib/supabase'
 import { useTargets } from '../hooks/useTargets'
@@ -29,8 +28,6 @@ export default function Settings() {
   const navigate = useNavigate()
   const { t, lang, setLang } = useLanguage()
   const [theme, setThemeState] = useState(() => readTheme())
-  const [importStatus, setImportStatus] = useState(null)
-  const timerRef = useRef(null)
   const [targets, setTargets] = useTargets()
   const [targetDraft, setTargetDraft] = useState(() => ({ ...targets }))
   const [profile, setProfile] = useStorage('profile', DEFAULT_PROFILE)
@@ -41,21 +38,17 @@ export default function Settings() {
     { key: 'appearance',    icon: '🎨', label: t('st.appearance'), sub: t('st.appearance_sub') },
     { key: 'training',      icon: '🏋️', label: t('st.training'),   sub: t('st.training_sub') },
     { key: 'nutrition',     icon: '🥗', label: t('st.nutrition'),  sub: t('st.nutrition_sub') },
-    { key: 'data',          icon: '💾', label: t('st.data'),       sub: t('st.data_sub') },
   ]
 
   const sectionRefs = {
     appearance:    useRef(null),
     training:      useRef(null),
     nutrition:     useRef(null),
-    data:          useRef(null),
   }
 
   const latestWeight = bodyWeightLogs.length
     ? [...bodyWeightLogs].sort((a, b) => b.date.localeCompare(a.date))[0].weight
     : null
-
-  useEffect(() => () => { if (timerRef.current) clearTimeout(timerRef.current) }, [])
 
   function scrollTo(key) {
     sectionRefs[key].current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -66,19 +59,6 @@ export default function Settings() {
     setThemeState(next)
     saveTheme(next)
     applyTheme(next)
-  }
-
-  async function handleImport(e) {
-    const file = e.target.files?.[0]
-    if (!file) return
-    try {
-      await importAllData(file)
-      setImportStatus('success')
-      timerRef.current = setTimeout(() => window.location.reload(), 1200)
-    } catch {
-      setImportStatus('error')
-    }
-    e.target.value = ''
   }
 
   function saveTargets() {
@@ -303,39 +283,6 @@ export default function Settings() {
             ))}
           </div>
           <button className="settings-btn" onClick={saveTargets}>{t('st.save_targets')}</button>
-        </div>
-      </div>
-
-      {/* Data */}
-      <div ref={sectionRefs.data}>
-        <div className="settings-section-header">
-          <span className="settings-section-icon">💾</span>
-          <span className="settings-section-label">{t('st.data')}</span>
-        </div>
-        <div className="card settings-card">
-          <div className="settings-item">
-            <div className="settings-item-info">
-              <div className="settings-item-label">{t('st.export_label')}</div>
-              <div className="settings-item-sub">{t('st.export_sub')}</div>
-            </div>
-            <button className="settings-btn" onClick={exportAllData}>{t('st.export')}</button>
-          </div>
-          <div className="settings-divider" />
-          <div className="settings-item">
-            <div className="settings-item-info">
-              <div className="settings-item-label">{t('st.import_label')}</div>
-              <div className="settings-item-sub">
-                {importStatus === 'success' ? t('st.import_success') :
-                 importStatus === 'error'   ? t('st.import_error') :
-                 t('st.import_sub')}
-              </div>
-            </div>
-            <label className="settings-btn" role="button" tabIndex={0}
-              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') e.currentTarget.click() }}>
-              {t('st.import')}
-              <input type="file" accept=".json" onChange={handleImport} style={{ display: 'none' }} />
-            </label>
-          </div>
         </div>
       </div>
 
