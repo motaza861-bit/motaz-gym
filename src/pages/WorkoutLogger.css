@@ -122,4 +122,13 @@
   color: var(--accent);
 }
 
+.wl-schedule-link {
+  background: transparent;
+  color: var(--accent, #5ee2c4);
+  border: 0;
+  font-size: 13px;
+  padding: 6px 0;
+  cursor: pointer;
+}
+
 

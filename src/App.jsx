@@ -19,6 +19,7 @@ import ResetPassword from './pages/ResetPassword'
 import VerifyEmail from './pages/VerifyEmail'
 import Privacy from './pages/Privacy'
 import Terms from './pages/Terms'
+import Coach from './pages/Coach'
 
 export default function App() {
   useTheme()
@@ -45,6 +46,7 @@ export default function App() {
           <Route path="/food-search" element={<><FoodSearchPage /><BottomNav /></>} />
           <Route path="/food-scan" element={<><FoodScannerPage /><BottomNav /></>} />
           <Route path="/schedule" element={<><Schedule /><BottomNav /></>} />
+          <Route path="/coach" element={<><Coach /><BottomNav /></>} />
           <Route path="/settings" element={<><Settings /><BottomNav /></>} />
           <Route path="/onboarding" element={<Onboarding onComplete={() => window.location.assign('/dashboard')} />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />

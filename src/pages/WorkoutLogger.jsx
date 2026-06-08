@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useStorage } from '../hooks/useStorage'
 import { useSelectedDate } from '../context/DateContext'
 import { getTodaySession, toLocalDateStr } from '../utils/dateHelpers'
@@ -35,6 +36,7 @@ function generateClsId() {
 
 export default function WorkoutLogger() {
   const { t } = useLanguage()
+  const navigate = useNavigate()
   const [program, setProgram] = useExercises()
   const SESSIONS = program.sessions
   const [workoutLogs, setWorkoutLogs] = useStorage('workout_logs', [])
@@ -118,6 +120,9 @@ export default function WorkoutLogger() {
   if (!session || sessionKey === 'rest') {
     return (
       <div className="page workout-logger">
+        <button className="wl-schedule-link" onClick={() => navigate('/schedule')}>
+          📅 Schedule
+        </button>
         <DateStrip />
         {tabRow}
         {wlTab === 'workout' && (
@@ -309,6 +314,9 @@ export default function WorkoutLogger() {
 
   return (
     <div className="page workout-logger">
+      <button className="wl-schedule-link" onClick={() => navigate('/schedule')}>
+        📅 Schedule
+      </button>
       <DateStrip />
       {tabRow}
 

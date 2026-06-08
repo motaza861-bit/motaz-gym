@@ -7,6 +7,7 @@ export const translations = {
     'nav.progress': 'Progress',
     'nav.schedule': 'Schedule',
     'nav.classes': 'Classes',
+    'nav.coach': 'Coach',
 
     // Dashboard
     'dash.week': 'Week',
@@ -241,6 +242,7 @@ export const translations = {
     'nav.progress': 'التقدم',
     'nav.schedule': 'الجدول',
     'nav.classes': 'الفصول',
+    'nav.coach': 'المدرّب',
 
     // Dashboard
     'dash.week': 'الأسبوع',
