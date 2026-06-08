@@ -185,6 +185,11 @@ export const translations = {
     'st.cp_wrong_current': 'Current password is incorrect.',
     'st.cp_short': 'New password must be at least 8 characters.',
     'st.cp_mismatch': 'New passwords do not match.',
+    'st.about': 'About',
+    'st.about_made_by': 'Made by Motaz',
+    'st.about_privacy': 'Privacy Policy',
+    'st.about_terms': 'Terms of Service',
+    'st.about_feedback': 'Send feedback',
     // Calc
     'calc.weight_kg': 'Weight (kg)',
     'calc.height_cm': 'Height (cm)',
@@ -428,6 +433,11 @@ export const translations = {
     'st.cp_wrong_current': 'كلمة المرور الحالية غير صحيحة.',
     'st.cp_short': 'يجب أن تكون كلمة المرور الجديدة 8 أحرف على الأقل.',
     'st.cp_mismatch': 'كلمتا المرور الجديدتان غير متطابقتين.',
+    'st.about': 'حول التطبيق',
+    'st.about_made_by': 'من تطوير معاذ',
+    'st.about_privacy': 'سياسة الخصوصية',
+    'st.about_terms': 'شروط الاستخدام',
+    'st.about_feedback': 'إرسال ملاحظات',
     // Calc
     'calc.weight_kg': 'الوزن (كغ)',
     'calc.height_cm': 'الطول (سم)',

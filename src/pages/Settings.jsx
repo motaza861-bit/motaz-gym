@@ -8,6 +8,7 @@ import { applyTheme, readTheme, saveTheme, ACCENT_PRESETS, BG_PRESETS } from '..
 import { useLanguage } from '../context/LanguageContext'
 import ProfileCard from '../components/ProfileCard'
 import ChangePasswordForm from '../components/ChangePasswordForm'
+import AboutCard from '../components/AboutCard'
 import './Settings.css'
 
 const ACTIVITY_OPTIONS = [
@@ -244,15 +245,6 @@ export default function Settings() {
         </div>
       </div>
 
-      {/* About */}
-      <div className="card settings-card">
-        <div className="settings-about">
-          <div className="settings-about-name">IronMind</div>
-          <div className="settings-about-sub">AI-powered workout & nutrition tracker</div>
-          <div className="settings-about-sub">React + Vite · Supabase · Synced across devices</div>
-        </div>
-      </div>
-
       {/* Account */}
       <div className="settings-section danger-zone">
         <h3>Account</h3>
@@ -302,6 +294,8 @@ export default function Settings() {
           Delete my account
         </button>
       </div>
+
+      <AboutCard />
     </div>
   )
 }
