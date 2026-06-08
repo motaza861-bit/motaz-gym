@@ -30,12 +30,6 @@ export const translations = {
     'wl.finish_confirm': 'Finish workout and save? This will overwrite any previous log for this date.',
     'wl.saved': 'Workout saved! Great work 💪',
     'wl.saved_prs': 'Workout saved! 🏆 {n} new PR{s}!',
-    'wl.tweak_title': 'Tweak My Program',
-    'wl.tweak_placeholder': 'Tell the AI what to change… e.g. "Replace bench press with dumbbell press, add more bicep work"',
-    'wl.tweak_btn': 'Apply with AI',
-    'wl.tweak_applying': 'Editing…',
-    'wl.tweak_success': '✅ Program updated!',
-    'wl.tweak_error': '❌ Could not apply changes. Try again.',
     'wl.delete_confirm': 'Delete "{name}"?',
 
     // Exercise Block
@@ -274,12 +268,6 @@ export const translations = {
     'wl.finish_confirm': 'هل تريد إنهاء التمرين وحفظه؟ سيتم الكتابة فوق أي سجل سابق لهذا اليوم.',
     'wl.saved': 'تم حفظ التمرين! عمل رائع 💪',
     'wl.saved_prs': 'تم حفظ التمرين! 🏆 {n} رقم قياسي جديد!',
-    'wl.tweak_title': 'تعديل برنامجي',
-    'wl.tweak_placeholder': 'أخبر الذكاء الاصطناعي بما تريد تغييره… مثال: "استبدل تمرين الضغط بالدمبل، أضف المزيد لتمارين البايسبس"',
-    'wl.tweak_btn': 'تطبيق بالذكاء الاصطناعي',
-    'wl.tweak_applying': 'جاري التعديل…',
-    'wl.tweak_success': '✅ تم تحديث البرنامج!',
-    'wl.tweak_error': '❌ تعذّر تطبيق التغييرات. حاول مجددًا.',
     'wl.delete_confirm': 'حذف "{name}"؟',
 
     // Exercise Block
