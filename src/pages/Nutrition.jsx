@@ -190,7 +190,10 @@ export default function Nutrition() {
             <div key={log.id} className="quick-log-item">
               <span className="quick-log-emoji">{log.emoji}</span>
               <div className="quick-log-body">
-                <span className="quick-log-name">{log.name}</span>
+                <span className="quick-log-name">
+                  {log._aiEstimate && <span className="quick-log-ai" title="AI estimate">✨ </span>}
+                  {log.name}
+                </span>
                 <span className="quick-log-portion">{log.portionG}g</span>
               </div>
               <span className="quick-log-kcal">{log.calories} kcal</span>
