@@ -6,6 +6,7 @@ import { useTargets } from '../hooks/useTargets'
 import { calcMacros } from '../utils/macroCalculator'
 import { applyTheme, readTheme, saveTheme, ACCENT_PRESETS, BG_PRESETS } from '../hooks/useTheme'
 import { useLanguage } from '../context/LanguageContext'
+import ProfileCard from '../components/ProfileCard'
 import './Settings.css'
 
 const ACTIVITY_OPTIONS = [
@@ -35,15 +36,17 @@ export default function Settings() {
   const [bodyWeightLogs] = useStorage('body_weight_logs', [])
 
   const TILES = [
-    { key: 'appearance',    icon: '🎨', label: t('st.appearance'), sub: t('st.appearance_sub') },
-    { key: 'training',      icon: '🏋️', label: t('st.training'),   sub: t('st.training_sub') },
-    { key: 'nutrition',     icon: '🥗', label: t('st.nutrition'),  sub: t('st.nutrition_sub') },
+    { key: 'appearance',    icon: '🎨', label: t('st.appearance'),    sub: t('st.appearance_sub') },
+    { key: 'profile',       icon: '👤', label: t('st.profile'),       sub: t('st.profile_sub') },
+    { key: 'training',      icon: '🏋️', label: t('st.training'),      sub: t('st.training_sub') },
+    { key: 'nutrition',     icon: '🥗', label: t('st.nutrition'),     sub: t('st.nutrition_sub') },
   ]
 
   const sectionRefs = {
-    appearance:    useRef(null),
-    training:      useRef(null),
-    nutrition:     useRef(null),
+    appearance: useRef(null),
+    profile:    useRef(null),
+    training:   useRef(null),
+    nutrition:  useRef(null),
   }
 
   const latestWeight = bodyWeightLogs.length
@@ -69,10 +72,6 @@ export default function Settings() {
       fat:      parseInt(targetDraft.fat)      || 0,
     }
     setTargets(parsed)
-  }
-
-  function setProfileField(field, val) {
-    setProfile(prev => ({ ...prev, [field]: val }))
   }
 
   function handleCalc() {
@@ -184,6 +183,15 @@ export default function Settings() {
         </div>
       </div>
 
+      {/* Profile */}
+      <div ref={sectionRefs.profile}>
+        <div className="settings-section-header">
+          <span className="settings-section-icon">👤</span>
+          <span className="settings-section-label">{t('st.profile')}</span>
+        </div>
+        <ProfileCard />
+      </div>
+
       {/* Training */}
       <div ref={sectionRefs.training}>
         <div className="settings-section-header">
@@ -198,62 +206,9 @@ export default function Settings() {
           <span className="settings-section-icon">🥗</span>
           <span className="settings-section-label">{t('st.nutrition')}</span>
         </div>
-        <div className="card settings-card">
+        <div className="settings-card card">
           <div className="settings-card-title">{t('st.macro_calc')}</div>
-          <div className="calc-grid">
-            <label className="calc-label">
-              {t('calc.weight_kg')}
-              <input className="calc-input" type="number" inputMode="decimal"
-                value={profile.weight}
-                placeholder={latestWeight ? String(latestWeight) : 'kg'}
-                onChange={e => setProfileField('weight', e.target.value)} />
-            </label>
-            <label className="calc-label">
-              {t('calc.height_cm')}
-              <input className="calc-input" type="number" inputMode="decimal"
-                value={profile.height} placeholder="cm"
-                onChange={e => setProfileField('height', e.target.value)} />
-            </label>
-            <label className="calc-label">
-              {t('calc.age')}
-              <input className="calc-input" type="number" inputMode="numeric"
-                value={profile.age} placeholder="years"
-                onChange={e => setProfileField('age', e.target.value)} />
-            </label>
-            <label className="calc-label">
-              {t('calc.gender')}
-              <div className="calc-toggle">
-                {[['male', t('calc.male')], ['female', t('calc.female')]].map(([g, label]) => (
-                  <button key={g}
-                    className={`calc-toggle-btn ${profile.gender === g ? 'active' : ''}`}
-                    onClick={() => setProfileField('gender', g)}>
-                    {label}
-                  </button>
-                ))}
-              </div>
-            </label>
-            <label className="calc-label calc-full">
-              {t('calc.activity')}
-              <select className="calc-select" value={profile.activityLevel}
-                onChange={e => setProfileField('activityLevel', e.target.value)}>
-                {ACTIVITY_OPTIONS.map(o => (
-                  <option key={o.value} value={o.value}>{o.label}</option>
-                ))}
-              </select>
-            </label>
-            <label className="calc-label calc-full">
-              {t('calc.goal')}
-              <div className="calc-toggle">
-                {GOAL_OPTIONS.map(o => (
-                  <button key={o.value}
-                    className={`calc-toggle-btn ${profile.goal === o.value ? 'active' : ''}`}
-                    onClick={() => setProfileField('goal', o.value)}>
-                    {o.label}
-                  </button>
-                ))}
-              </div>
-            </label>
-          </div>
+          <p className="settings-card-desc">Calculates from your Profile above.</p>
           <button className="settings-btn calc-calc-btn" onClick={handleCalc}>{t('st.calculate')}</button>
           {calcResult && (
             <div className="calc-result">
