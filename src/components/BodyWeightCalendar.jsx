@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './BodyWeightCalendar.css'
+import { kgToDisplay, displayToKg, unitLabel } from '../utils/units'
 
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December']
 const DAY_LABELS = ['S','M','T','W','T','F','S']
@@ -28,11 +29,12 @@ function buildMonthGrid(year, month0) {
   return cells
 }
 
-export default function BodyWeightCalendar({ logs, initialMonth, onSave, onDelete }) {
+export default function BodyWeightCalendar({ logs, initialMonth, onSave, onDelete, unit = 'kg' }) {
   const start = initialMonth ?? formatMonth(new Date().getFullYear(), new Date().getMonth())
   const [{ year, month0 }, setView] = useState(() => parseMonth(start))
   const [editingDate, setEditingDate] = useState(null)
   const [draft, setDraft] = useState('')
+  const label = unitLabel(unit)
 
   const byDate = new Map(logs.map(l => [l.date, l.weight]))
   const cells = buildMonthGrid(year, month0)
@@ -48,13 +50,14 @@ export default function BodyWeightCalendar({ logs, initialMonth, onSave, onDelet
 
   function openCell(dateStr) {
     setEditingDate(dateStr)
-    setDraft(byDate.has(dateStr) ? String(byDate.get(dateStr)) : '')
+    const kg = byDate.get(dateStr)
+    setDraft(kg != null ? String(kgToDisplay(kg, unit)) : '')
   }
 
   function save() {
-    const w = parseFloat(draft)
-    if (!(w > 0)) return
-    onSave(editingDate, w)
+    const kg = displayToKg(draft, unit)
+    if (kg == null) return
+    onSave(editingDate, kg)
     setEditingDate(null)
   }
 
@@ -84,7 +87,7 @@ export default function BodyWeightCalendar({ logs, initialMonth, onSave, onDelet
               onClick={() => openCell(c.date)}
             >
               <span className="bw-cal-cell-day">{c.day}</span>
-              {w != null && <span className="bw-cal-cell-w">{w}</span>}
+              {w != null && <span className="bw-cal-cell-w">{kgToDisplay(w, unit)}</span>}
             </button>
           )
         })}
@@ -97,7 +100,7 @@ export default function BodyWeightCalendar({ logs, initialMonth, onSave, onDelet
             className="bw-cal-editor-input"
             type="number"
             inputMode="decimal"
-            placeholder="kg"
+            placeholder={label}
             value={draft}
             onChange={e => setDraft(e.target.value)}
             autoFocus
