@@ -1,12 +1,14 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { exportAllData, importAllData } from '../hooks/useStorage'
 import { useStorage } from '../hooks/useStorage'
 import { supabase } from '../lib/supabase'
 import { useTargets } from '../hooks/useTargets'
 import { calcMacros } from '../utils/macroCalculator'
 import { applyTheme, readTheme, saveTheme, ACCENT_PRESETS, BG_PRESETS } from '../hooks/useTheme'
 import { useLanguage } from '../context/LanguageContext'
+import ProfileCard from '../components/ProfileCard'
+import ChangePasswordForm from '../components/ChangePasswordForm'
+import AboutCard from '../components/AboutCard'
 import './Settings.css'
 
 const ACTIVITY_OPTIONS = [
@@ -29,33 +31,31 @@ export default function Settings() {
   const navigate = useNavigate()
   const { t, lang, setLang } = useLanguage()
   const [theme, setThemeState] = useState(() => readTheme())
-  const [importStatus, setImportStatus] = useState(null)
-  const timerRef = useRef(null)
   const [targets, setTargets] = useTargets()
   const [targetDraft, setTargetDraft] = useState(() => ({ ...targets }))
   const [profile, setProfile] = useStorage('profile', DEFAULT_PROFILE)
   const [calcResult, setCalcResult] = useState(null)
   const [bodyWeightLogs] = useStorage('body_weight_logs', [])
+  const [showChangePassword, setShowChangePassword] = useState(false)
+  const [cpFlash, setCpFlash] = useState(false)
 
   const TILES = [
-    { key: 'appearance',    icon: '🎨', label: t('st.appearance'), sub: t('st.appearance_sub') },
-    { key: 'training',      icon: '🏋️', label: t('st.training'),   sub: t('st.training_sub') },
-    { key: 'nutrition',     icon: '🥗', label: t('st.nutrition'),  sub: t('st.nutrition_sub') },
-    { key: 'data',          icon: '💾', label: t('st.data'),       sub: t('st.data_sub') },
+    { key: 'appearance',    icon: '🎨', label: t('st.appearance'),    sub: t('st.appearance_sub') },
+    { key: 'profile',       icon: '👤', label: t('st.profile'),       sub: t('st.profile_sub') },
+    { key: 'training',      icon: '🏋️', label: t('st.training'),      sub: t('st.training_sub') },
+    { key: 'nutrition',     icon: '🥗', label: t('st.nutrition'),     sub: t('st.nutrition_sub') },
   ]
 
   const sectionRefs = {
-    appearance:    useRef(null),
-    training:      useRef(null),
-    nutrition:     useRef(null),
-    data:          useRef(null),
+    appearance: useRef(null),
+    profile:    useRef(null),
+    training:   useRef(null),
+    nutrition:  useRef(null),
   }
 
   const latestWeight = bodyWeightLogs.length
     ? [...bodyWeightLogs].sort((a, b) => b.date.localeCompare(a.date))[0].weight
     : null
-
-  useEffect(() => () => { if (timerRef.current) clearTimeout(timerRef.current) }, [])
 
   function scrollTo(key) {
     sectionRefs[key].current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -68,19 +68,6 @@ export default function Settings() {
     applyTheme(next)
   }
 
-  async function handleImport(e) {
-    const file = e.target.files?.[0]
-    if (!file) return
-    try {
-      await importAllData(file)
-      setImportStatus('success')
-      timerRef.current = setTimeout(() => window.location.reload(), 1200)
-    } catch {
-      setImportStatus('error')
-    }
-    e.target.value = ''
-  }
-
   function saveTargets() {
     const parsed = {
       calories: parseInt(targetDraft.calories) || 0,
@@ -89,10 +76,6 @@ export default function Settings() {
       fat:      parseInt(targetDraft.fat)      || 0,
     }
     setTargets(parsed)
-  }
-
-  function setProfileField(field, val) {
-    setProfile(prev => ({ ...prev, [field]: val }))
   }
 
   function handleCalc() {
@@ -204,6 +187,15 @@ export default function Settings() {
         </div>
       </div>
 
+      {/* Profile */}
+      <div ref={sectionRefs.profile}>
+        <div className="settings-section-header">
+          <span className="settings-section-icon">👤</span>
+          <span className="settings-section-label">{t('st.profile')}</span>
+        </div>
+        <ProfileCard />
+      </div>
+
       {/* Training */}
       <div ref={sectionRefs.training}>
         <div className="settings-section-header">
@@ -218,62 +210,9 @@ export default function Settings() {
           <span className="settings-section-icon">🥗</span>
           <span className="settings-section-label">{t('st.nutrition')}</span>
         </div>
-        <div className="card settings-card">
+        <div className="settings-card card">
           <div className="settings-card-title">{t('st.macro_calc')}</div>
-          <div className="calc-grid">
-            <label className="calc-label">
-              {t('calc.weight_kg')}
-              <input className="calc-input" type="number" inputMode="decimal"
-                value={profile.weight}
-                placeholder={latestWeight ? String(latestWeight) : 'kg'}
-                onChange={e => setProfileField('weight', e.target.value)} />
-            </label>
-            <label className="calc-label">
-              {t('calc.height_cm')}
-              <input className="calc-input" type="number" inputMode="decimal"
-                value={profile.height} placeholder="cm"
-                onChange={e => setProfileField('height', e.target.value)} />
-            </label>
-            <label className="calc-label">
-              {t('calc.age')}
-              <input className="calc-input" type="number" inputMode="numeric"
-                value={profile.age} placeholder="years"
-                onChange={e => setProfileField('age', e.target.value)} />
-            </label>
-            <label className="calc-label">
-              {t('calc.gender')}
-              <div className="calc-toggle">
-                {[['male', t('calc.male')], ['female', t('calc.female')]].map(([g, label]) => (
-                  <button key={g}
-                    className={`calc-toggle-btn ${profile.gender === g ? 'active' : ''}`}
-                    onClick={() => setProfileField('gender', g)}>
-                    {label}
-                  </button>
-                ))}
-              </div>
-            </label>
-            <label className="calc-label calc-full">
-              {t('calc.activity')}
-              <select className="calc-select" value={profile.activityLevel}
-                onChange={e => setProfileField('activityLevel', e.target.value)}>
-                {ACTIVITY_OPTIONS.map(o => (
-                  <option key={o.value} value={o.value}>{o.label}</option>
-                ))}
-              </select>
-            </label>
-            <label className="calc-label calc-full">
-              {t('calc.goal')}
-              <div className="calc-toggle">
-                {GOAL_OPTIONS.map(o => (
-                  <button key={o.value}
-                    className={`calc-toggle-btn ${profile.goal === o.value ? 'active' : ''}`}
-                    onClick={() => setProfileField('goal', o.value)}>
-                    {o.label}
-                  </button>
-                ))}
-              </div>
-            </label>
-          </div>
+          <p className="settings-card-desc">Calculates from your Profile above.</p>
           <button className="settings-btn calc-calc-btn" onClick={handleCalc}>{t('st.calculate')}</button>
           {calcResult && (
             <div className="calc-result">
@@ -306,48 +245,6 @@ export default function Settings() {
         </div>
       </div>
 
-      {/* Data */}
-      <div ref={sectionRefs.data}>
-        <div className="settings-section-header">
-          <span className="settings-section-icon">💾</span>
-          <span className="settings-section-label">{t('st.data')}</span>
-        </div>
-        <div className="card settings-card">
-          <div className="settings-item">
-            <div className="settings-item-info">
-              <div className="settings-item-label">{t('st.export_label')}</div>
-              <div className="settings-item-sub">{t('st.export_sub')}</div>
-            </div>
-            <button className="settings-btn" onClick={exportAllData}>{t('st.export')}</button>
-          </div>
-          <div className="settings-divider" />
-          <div className="settings-item">
-            <div className="settings-item-info">
-              <div className="settings-item-label">{t('st.import_label')}</div>
-              <div className="settings-item-sub">
-                {importStatus === 'success' ? t('st.import_success') :
-                 importStatus === 'error'   ? t('st.import_error') :
-                 t('st.import_sub')}
-              </div>
-            </div>
-            <label className="settings-btn" role="button" tabIndex={0}
-              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') e.currentTarget.click() }}>
-              {t('st.import')}
-              <input type="file" accept=".json" onChange={handleImport} style={{ display: 'none' }} />
-            </label>
-          </div>
-        </div>
-      </div>
-
-      {/* About */}
-      <div className="card settings-card">
-        <div className="settings-about">
-          <div className="settings-about-name">IronMind</div>
-          <div className="settings-about-sub">AI-powered workout & nutrition tracker</div>
-          <div className="settings-about-sub">React + Vite · Supabase · Synced across devices</div>
-        </div>
-      </div>
-
       {/* Account */}
       <div className="settings-section danger-zone">
         <h3>Account</h3>
@@ -361,6 +258,22 @@ export default function Settings() {
         >
           Log out
         </button>
+        <button
+          className="settings-btn"
+          onClick={() => setShowChangePassword(s => !s)}
+        >
+          {t('st.change_password')}
+        </button>
+        {showChangePassword && (
+          <ChangePasswordForm onClose={({ ok }) => {
+            setShowChangePassword(false)
+            if (ok) {
+              setCpFlash(true)
+              setTimeout(() => setCpFlash(false), 2500)
+            }
+          }} />
+        )}
+        {cpFlash && <div className="cp-success">{t('st.cp_success')}</div>}
         <button
           className="settings-btn danger"
           onClick={async () => {
@@ -381,6 +294,8 @@ export default function Settings() {
           Delete my account
         </button>
       </div>
+
+      <AboutCard />
     </div>
   )
 }

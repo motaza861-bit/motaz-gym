@@ -292,3 +292,31 @@
   background: transparent;
   border: 1px solid rgba(255, 80, 80, 0.3);
 }
+
+.profile-card { padding: 16px; }
+.profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.profile-field { display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
+.profile-field-full { grid-column: 1 / -1; }
+.profile-label { opacity: 0.7; font-size: 12px; }
+.profile-weight-row { display: flex; gap: 6px; }
+.profile-weight-row .calc-input { flex: 1; }
+.profile-unit { flex: 0 0 80px; }
+
+.cp-form { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 10px; }
+.cp-form-actions { display: flex; gap: 8px; margin-top: 4px; }
+.cp-form-actions .settings-btn { flex: 1; }
+.cp-success { margin-top: 8px; color: var(--accent, #5ee2c4); font-size: 13px; }
+
+.about-card { padding: 16px; margin-top: 24px; }
+.about-meta { font-size: 13px; line-height: 1.5; opacity: 0.85; }
+.about-name { font-weight: 700; font-size: 14px; opacity: 1; }
+.about-stack, .about-author { opacity: 0.7; }
+.about-links { display: flex; flex-direction: column; margin-top: 12px; gap: 4px; }
+.about-link {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 12px; border-radius: 8px;
+  background: rgba(255,255,255,0.03);
+  color: inherit; text-decoration: none;
+  font-size: 14px;
+}
+.about-link:hover { background: rgba(255,255,255,0.06); }

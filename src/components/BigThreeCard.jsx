@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { toLocalDateStr } from '../utils/dateHelpers'
+import { kgToDisplay, displayToKg, unitLabel } from '../utils/units'
 import './BigThreeCard.css'
 
 const VISIBLE_LIMIT = 5
@@ -8,7 +9,8 @@ function generateId() {
   return `big3_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`
 }
 
-export default function BigThreeCard({ lift, title, entries, onAdd, onDelete }) {
+export default function BigThreeCard({ lift, title, entries, onAdd, onDelete, unit = 'kg' }) {
+  const label = unitLabel(unit)
   const [adding, setAdding] = useState(false)
   const [weight, setWeight] = useState('')
   const [reps, setReps] = useState('')
@@ -32,7 +34,7 @@ export default function BigThreeCard({ lift, title, entries, onAdd, onDelete }) 
   function cancelAdd() { setAdding(false) }
 
   function saveEntry() {
-    const w = parseFloat(weight)
+    const w = displayToKg(weight, unit)
     const r = parseInt(reps)
     if (!(w > 0) || !(r >= 1 && r <= 30) || !date) return
     onAdd({ id: generateId(), lift, date, weight: w, reps: r })
@@ -50,7 +52,7 @@ export default function BigThreeCard({ lift, title, entries, onAdd, onDelete }) 
 
       {latest ? (
         <div className="b3-latest">
-          <span>Latest: {latest.weight} kg × {latest.reps} · {latest.date}</span>
+          <span>Latest: {kgToDisplay(latest.weight, unit)} {label} × {latest.reps} · {latest.date}</span>
           <button className="b3-del-btn" aria-label="Delete" onClick={() => onDelete(latest.id)}>🗑</button>
         </div>
       ) : (
@@ -59,7 +61,7 @@ export default function BigThreeCard({ lift, title, entries, onAdd, onDelete }) 
 
       {adding && (
         <div className="b3-add-form">
-          <input className="b3-input" type="number" inputMode="decimal" placeholder="Weight kg"
+          <input className="b3-input" type="number" inputMode="decimal" placeholder={`Weight ${label}`}
             value={weight} onChange={e => setWeight(e.target.value)} />
           <input className="b3-input" type="number" inputMode="numeric" placeholder="Reps"
             min="1" max="30"
@@ -77,7 +79,7 @@ export default function BigThreeCard({ lift, title, entries, onAdd, onDelete }) 
         <div className="b3-list">
           {visible.map(e => (
             <div key={e.id} className="b3-row">
-              <span className="b3-row-text">{e.weight} kg × {e.reps} · {e.date.slice(5)}</span>
+              <span className="b3-row-text">{kgToDisplay(e.weight, unit)} {label} × {e.reps} · {e.date.slice(5)}</span>
               <button className="b3-del-btn" aria-label="Delete" onClick={() => onDelete(e.id)}>🗑</button>
             </div>
           ))}
