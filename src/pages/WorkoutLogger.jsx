@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useStorage } from '../hooks/useStorage'
 import { useSelectedDate } from '../context/DateContext'
 import { getTodaySession, toLocalDateStr } from '../utils/dateHelpers'
@@ -35,6 +36,7 @@ function generateClsId() {
 
 export default function WorkoutLogger() {
   const { t } = useLanguage()
+  const navigate = useNavigate()
   const [program, setProgram] = useExercises()
   const SESSIONS = program.sessions
   const [workoutLogs, setWorkoutLogs] = useStorage('workout_logs', [])
@@ -55,9 +57,6 @@ export default function WorkoutLogger() {
   const [elapsed, setElapsed] = useState(0)
   const [timerRunning, setTimerRunning] = useState(false)
   const [editingId, setEditingId] = useState(null)
-  const [tweakOpen, setTweakOpen] = useState(false)
-  const [tweakText, setTweakText] = useState('')
-  const [tweakStatus, setTweakStatus] = useState(null) // null | 'loading' | 'success' | 'error'
   const startedAt = useRef(Date.now())
 
   // Classes state
@@ -80,9 +79,6 @@ export default function WorkoutLogger() {
     setElapsed(0)
     setTimerRunning(false)
     setEditingId(null)
-    setTweakOpen(false)
-    setTweakText('')
-    setTweakStatus(null)
     startedAt.current = Date.now()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionKey])
@@ -124,6 +120,9 @@ export default function WorkoutLogger() {
   if (!session || sessionKey === 'rest') {
     return (
       <div className="page workout-logger">
+        <button className="wl-schedule-link" onClick={() => navigate('/schedule')}>
+          📅 Schedule
+        </button>
         <DateStrip />
         {tabRow}
         {wlTab === 'workout' && (
@@ -234,27 +233,6 @@ export default function WorkoutLogger() {
     setExerciseSets(prev => { const { [name]: _, ...rest } = prev; return rest })
   }
 
-  async function applyTweak() {
-    if (!tweakText.trim() || tweakStatus === 'loading') return
-    setTweakStatus('loading')
-    try {
-      const res = await fetch('/api/edit-workout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ currentProgram: program, feedback: tweakText }),
-      })
-      const data = await res.json()
-      if (!res.ok || data.error) throw new Error(data.error || 'Failed')
-      setProgram({ sessions: data.sessions, daySession: data.daySession })
-      setTweakStatus('success')
-      setTweakText('')
-      setTimeout(() => setTweakStatus(null), 3000)
-    } catch {
-      setTweakStatus('error')
-      setTimeout(() => setTweakStatus(null), 3000)
-    }
-  }
-
   function renderClasses() {
     return (
       <div className="wl-classes">
@@ -336,6 +314,9 @@ export default function WorkoutLogger() {
 
   return (
     <div className="page workout-logger">
+      <button className="wl-schedule-link" onClick={() => navigate('/schedule')}>
+        📅 Schedule
+      </button>
       <DateStrip />
       {tabRow}
 
@@ -416,34 +397,6 @@ export default function WorkoutLogger() {
           {editingId === null && (
             <button className="add-exercise-btn" onClick={() => setEditingId('new')}>{t('wl.add_exercise')}</button>
           )}
-
-          {/* AI Tweak Panel */}
-          <div className="tweak-panel card">
-            <button className="tweak-header" onClick={() => setTweakOpen(o => !o)}>
-              <span className="tweak-title">🤖 {t('wl.tweak_title')}</span>
-              <span className="tweak-chevron">{tweakOpen ? '▲' : '▼'}</span>
-            </button>
-            {tweakOpen && (
-              <div className="tweak-body">
-                <textarea
-                  className="tweak-input"
-                  value={tweakText}
-                  placeholder={t('wl.tweak_placeholder')}
-                  rows={3}
-                  onChange={e => setTweakText(e.target.value)}
-                />
-                {tweakStatus === 'success' && <p className="tweak-msg tweak-success">{t('wl.tweak_success')}</p>}
-                {tweakStatus === 'error'   && <p className="tweak-msg tweak-error">{t('wl.tweak_error')}</p>}
-                <button
-                  className="settings-btn tweak-btn"
-                  onClick={applyTweak}
-                  disabled={!tweakText.trim() || tweakStatus === 'loading'}
-                >
-                  {tweakStatus === 'loading' ? t('wl.tweak_applying') : t('wl.tweak_btn')}
-                </button>
-              </div>
-            )}
-          </div>
 
           <button className="btn-primary" onClick={handleFinish}>
             {t('wl.finish')}

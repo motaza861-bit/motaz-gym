@@ -210,21 +210,6 @@ export default function Settings() {
           <span className="settings-section-icon">🏋️</span>
           <span className="settings-section-label">{t('st.training')}</span>
         </div>
-        <div className="settings-card card">
-          <div className="settings-card-title">{t('st.workout_program')}</div>
-          <p className="settings-card-desc">{t('st.regen_desc')}</p>
-          <button
-            className="settings-btn settings-btn-outline"
-            onClick={() => {
-              if (window.confirm(t('st.regen_confirm'))) {
-                try { localStorage.removeItem('motaz_onboarded') } catch {}
-                window.location.reload()
-              }
-            }}
-          >
-            {t('st.regen_btn')}
-          </button>
-        </div>
       </div>
 
       {/* Nutrition */}

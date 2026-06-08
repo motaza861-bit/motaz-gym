@@ -1,0 +1,88 @@
+/* WhatsApp-style chat bubble + proposal card */
+
+.chat-row { display: flex; padding: 4px 12px; }
+.chat-row.left  { justify-content: flex-start; }
+.chat-row.right { justify-content: flex-end; }
+
+.chat-bubble {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.chat-bubble.assistant {
+  background: rgba(94, 226, 196, 0.12);
+  color: #d8fff5;
+  border: 1px solid rgba(94, 226, 196, 0.3);
+  border-bottom-left-radius: 4px;
+}
+.chat-bubble.user {
+  background: rgba(255, 255, 255, 0.06);
+  color: inherit;
+  border-bottom-right-radius: 4px;
+}
+
+.chat-typing {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  padding: 8px 14px;
+}
+.chat-typing-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  animation: chat-pulse 1.2s infinite;
+}
+.chat-typing-dot:nth-child(2) { animation-delay: 0.15s; }
+.chat-typing-dot:nth-child(3) { animation-delay: 0.3s; }
+@keyframes chat-pulse {
+  0%, 80%, 100% { opacity: 0.3; }
+  40% { opacity: 1; }
+}
+
+.proposal-card {
+  background: rgba(94, 226, 196, 0.08);
+  border: 1px solid rgba(94, 226, 196, 0.3);
+  border-radius: 14px;
+  padding: 12px;
+  margin: 6px 0;
+  max-width: 80%;
+}
+.proposal-card-header {
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+.proposal-card-summary {
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+.proposal-card-details {
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 13px;
+  margin-bottom: 10px;
+  white-space: pre-wrap;
+  font-family: monospace;
+}
+.proposal-card-actions { display: flex; gap: 8px; }
+.proposal-card-actions button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.proposal-cancel { background: transparent; color: inherit; border: 1px solid rgba(255,255,255,0.15); }
+.proposal-apply  { background: var(--accent, #5ee2c4); color: #0a0a0a; border: 0; }
+
+.proposal-applied {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-top: 4px;
+}

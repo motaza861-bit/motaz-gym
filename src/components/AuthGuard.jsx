@@ -8,6 +8,7 @@ const SYNC_KEYS = [
   'workout_logs', 'nutrition_logs', 'body_weight_logs',
   'meals', 'targets', 'profile', 'exercises', 'custom_foods',
   'big_three_logs',
+  'chat_history',
 ]
 
 const PUBLIC_PATHS = new Set([

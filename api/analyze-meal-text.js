@@ -1,32 +1,24 @@
-import Groq from 'groq-sdk'
+import { generateJSON } from './_gemini.js'
 
-const MODEL = 'llama-3.3-70b-versatile'
+const MODEL = 'gemini-2.0-flash'
+
+const SYSTEM = `You are a nutrition expert. Estimate macros for a meal description.
+Return ONLY valid JSON with whole numbers, no explanation:
+{"calories":number,"protein":number,"carbs":number,"fat":number}`
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
-  const { description } = req.body
+  const { description } = req.body ?? {}
   if (!description?.trim()) return res.status(400).json({ error: 'Missing description' })
 
-  const prompt = `You are a nutrition expert. Estimate the macros for this meal:
-"${description.trim()}"
-
-Return ONLY valid JSON with whole numbers, no explanation:
-{"calories":number,"protein":number,"carbs":number,"fat":number}`
-
-  const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
-
   try {
-    const completion = await groq.chat.completions.create({
+    const data = await generateJSON({
       model: MODEL,
-      max_tokens: 128,
-      temperature: 0,
-      messages: [{ role: 'user', content: prompt }],
+      system: SYSTEM,
+      user: description.trim(),
+      maxOutputTokens: 128,
     })
-
-    const raw = completion.choices[0].message.content.trim()
-    const jsonStr = raw.replace(/^```json?\n?/, '').replace(/\n?```$/, '')
-    const data = JSON.parse(jsonStr)
 
     return res.status(200).json({
       calories: Math.max(0, Math.round(data.calories) || 0),

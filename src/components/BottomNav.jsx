@@ -7,7 +7,7 @@ const TABS = [
   { to: '/workout',   icon: '🏋️', key: 'nav.workout' },
   { to: '/nutrition', icon: '🥗', key: 'nav.nutrition' },
   { to: '/progress',  icon: '📈', key: 'nav.progress' },
-  { to: '/schedule',  icon: '📅', key: 'nav.schedule' },
+  { to: '/coach',     icon: '🤖', key: 'nav.coach' },
 ]
 
 export default function BottomNav() {
