@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useStorage } from '../hooks/useStorage'
 import { toLocalDateStr } from '../utils/dateHelpers'
 import { useLanguage } from '../context/LanguageContext'
+import { useWeightUnit } from '../hooks/useWeightUnit'
+import { kgToDisplay, displayToKg, unitLabel } from '../utils/units'
 import BodyWeightCalendar from '../components/BodyWeightCalendar'
 import BigThreeCard from '../components/BigThreeCard'
 import './Progress.css'
@@ -17,6 +19,8 @@ const BIG_THREE = [
 
 export default function Progress() {
   const { t } = useLanguage()
+  const unit = useWeightUnit()
+  const label = unitLabel(unit)
   const [bodyWeightLogs, setBodyWeightLogs] = useStorage('body_weight_logs', [])
   const [bigThreeLogs, setBigThreeLogs] = useStorage('big_three_logs', [])
   const [newWeight, setNewWeight] = useState('')
@@ -35,10 +39,10 @@ export default function Progress() {
   }
 
   function logBodyWeight() {
-    const w = parseFloat(newWeight)
-    if (!(w > 30 && w < 300)) return
+    const kg = displayToKg(newWeight, unit)
+    if (kg == null || kg < 30 || kg > 300) return
     const todayStr = toLocalDateStr(new Date())
-    setBodyWeightLogs(prev => [...prev.filter(l => l.date !== todayStr), { date: todayStr, weight: w }])
+    setBodyWeightLogs(prev => [...prev.filter(l => l.date !== todayStr), { date: todayStr, weight: kg }])
     setNewWeight('')
   }
 
@@ -58,9 +62,10 @@ export default function Progress() {
     setBigThreeLogs(prev => prev.filter(e => e.id !== id))
   }
 
-  const wNum = parseFloat(ormWeight)
+  const wKg = displayToKg(ormWeight, unit)
   const rNum = parseInt(ormReps)
-  const oneRM = wNum > 0 && rNum >= 1 && rNum <= 30 ? Math.round(wNum * (1 + rNum / 30)) : null
+  const oneRMKg = wKg != null && rNum >= 1 && rNum <= 30 ? Math.round(wKg * (1 + rNum / 30)) : null
+  const oneRM = oneRMKg != null ? kgToDisplay(oneRMKg, unit) : null
 
   return (
     <div className="page progress-page">
@@ -70,7 +75,7 @@ export default function Progress() {
       <div className="card">
         <div className="bw-log-row">
           <input className="bw-input" type="number" inputMode="decimal"
-            placeholder="kg" value={newWeight}
+            placeholder={label} value={newWeight}
             onChange={e => setNewWeight(e.target.value)} />
           <button className="bw-btn" onClick={logBodyWeight}>Log</button>
         </div>
@@ -83,6 +88,7 @@ export default function Progress() {
         {calOpen && (
           <BodyWeightCalendar
             logs={bodyWeightLogs}
+            unit={unit}
             onSave={saveBodyWeight}
             onDelete={deleteBodyWeight}
           />
@@ -107,7 +113,7 @@ export default function Progress() {
         <div className="orm-inputs">
           <div className="orm-field">
             <label className="orm-label">{t('pr.one_rm_weight')}</label>
-            <input className="bw-input" type="number" inputMode="decimal" placeholder="kg"
+            <input className="bw-input" type="number" inputMode="decimal" placeholder={label}
               value={ormWeight} onChange={e => setOrmWeight(e.target.value)} />
           </div>
           <div className="orm-field orm-field--reps">
@@ -121,13 +127,13 @@ export default function Progress() {
           <div className="orm-result">
             <div className="orm-result-header">
               <span className="orm-result-label">{t('pr.one_rm_result')}</span>
-              <span className="orm-result-val">{oneRM} kg</span>
+              <span className="orm-result-val">{oneRM} {label}</span>
             </div>
             <div className="orm-pct-table">
               {ORM_PCTS.map(pct => (
                 <div key={pct} className="orm-pct-row">
                   <span className="orm-pct">{pct}%</span>
-                  <span className="orm-pct-val">{Math.round(oneRM * pct / 100)} kg</span>
+                  <span className="orm-pct-val">{kgToDisplay(oneRMKg * pct / 100, unit)} {label}</span>
                 </div>
               ))}
             </div>
