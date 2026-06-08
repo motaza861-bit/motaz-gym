@@ -1,8 +1,8 @@
-import Groq from 'groq-sdk'
+import { generateJSON } from './_gemini.js'
 
-const MODEL = 'meta-llama/llama-4-scout-17b-16e-instruct'
+const MODEL = 'gemini-2.0-flash'
 
-const PROMPT = `You are a nutrition expert. The user typed a food name. Estimate macros per 100g for that food.
+const SYSTEM = `You are a nutrition expert. The user typed a food name. Estimate macros per 100g for that food.
 Return ONLY this JSON (no markdown, no explanation):
 {"name":"<canonical name>","emoji":"<single emoji>","per100g":{"calories":<int>,"protein":<int>,"carbs":<int>,"fat":<int>},"defaultPortion":<int grams>}
 Use your best judgement for region-specific or branded products.
@@ -16,23 +16,13 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing query' })
   }
 
-  const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
-
   try {
-    const completion = await groq.chat.completions.create({
+    const data = await generateJSON({
       model: MODEL,
-      max_tokens: 256,
-      messages: [
-        { role: 'system', content: PROMPT },
-        { role: 'user', content: query.trim() },
-      ],
+      system: SYSTEM,
+      user: query.trim(),
+      maxOutputTokens: 256,
     })
-    const raw = completion.choices[0].message.content.trim()
-    const jsonStr = raw.replace(/^```json?\n?/, '').replace(/\n?```$/, '')
-
-    let data
-    try { data = JSON.parse(jsonStr) }
-    catch { return res.status(422).json({ error: 'Could not parse estimate' }) }
 
     if (data.error) return res.status(422).json(data)
 
@@ -62,7 +52,10 @@ export default async function handler(req, res) {
       _source: 'ai',
       _aiEstimate: true,
     })
-  } catch {
+  } catch (err) {
+    if (err instanceof SyntaxError) {
+      return res.status(422).json({ error: 'Could not parse estimate' })
+    }
     return res.status(500).json({ error: 'Failed to estimate' })
   }
 }
