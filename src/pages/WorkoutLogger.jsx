@@ -10,6 +10,9 @@ import ExerciseBlock from '../components/ExerciseBlock'
 import ExerciseEditForm from '../components/ExerciseEditForm'
 import RestTimer from '../components/RestTimer'
 import DateStrip from '../components/DateStrip'
+import Paywall from '../components/Paywall'
+import { useSubscription } from '../hooks/useSubscription'
+import { hasTier, TIER_1 } from '../lib/tiers'
 import './WorkoutLogger.css'
 import './Classes.css'
 
@@ -37,10 +40,17 @@ function generateClsId() {
 export default function WorkoutLogger() {
   const { t } = useLanguage()
   const navigate = useNavigate()
-  const [program, setProgram] = useExercises()
+  const [program, setProgramRaw] = useExercises()
   const SESSIONS = program.sessions
-  const [workoutLogs, setWorkoutLogs] = useStorage('workout_logs', [])
-  const [classes, setClasses] = useStorage('motaz_classes', [])
+  const [workoutLogs, setWorkoutLogsRaw] = useStorage('workout_logs', [])
+  const [classes, setClassesRaw] = useStorage('motaz_classes', [])
+  const { effectiveTier } = useSubscription()
+  const canWrite = hasTier(effectiveTier, TIER_1)
+  const [paywallOpen, setPaywallOpen] = useState(false)
+  const gate = (raw) => (...args) => { if (!canWrite) { setPaywallOpen(true); return } raw(...args) }
+  const setProgram = gate(setProgramRaw)
+  const setWorkoutLogs = gate(setWorkoutLogsRaw)
+  const setClasses = gate(setClassesRaw)
   const { selectedDate } = useSelectedDate()
   const sessionKey = getTodaySession(selectedDate, program.daySession)
   const session = SESSIONS[sessionKey]
@@ -405,6 +415,14 @@ export default function WorkoutLogger() {
       )}
 
       {wlTab === 'classes' && renderClasses()}
+
+      {paywallOpen && (
+        <div className="paywall-modal-bg" onClick={() => setPaywallOpen(false)}>
+          <div className="paywall-modal" onClick={(e) => e.stopPropagation()}>
+            <Paywall feature="log_workout" />
+          </div>
+        </div>
+      )}
     </div>
   )
 }
