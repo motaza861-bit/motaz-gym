@@ -1,0 +1,29 @@
+.paywall-card {
+  background: rgba(94, 226, 196, 0.06);
+  border: 1px dashed rgba(94, 226, 196, 0.35);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 12px;
+  text-align: center;
+}
+
+.paywall-icon { font-size: 28px; margin-bottom: 6px; }
+.paywall-title { font-size: 16px; font-weight: 700; margin: 4px 0 6px; }
+.paywall-body  { font-size: 14px; opacity: 0.85; margin-bottom: 14px; line-height: 1.45; }
+.paywall-btn {
+  background: var(--accent, #5ee2c4);
+  color: #0a0a0a;
+  border: 0;
+  border-radius: 10px;
+  padding: 12px 22px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.paywall-link {
+  display: inline-block;
+  margin-top: 10px;
+  color: var(--accent, #5ee2c4);
+  font-size: 13px;
+  text-decoration: none;
+}
