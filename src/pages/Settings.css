@@ -320,3 +320,15 @@
   font-size: 14px;
 }
 .about-link:hover { background: rgba(255,255,255,0.06); }
+
+.sub-card { padding: 16px; }
+.sub-card-warning { background: rgba(255, 204, 0, 0.1); border-color: rgba(255, 204, 0, 0.5); }
+.sub-card-expired { background: rgba(255, 80, 80, 0.07); border-color: rgba(255, 80, 80, 0.4); }
+
+.sub-card-title { font-weight: 700; font-size: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.sub-card-row { display: flex; justify-content: space-between; font-size: 14px; opacity: 0.85; padding: 4px 0; }
+.sub-card-row-label { opacity: 0.6; }
+
+.sub-card-cta { width: 100%; padding: 12px; border-radius: 10px; border: 0; background: var(--accent, #5ee2c4); color: #0a0a0a; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 10px; }
+.sub-card-link { display: inline-block; margin-top: 8px; font-size: 13px; color: var(--accent, #5ee2c4); cursor: pointer; background: transparent; border: 0; padding: 0; }
+.sub-card-body { font-size: 14px; opacity: 0.85; margin: 4px 0 8px; line-height: 1.5; }
