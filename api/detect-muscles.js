@@ -1,10 +1,11 @@
 import { generateText } from './_gemini.js'
+import { withTierGate } from './_subscription.js'
 
 const MODEL = 'gemini-2.0-flash'
 
 const SYSTEM = `List the primary muscles trained by an exercise name. Return ONLY a short comma-separated list, for example: "Chest, Triceps, Front Delt". No explanation, no extra text, just the list.`
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
   const { exercise } = req.body ?? {}
@@ -24,3 +25,5 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Failed to detect muscles' })
   }
 }
+
+export default withTierGate(['tier1', 'tier2'], handler)

@@ -1,5 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 
+vi.mock('../../api/_subscription.js', () => ({
+  withTierGate: (_allowed, fn) => fn,
+  requireTier: vi.fn(),
+  getEffectiveSubscription: vi.fn(),
+}))
+
 const mocks = vi.hoisted(() => ({ visionMock: vi.fn() }))
 
 vi.mock('../../api/_gemini.js', () => ({
