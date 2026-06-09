@@ -317,6 +317,8 @@ This placeholder gets replaced in Phase 2 with a real Stripe Checkout call.
 
 Inserted at the top of the Account section, above Change Password.
 
+### Normal trialing (`daysLeft > 2`)
+
 ```
 ┌────────────────────────────────────────┐
 │  🎟️  Subscription                       │
@@ -326,24 +328,61 @@ Inserted at the top of the Account section, above Change Password.
 │  Days left in trial: 4                  │
 │                                          │
 │  [ Choose a plan ]                      │
+│  See what's in each plan ›              │  ← Compare plans link → /pricing
 └────────────────────────────────────────┘
 ```
 
-When expired:
+### Trial ending soon (`daysLeft <= 2`) — yellow warning state
 
 ```
-│  Status:  Expired                       │
+┌────────────────────────────────────────┐
+│  ⚠️  Your trial ends in 1 day            │  ← yellow background + accent border
+├────────────────────────────────────────┤
+│  Choose a plan now to keep tracking,    │
+│  logging meals, and using AI Coach.     │
+│                                          │
+│  [ Choose a plan ]                      │
+│  See what's in each plan ›              │
+└────────────────────────────────────────┘
+```
+
+### Expired
+
+```
+┌────────────────────────────────────────┐
+│  🔒  Subscription expired                │
+├────────────────────────────────────────┤
 │  Trial ended on 2026-06-16              │
-│  [ Subscribe to keep using IronMind ]   │
+│  Subscribe to keep using IronMind.      │
+│                                          │
+│  [ Subscribe ]                          │
+│  See plans ›                            │
+└────────────────────────────────────────┘
 ```
 
-When active:
+### Active (`status === 'active'`)
 
 ```
+┌────────────────────────────────────────┐
+│  🎟️  Subscription                       │
+├────────────────────────────────────────┤
 │  Status:  Active                        │
 │  Tier:    Tier 2 (full access)          │
+│                                          │
 │  [ Manage plan ]   ← /pricing in Phase 1│
+│  Compare plans ›                        │
+└────────────────────────────────────────┘
 ```
+
+### Behaviour rules
+
+- The card chooses the variant based on `useSubscription()`'s result:
+  - `status === 'active'` → Active variant
+  - `status === 'trialing' && daysLeft > 2` → Normal trialing variant
+  - `status === 'trialing' && daysLeft <= 2` → Warning variant (yellow)
+  - everything else (`expired`, `canceled`, `none` effective tier) → Expired variant
+- The **Compare plans link** is identical across variants and just routes to `/pricing`.
+- The **Warning variant** uses the existing `--warning` / yellow design tokens already used by the spec's AI estimate badge (`rgba(255, 204, 0, 0.1)` background, `#ffd34a` text), so we don't introduce new CSS variables.
 
 ## Auth flow integration
 
@@ -402,6 +441,8 @@ When active:
 8. Hitting `/api/analyze-food` similarly returns 403 for `none` tier.
 9. Existing 103 tests still pass.
 10. New tests cover: `tiers.js` `hasTier` boundary cases, `_subscription.js` happy/sad paths (mocked).
+11. Subscription card switches to the yellow warning variant when `daysLeft <= 2` (manual test: set `trial_ends_at` to `now() + 1.5 days` and reload).
+12. The "Compare plans" link appears in every Subscription card variant and navigates to `/pricing`.
 
 ## Open questions for the plan
 
