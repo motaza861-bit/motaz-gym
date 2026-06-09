@@ -1,5 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 
+vi.mock('../../api/_subscription.js', () => ({
+  withTierGate: (_allowed, fn) => fn,
+  requireTier: vi.fn(),
+  getEffectiveSubscription: vi.fn(),
+}))
+
 const mocks = vi.hoisted(() => ({ generateMock: vi.fn() }))
 
 vi.mock('@google/generative-ai', () => ({
