@@ -1,4 +1,5 @@
 /* src/pages/Schedule.css */
+
 .schedule-header-row {
   display: flex;
   justify-content: space-between;
@@ -7,6 +8,7 @@
 }
 
 .schedule-title { font-size: 22px; font-weight: 900; }
+
 .schedule-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
 
 .schedule-edit-btn {
@@ -21,6 +23,7 @@
   cursor: pointer;
   margin-top: 2px;
 }
+
 .schedule-edit-btn--active {
   border-color: var(--accent);
   color: var(--accent);
@@ -36,6 +39,7 @@
   cursor: pointer;
   border-color: var(--accent-glow);
 }
+
 .day-card--editable:active {
   opacity: 0.75;
 }
@@ -91,7 +95,9 @@
 }
 
 .day-rest { font-size: 13px; color: var(--text-muted); }
+
 .day-focus { font-size: 12px; color: var(--accent); font-weight: 700; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+
 .day-muscles { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; }
 
 .day-exercises { display: flex; flex-direction: column; gap: 5px; }
@@ -104,28 +110,5 @@
 }
 
 .day-ex-sets { color: var(--accent); font-weight: 700; }
-
-.protocol-box {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px;
-}
-
-.protocol-title {
-  font-size: 12px;
-  font-weight: 800;
-  color: var(--accent);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 10px;
-}
-
-.protocol-item {
-  font-size: 12px;
-  color: var(--text-muted);
-  margin-bottom: 7px;
-  line-height: 1.5;
-}
 
 .protocol-item strong { color: var(--text); }

@@ -142,12 +142,6 @@
   gap: 2px;
 }
 
-.scanner-macro-val {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--accent);
-}
-
 .scanner-macro-key {
   font-size: 10px;
   color: var(--text-muted);

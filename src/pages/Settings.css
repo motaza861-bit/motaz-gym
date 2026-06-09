@@ -1,20 +1,8 @@
 /* src/pages/Settings.css */
+
 .settings-title { font-size: 22px; font-weight: 900; margin-bottom: 16px; }
 
 .settings-card { padding: 0; overflow: hidden; }
-
-.settings-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 16px;
-}
-
-.settings-item-label { font-size: 14px; font-weight: 700; }
-.settings-item-sub { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
-
-.settings-divider { height: 1px; background: var(--border); margin: 0; }
 
 .settings-btn {
   background: var(--accent);
@@ -31,17 +19,12 @@
   cursor: pointer;
 }
 
-.settings-about { padding: 16px; }
-.settings-about-name { font-size: 15px; font-weight: 800; }
-.settings-about-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
-
 .calc-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
   margin-bottom: 14px;
 }
-.calc-full { grid-column: 1 / -1; }
 
 .calc-label {
   display: flex;
@@ -62,32 +45,9 @@
   font-size: 14px;
   width: 100%;
 }
+
 .calc-input:focus { border-color: var(--accent); outline: none; }
 
-.calc-select {
-  background: var(--bg-input);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-sm);
-  padding: 8px 10px;
-  color: var(--text);
-  font-size: 13px;
-  width: 100%;
-}
-
-.calc-toggle {
-  display: flex;
-  gap: 6px;
-}
-.calc-toggle-btn {
-  flex: 1;
-  padding: 7px 4px;
-  background: var(--bg-input);
-  border-radius: var(--radius-sm);
-  color: var(--text-muted);
-  font-size: 12px;
-  border: 1px solid var(--border-light);
-  transition: background 0.15s, color 0.15s;
-}
 .calc-toggle-btn.active {
   background: var(--accent);
   color: #fff;
@@ -109,6 +69,7 @@
   gap: 10px;
   flex-wrap: wrap;
 }
+
 .calc-result-nums {
   font-size: 13px;
   color: var(--text);
@@ -129,16 +90,12 @@
   line-height: 1.4;
 }
 
-.settings-btn-outline {
-  background: transparent;
-  border: 1px solid var(--accent);
-  color: var(--accent);
-  margin: 0 16px 16px 16px;
-}
-
 /* Appearance section */
+
 .appearance-section { padding: 14px 16px; }
+
 .appearance-divider { height: 1px; background: var(--border); }
+
 .appearance-label {
   font-size: 10px;
   color: var(--text-muted);
@@ -163,6 +120,7 @@
   flex-shrink: 0;
   transition: border-color 0.15s, transform 0.15s;
 }
+
 .accent-dot.active {
   border-color: var(--text);
   transform: scale(1.15);
@@ -177,18 +135,21 @@
   cursor: pointer;
   position: relative;
 }
+
 .accent-custom input[type="color"] {
   position: absolute;
   width: 100%; height: 100%;
   opacity: 0;
   cursor: pointer;
 }
+
 .accent-custom-icon { font-size: 14px; pointer-events: none; }
 
 .card-style-toggle {
   display: flex;
   gap: 8px;
 }
+
 .card-style-btn {
   flex: 1;
   padding: 8px;
@@ -200,6 +161,7 @@
   font-weight: 600;
   transition: border-color 0.15s, color 0.15s;
 }
+
 .card-style-btn.active {
   border-color: var(--accent);
   color: var(--accent);
@@ -210,6 +172,7 @@
   grid-template-columns: 1fr 1fr;
   gap: 8px;
 }
+
 .bg-swatch {
   height: 48px;
   border-radius: var(--radius-sm);
@@ -218,7 +181,9 @@
   padding: 6px 8px;
   transition: border-color 0.15s;
 }
+
 .bg-swatch.active { border-color: var(--accent); }
+
 .bg-swatch-label {
   font-size: 10px;
   font-weight: 700;
@@ -228,6 +193,7 @@
 }
 
 /* Navigation tiles */
+
 .settings-tiles {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -266,6 +232,7 @@
 }
 
 /* Section headers */
+
 .settings-section-header {
   display: flex;
   align-items: center;
@@ -285,8 +252,11 @@
 }
 
 .danger-zone { margin-top: 32px; padding: 16px; }
+
 .danger-zone h3 { margin: 0 0 12px; font-size: 14px; opacity: 0.85; text-transform: uppercase; letter-spacing: 1.5px; }
+
 .danger-zone .settings-btn { width: 100%; margin-top: 8px; }
+
 .settings-btn.danger {
   color: #ff8b8b;
   background: transparent;
@@ -294,24 +264,39 @@
 }
 
 .profile-card { padding: 16px; }
+
 .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+
 .profile-field { display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
+
 .profile-field-full { grid-column: 1 / -1; }
+
 .profile-label { opacity: 0.7; font-size: 12px; }
+
 .profile-weight-row { display: flex; gap: 6px; }
+
 .profile-weight-row .calc-input { flex: 1; }
+
 .profile-unit { flex: 0 0 80px; }
 
 .cp-form { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 10px; }
+
 .cp-form-actions { display: flex; gap: 8px; margin-top: 4px; }
+
 .cp-form-actions .settings-btn { flex: 1; }
+
 .cp-success { margin-top: 8px; color: var(--accent, #5ee2c4); font-size: 13px; }
 
 .about-card { padding: 16px; margin-top: 24px; }
+
 .about-meta { font-size: 13px; line-height: 1.5; opacity: 0.85; }
+
 .about-name { font-weight: 700; font-size: 14px; opacity: 1; }
+
 .about-stack, .about-author { opacity: 0.7; }
+
 .about-links { display: flex; flex-direction: column; margin-top: 12px; gap: 4px; }
+
 .about-link {
   display: flex; align-items: center; justify-content: space-between;
   padding: 10px 12px; border-radius: 8px;
@@ -319,16 +304,23 @@
   color: inherit; text-decoration: none;
   font-size: 14px;
 }
+
 .about-link:hover { background: rgba(255,255,255,0.06); }
 
 .sub-card { padding: 16px; }
+
 .sub-card-warning { background: rgba(255, 204, 0, 0.1); border-color: rgba(255, 204, 0, 0.5); }
+
 .sub-card-expired { background: rgba(255, 80, 80, 0.07); border-color: rgba(255, 80, 80, 0.4); }
 
 .sub-card-title { font-weight: 700; font-size: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+
 .sub-card-row { display: flex; justify-content: space-between; font-size: 14px; opacity: 0.85; padding: 4px 0; }
+
 .sub-card-row-label { opacity: 0.6; }
 
 .sub-card-cta { width: 100%; padding: 12px; border-radius: 10px; border: 0; background: var(--accent, #5ee2c4); color: #0a0a0a; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 10px; }
+
 .sub-card-link { display: inline-block; margin-top: 8px; font-size: 13px; color: var(--accent, #5ee2c4); cursor: pointer; background: transparent; border: 0; padding: 0; }
+
 .sub-card-body { font-size: 14px; opacity: 0.85; margin: 4px 0 8px; line-height: 1.5; }
