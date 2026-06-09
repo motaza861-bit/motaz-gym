@@ -1,4 +1,5 @@
 import { generateVisionJSON } from './_gemini.js'
+import { withTierGate } from './_subscription.js'
 
 const MODEL = 'gemini-2.0-flash'
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
@@ -14,7 +15,7 @@ Return ONLY this JSON (no markdown, no explanation):
 
 If you cannot identify any food, return: {"error":"Could not identify food"}`
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
   const { image, mimeType = 'image/jpeg' } = req.body
@@ -48,3 +49,5 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Failed to analyse image' })
   }
 }
+
+export default withTierGate(['tier1', 'tier2'], handler)

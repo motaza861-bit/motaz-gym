@@ -9,10 +9,12 @@ const SYNC_KEYS = [
   'meals', 'targets', 'profile', 'exercises', 'custom_foods',
   'big_three_logs',
   'chat_history',
+  'subscription',
 ]
 
 const PUBLIC_PATHS = new Set([
   '/login', '/signup', '/forgot-password', '/reset-password', '/verify-email', '/privacy', '/terms',
+  '/pricing',
 ])
 
 export default function AuthGuard({ children }) {

@@ -1,5 +1,7 @@
 import { useRef, useState } from 'react'
 import { useLanguage } from '../context/LanguageContext'
+import { useSubscription } from '../hooks/useSubscription'
+import { hasTier, TIER_1 } from '../lib/tiers'
 import './ExerciseEditForm.css'
 
 export default function ExerciseEditForm({ exercise, onSave, onCancel }) {
@@ -13,10 +15,13 @@ export default function ExerciseEditForm({ exercise, onSave, onCancel }) {
   })
   const [muscleStatus, setMuscleStatus] = useState('idle') // idle | loading | done | error
   const autoFilledRef = useRef(false) // true when muscles was set by AI (not typed manually)
+  const { effectiveTier } = useSubscription()
+  const canCallDetect = hasTier(effectiveTier, TIER_1)
 
   const set = (key, val) => setForm(f => ({ ...f, [key]: val }))
 
   async function handleNameBlur() {
+    if (!canCallDetect) return
     const name = form.name.trim()
     if (!name || muscleStatus === 'loading') return
     // Don't overwrite if user manually typed something

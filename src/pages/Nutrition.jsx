@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useStorage } from '../hooks/useStorage'
+import { useSubscription } from '../hooks/useSubscription'
+import { hasTier, TIER_1 } from '../lib/tiers'
+import Paywall from '../components/Paywall'
 import { useSelectedDate } from '../context/DateContext'
 import { useMeals } from '../hooks/useMeals'
 import { useTargets } from '../hooks/useTargets'
@@ -21,10 +24,16 @@ export default function Nutrition() {
   const navigate = useNavigate()
   const location = useLocation()
   const { selectedDate } = useSelectedDate()
-  const [nutritionLogs, setNutritionLogs] = useStorage('nutrition_logs', [])
-  const [meals, setMeals] = useMeals()
+  const [nutritionLogs, setNutritionLogsRaw] = useStorage('nutrition_logs', [])
+  const [meals, setMealsRaw] = useMeals()
   const [targets] = useTargets()
   const [editingId, setEditingId] = useState(null)
+  const { effectiveTier } = useSubscription()
+  const canWrite = hasTier(effectiveTier, TIER_1)
+  const [paywallOpen, setPaywallOpen] = useState(false)
+  const gate = (raw) => (...args) => { if (!canWrite) { setPaywallOpen(true); return } raw(...args) }
+  const setNutritionLogs = gate(setNutritionLogsRaw)
+  const setMeals = gate(setMealsRaw)
 
   const dateStr = toLocalDateStr(selectedDate)
   const dayLog = nutritionLogs.find(l => l.date === dateStr) ?? { date: dateStr, meals: [], quickLogs: [], calorieBump: 0 }
@@ -139,8 +148,8 @@ export default function Nutrition() {
         <div className="nutrition-header-row">
           <h1 className="nutrition-title">{t('nu.title')}</h1>
           <div className="nutrition-header-btns">
-            <button className="nutrition-scan-btn" onClick={() => navigate('/food-search')} aria-label="Search food">🔍</button>
-            <button className="nutrition-scan-btn" onClick={() => navigate('/food-scan')} aria-label="Scan food">📷</button>
+            <button className="nutrition-scan-btn" onClick={() => canWrite ? navigate('/food-search') : setPaywallOpen(true)} aria-label="Search food">🔍</button>
+            <button className="nutrition-scan-btn" onClick={() => canWrite ? navigate('/food-scan') : setPaywallOpen(true)} aria-label="Scan food">📷</button>
           </div>
         </div>
         <div className="nutrition-sub">
@@ -238,6 +247,13 @@ export default function Nutrition() {
         <button className="add-meal-btn" onClick={() => setEditingId('new')}>{t('nu.add_meal')}</button>
       )}
 
+      {paywallOpen && (
+        <div className="paywall-modal-bg" onClick={() => setPaywallOpen(false)}>
+          <div className="paywall-modal" onClick={(e) => e.stopPropagation()}>
+            <Paywall feature="log_nutrition" />
+          </div>
+        </div>
+      )}
     </div>
   )
 }

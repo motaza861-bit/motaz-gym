@@ -1,4 +1,6 @@
-export default async function handler(req, res) {
+import { withTierGate } from './_subscription.js'
+
+async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
   const { barcode } = req.body ?? {}
@@ -52,3 +54,5 @@ export default async function handler(req, res) {
     return res.status(200).json({ found: false })
   }
 }
+
+export default withTierGate(['tier1', 'tier2'], handler)

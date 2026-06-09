@@ -6,6 +6,9 @@ import saudiFoods from '../data/saudiFoods.json'
 import '../components/FoodSearch.css'
 import './FoodSearchPage.css'
 import BarcodeScanner from '../components/BarcodeScanner'
+import Paywall from '../components/Paywall'
+import { useSubscription } from '../hooks/useSubscription'
+import { hasTier, TIER_1 } from '../lib/tiers'
 
 const EMOJI_PRESETS = ['🍗','🥩','🐟','🥚','🥛','🍚','🥦','🍎','🥜','🍫']
 
@@ -22,6 +25,23 @@ function calcMacros(per100g, portionG) {
 }
 
 export default function FoodSearchPage() {
+  const navigate = useNavigate()
+  const { effectiveTier } = useSubscription()
+  if (!hasTier(effectiveTier, TIER_1)) {
+    return (
+      <div className="fpage">
+        <div className="fpage-header">
+          <button className="fpage-back" onClick={() => navigate(-1)}>←</button>
+          <span className="fpage-title">Search food</span>
+        </div>
+        <Paywall feature="log_nutrition" />
+      </div>
+    )
+  }
+  return <FoodSearchInner />
+}
+
+function FoodSearchInner() {
   const { t } = useLanguage()
   const navigate = useNavigate()
 

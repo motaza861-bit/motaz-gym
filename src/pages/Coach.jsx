@@ -6,6 +6,9 @@ import { toLocalDateStr } from '../utils/dateHelpers'
 import { applyModifyWorkout, applyLogFood } from '../lib/coachTools'
 import ChatBubble from '../components/ChatBubble'
 import ProposalCard from '../components/ProposalCard'
+import Paywall from '../components/Paywall'
+import { useSubscription } from '../hooks/useSubscription'
+import { hasTier, TIER_2 } from '../lib/tiers'
 import './Coach.css'
 
 const MAX_HISTORY = 200
@@ -16,6 +19,21 @@ function newId(prefix) {
 }
 
 export default function Coach() {
+  const { effectiveTier } = useSubscription()
+  if (!hasTier(effectiveTier, TIER_2)) {
+    return (
+      <div className="coach-page">
+        <div className="coach-header">
+          <span className="coach-title">🤖 AI Coach</span>
+        </div>
+        <Paywall feature="coach" />
+      </div>
+    )
+  }
+  return <CoachInner />
+}
+
+function CoachInner() {
   const [history, setHistory] = useStorage('chat_history', [])
   const [program, setProgram] = useExercises()
   const [targets] = useTargets()

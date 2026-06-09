@@ -1,4 +1,11 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
+
+vi.mock('../../api/_subscription.js', () => ({
+  withTierGate: (_allowed, fn) => fn,
+  requireTier: vi.fn(),
+  getEffectiveSubscription: vi.fn(),
+}))
+
 import handler from '../../api/lookup-barcode.js'
 
 function mockRes() {

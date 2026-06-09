@@ -1,4 +1,5 @@
 import { generateJSON } from './_gemini.js'
+import { withTierGate } from './_subscription.js'
 
 const MODEL = 'gemini-2.0-flash'
 
@@ -6,7 +7,7 @@ const SYSTEM = `You are a nutrition expert. Estimate macros for a meal descripti
 Return ONLY valid JSON with whole numbers, no explanation:
 {"calories":number,"protein":number,"carbs":number,"fat":number}`
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
   const { description } = req.body ?? {}
@@ -31,3 +32,5 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Failed to estimate macros' })
   }
 }
+
+export default withTierGate(['tier1', 'tier2'], handler)

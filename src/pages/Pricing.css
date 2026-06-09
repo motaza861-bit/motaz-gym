@@ -1,0 +1,74 @@
+.pricing-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 16px 80px;
+}
+
+.pricing-title { font-size: 22px; font-weight: 900; text-align: center; margin: 12px 0 24px; }
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+@media (min-width: 560px) {
+  .pricing-grid { grid-template-columns: 1fr 1fr; }
+}
+
+.pricing-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pricing-card-popular {
+  border-color: rgba(94, 226, 196, 0.6);
+  box-shadow: 0 0 0 1px rgba(94, 226, 196, 0.3);
+}
+
+.pricing-tier { font-size: 14px; opacity: 0.7; letter-spacing: 0.04em; text-transform: uppercase; }
+.pricing-price { font-size: 28px; font-weight: 800; }
+.pricing-price-suffix { font-size: 14px; opacity: 0.6; font-weight: 500; }
+
+.pricing-popular-pill {
+  display: inline-block;
+  background: rgba(94, 226, 196, 0.15);
+  color: var(--accent, #5ee2c4);
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  width: max-content;
+}
+
+.pricing-features { list-style: none; padding: 0; margin: 8px 0; font-size: 14px; line-height: 1.7; }
+.pricing-features li::before { content: '\2713 '; color: var(--accent, #5ee2c4); margin-right: 4px; }
+.pricing-features li.disabled { opacity: 0.45; }
+.pricing-features li.disabled::before { content: '\2717 '; color: #ff8b8b; }
+
+.pricing-subscribe {
+  background: var(--accent, #5ee2c4);
+  color: #0a0a0a;
+  border: 0;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.pricing-soon {
+  background: rgba(255, 204, 0, 0.1);
+  border: 1px solid rgba(255, 204, 0, 0.4);
+  color: #ffd34a;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 13px;
+  margin-top: 12px;
+  text-align: center;
+}
+.pricing-trial { font-size: 13px; opacity: 0.7; text-align: center; margin-top: 24px; }

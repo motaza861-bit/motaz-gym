@@ -63,11 +63,21 @@ export async function pullAll(keys) {
   const { data, error } = await supabase
     .from('user_data')
     .select('key, value')
-  if (error || !data) return
-  for (const row of data) {
-    if (keys.includes(row.key)) {
-      localStorage.setItem(row.key, JSON.stringify(row.value))
+  if (!error && data) {
+    for (const row of data) {
+      if (keys.includes(row.key)) {
+        localStorage.setItem(row.key, JSON.stringify(row.value))
+      }
     }
+  }
+  // Subscription view: pull and cache as a single blob the useSubscription hook reads.
+  if (keys.includes('subscription')) {
+    const { data: sub } = await supabase
+      .from('effective_subscription')
+      .select('*')
+      .eq('user_id', userId)
+      .single()
+    if (sub) localStorage.setItem('subscription', JSON.stringify(sub))
   }
 }
 

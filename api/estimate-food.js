@@ -1,4 +1,5 @@
 import { generateJSON } from './_gemini.js'
+import { withTierGate } from './_subscription.js'
 
 const MODEL = 'gemini-2.0-flash'
 
@@ -8,7 +9,7 @@ Return ONLY this JSON (no markdown, no explanation):
 Use your best judgement for region-specific or branded products.
 If the query is too vague or you can't make a sensible estimate, return: {"error":"Could not estimate"}`
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
   const { query } = req.body ?? {}
@@ -59,3 +60,5 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Failed to estimate' })
   }
 }
+
+export default withTierGate(['tier1', 'tier2'], handler)

@@ -156,3 +156,21 @@
 .fav-chip-kcal { font-size: 10px; color: var(--text-muted); }
 
 .quick-log-ai { color: #ffd34a; }
+
+.paywall-modal-bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: grid;
+  place-items: center;
+  z-index: 100;
+  padding: 20px;
+}
+.paywall-modal {
+  max-width: 400px;
+  width: 100%;
+  background: #121821;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.08);
+  overflow: hidden;
+}

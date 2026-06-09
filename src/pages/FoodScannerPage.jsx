@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../context/LanguageContext'
 import '../components/FoodScanner.css'
 import './FoodSearchPage.css'
+import Paywall from '../components/Paywall'
+import { useSubscription } from '../hooks/useSubscription'
+import { hasTier, TIER_1 } from '../lib/tiers'
 
 function compressImage(file) {
   return new Promise((resolve, reject) => {
@@ -24,6 +27,23 @@ function compressImage(file) {
 }
 
 export default function FoodScannerPage() {
+  const navigate = useNavigate()
+  const { effectiveTier } = useSubscription()
+  if (!hasTier(effectiveTier, TIER_1)) {
+    return (
+      <div className="fpage">
+        <div className="fpage-header">
+          <button className="fpage-back" onClick={() => navigate(-1)}>←</button>
+          <span className="fpage-title">Scan food</span>
+        </div>
+        <Paywall feature="ai_photo_scan" />
+      </div>
+    )
+  }
+  return <FoodScannerInner />
+}
+
+function FoodScannerInner() {
   const { t } = useLanguage()
   const navigate = useNavigate()
   const [state, setState] = useState('idle')

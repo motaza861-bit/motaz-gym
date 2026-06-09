@@ -9,6 +9,7 @@ import { useLanguage } from '../context/LanguageContext'
 import ProfileCard from '../components/ProfileCard'
 import ChangePasswordForm from '../components/ChangePasswordForm'
 import AboutCard from '../components/AboutCard'
+import SubscriptionCard from '../components/SubscriptionCard'
 import './Settings.css'
 
 const ACTIVITY_OPTIONS = [
@@ -248,6 +249,7 @@ export default function Settings() {
       {/* Account */}
       <div className="settings-section danger-zone">
         <h3>Account</h3>
+        <SubscriptionCard />
         <button
           className="settings-btn"
           onClick={async () => {
