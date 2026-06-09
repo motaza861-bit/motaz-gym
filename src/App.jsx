@@ -20,6 +20,7 @@ import VerifyEmail from './pages/VerifyEmail'
 import Privacy from './pages/Privacy'
 import Terms from './pages/Terms'
 import Coach from './pages/Coach'
+import Pricing from './pages/Pricing'
 
 export default function App() {
   useTheme()
@@ -36,6 +37,7 @@ export default function App() {
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
+          <Route path="/pricing" element={<Pricing />} />
 
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/dashboard" element={<><Dashboard /><BottomNav /></>} />
