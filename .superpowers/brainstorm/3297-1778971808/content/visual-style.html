@@ -1,0 +1,328 @@
+<h2>How should the Arctic theme feel?</h2>
+<p class="subtitle">Same color palette — different visual treatment. Pick the style that excites you most.</p>
+
+<style>
+:root {
+  --cy: #00E5FF;
+  --cy2: #0099BB;
+  --navy: #060A12;
+  --navy2: #0a1220;
+  --navy3: #0d1f35;
+  --text-a: #e0f4ff;
+  --muted: #2a4a5e;
+}
+
+.style-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin: 24px 0;
+}
+
+.style-card {
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.2s, transform 0.15s;
+  background: #08111d;
+}
+.style-card:hover { transform: translateY(-3px); }
+.style-card.selected { border-color: #7c6aff !important; }
+
+.preview-area {
+  height: 230px;
+  padding: 14px 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.style-footer {
+  padding: 10px 12px 12px;
+  background: #050c18;
+}
+.style-name { font-size: 13px; font-weight: 800; }
+.style-desc { font-size: 10px; color: #4a6a7a; margin-top: 3px; line-height: 1.4; }
+
+/* ====== A: GLASS ====== */
+.glass-bg {
+  background: linear-gradient(160deg, #070d1a 0%, #060e20 50%, #060A12 100%);
+}
+.glass-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(30px);
+  opacity: 0.4;
+  pointer-events: none;
+}
+.glass-week { font-size: 7px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+.glass-greet { font-size: 13px; font-weight: 900; color: var(--text-a); margin-top: 2px; }
+.glass-greet span { color: var(--cy); }
+.glass-panel {
+  margin-top: 10px;
+  background: rgba(0,229,255,0.04);
+  border: 1px solid rgba(0,229,255,0.15);
+  border-radius: 12px;
+  padding: 10px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 0 20px rgba(0,229,255,0.06), inset 0 1px 0 rgba(0,229,255,0.08);
+}
+.glass-session { font-size: 7px; color: var(--cy); text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
+.glass-name { font-size: 10px; font-weight: 900; color: var(--text-a); margin: 3px 0 1px; }
+.glass-muscles { font-size: 7px; color: var(--muted); }
+.glass-btn {
+  margin-top: 8px;
+  background: rgba(0,229,255,0.12);
+  border: 1px solid rgba(0,229,255,0.3);
+  border-radius: 8px;
+  padding: 6px;
+  text-align: center;
+  color: var(--cy);
+  font-size: 8px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 0 12px rgba(0,229,255,0.1);
+}
+.glass-pills { display: flex; gap: 5px; margin-top: 8px; }
+.glass-pill {
+  font-size: 6px;
+  background: rgba(0,229,255,0.07);
+  border: 1px solid rgba(0,229,255,0.18);
+  color: var(--cy);
+  border-radius: 20px;
+  padding: 3px 8px;
+}
+.glass-bar-section { margin-top: 8px; }
+.glass-bar-row { margin-bottom: 5px; }
+.glass-bar-label { display: flex; justify-content: space-between; font-size: 6px; color: var(--muted); margin-bottom: 2px; }
+.glass-bar-track { height: 3px; background: rgba(0,229,255,0.08); border-radius: 2px; overflow: hidden; }
+.glass-bar-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--cy2), var(--cy)); box-shadow: 0 0 6px rgba(0,229,255,0.5); }
+
+/* ====== B: BOLD METRICS ====== */
+.bold-bg { background: #060A12; }
+.bold-accent-line {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--cy), transparent);
+}
+.bold-week { font-size: 7px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+.bold-greet { font-size: 11px; font-weight: 900; color: var(--text-a); margin-top: 2px; }
+.bold-greet span { color: var(--cy); }
+.bold-hero {
+  margin-top: 8px;
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+}
+.bold-kcal-num { font-size: 36px; font-weight: 900; color: var(--cy); line-height: 1; }
+.bold-kcal-label { font-size: 7px; color: var(--muted); padding-bottom: 4px; line-height: 1.3; }
+.bold-divider { width: 1px; height: 30px; background: rgba(0,229,255,0.15); }
+.bold-stats { display: flex; flex-direction: column; gap: 3px; }
+.bold-stat { font-size: 7px; }
+.bold-stat-num { font-size: 12px; font-weight: 900; color: var(--text-a); }
+.bold-stat-unit { font-size: 6px; color: var(--muted); }
+.bold-session-card {
+  margin-top: 8px;
+  background: #0a1525;
+  border-radius: 8px;
+  padding: 8px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-left: 2px solid var(--cy);
+}
+.bold-session-info .label { font-size: 6px; color: var(--cy); text-transform: uppercase; font-weight: 700; }
+.bold-session-info .name { font-size: 9px; font-weight: 800; color: var(--text-a); }
+.bold-session-info .muscles { font-size: 6px; color: var(--muted); }
+.bold-go { font-size: 14px; }
+.bold-macro-row { display: flex; gap: 4px; margin-top: 8px; }
+.bold-macro {
+  flex: 1;
+  background: #0a1525;
+  border-radius: 6px;
+  padding: 5px;
+  text-align: center;
+}
+.bold-macro-val { font-size: 10px; font-weight: 900; color: var(--text-a); }
+.bold-macro-name { font-size: 6px; color: var(--muted); }
+
+/* ====== C: RINGS ====== */
+.rings-bg { background: #060A12; }
+.rings-week { font-size: 7px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+.rings-greet { font-size: 11px; font-weight: 900; color: var(--text-a); margin: 2px 0 6px; }
+.rings-greet span { color: var(--cy); }
+.rings-center {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  margin: 4px 0;
+}
+.rings-center svg { filter: drop-shadow(0 0 8px rgba(0,229,255,0.3)); }
+.rings-center-label {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+.rings-center-num { font-size: 16px; font-weight: 900; color: var(--cy); }
+.rings-center-sub { font-size: 6px; color: var(--muted); }
+.rings-legend { display: flex; justify-content: center; gap: 10px; margin-bottom: 6px; }
+.rings-legend-item { text-align: center; }
+.rings-legend-dot { width: 6px; height: 6px; border-radius: 50%; margin: 0 auto 2px; }
+.rings-legend-label { font-size: 6px; color: var(--muted); }
+.rings-legend-val { font-size: 8px; font-weight: 700; color: var(--text-a); }
+.rings-session {
+  background: rgba(0,229,255,0.05);
+  border: 1px solid rgba(0,229,255,0.12);
+  border-radius: 8px;
+  padding: 6px 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.rings-session-l .tag { font-size: 6px; color: var(--cy); text-transform: uppercase; font-weight: 700; }
+.rings-session-l .name { font-size: 9px; font-weight: 800; color: var(--text-a); }
+.rings-session-l .sub { font-size: 6px; color: var(--muted); }
+.rings-go-btn {
+  background: linear-gradient(135deg, var(--cy2), var(--cy));
+  color: #000;
+  font-size: 7px;
+  font-weight: 900;
+  border-radius: 6px;
+  padding: 5px 8px;
+  text-transform: uppercase;
+}
+</style>
+
+<div class="style-grid">
+
+  <!-- A: Glassmorphism -->
+  <div class="style-card" data-choice="glass" onclick="toggleSelect(this)">
+    <div class="preview-area glass-bg">
+      <div class="glass-orb" style="width:80px;height:80px;background:#00E5FF;top:-20px;right:-10px;"></div>
+      <div class="glass-orb" style="width:50px;height:50px;background:#0055ff;bottom:20px;left:-10px;"></div>
+      <div class="glass-week">Week 3 · Sunday</div>
+      <div class="glass-greet">Let's go, <span>Motaz ⚡</span></div>
+      <div class="glass-panel">
+        <div class="glass-session">Push · Session A</div>
+        <div class="glass-name">Push Day</div>
+        <div class="glass-muscles">Chest · Shoulders · Triceps</div>
+        <div class="glass-btn">▶ Start Workout</div>
+        <div class="glass-pills">
+          <div class="glass-pill">🔥 5-day streak</div>
+          <div class="glass-pill">💪 12 sessions</div>
+        </div>
+      </div>
+      <div class="glass-bar-section">
+        <div class="glass-bar-row">
+          <div class="glass-bar-label"><span>Protein</span><span>165g / 220g</span></div>
+          <div class="glass-bar-track"><div class="glass-bar-fill" style="width:75%"></div></div>
+        </div>
+        <div class="glass-bar-row">
+          <div class="glass-bar-label"><span>Carbs</span><span>110g / 250g</span></div>
+          <div class="glass-bar-track"><div class="glass-bar-fill" style="width:44%;opacity:0.7"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="style-footer">
+      <div class="style-name" style="color:#00E5FF;">A — Glass</div>
+      <div class="style-desc">Frosted glass cards, glowing edges, cyan bloom effects in the background</div>
+    </div>
+  </div>
+
+  <!-- B: Bold Metrics -->
+  <div class="style-card" data-choice="bold" onclick="toggleSelect(this)">
+    <div class="preview-area bold-bg">
+      <div class="bold-accent-line"></div>
+      <div class="bold-week">Week 3 · Sunday</div>
+      <div class="bold-greet">Let's go, <span>Motaz</span></div>
+      <div class="bold-hero">
+        <div class="bold-kcal-num">2 140</div>
+        <div class="bold-kcal-label">kcal<br>remaining</div>
+        <div class="bold-divider"></div>
+        <div class="bold-stats">
+          <div class="bold-stat"><span class="bold-stat-num">165</span><span class="bold-stat-unit">g P</span></div>
+          <div class="bold-stat"><span class="bold-stat-num">110</span><span class="bold-stat-unit">g C</span></div>
+          <div class="bold-stat"><span class="bold-stat-num">48</span><span class="bold-stat-unit">g F</span></div>
+        </div>
+      </div>
+      <div class="bold-session-card">
+        <div class="bold-session-info">
+          <div class="label">Push · Session A</div>
+          <div class="name">Push Day</div>
+          <div class="muscles">Chest · Shoulders · Triceps</div>
+        </div>
+        <div class="bold-go">▶</div>
+      </div>
+      <div class="bold-macro-row">
+        <div class="bold-macro"><div class="bold-macro-val" style="color:#00E5FF;">🔥 5</div><div class="bold-macro-name">streak</div></div>
+        <div class="bold-macro"><div class="bold-macro-val">12</div><div class="bold-macro-name">sessions</div></div>
+        <div class="bold-macro"><div class="bold-macro-val">3</div><div class="bold-macro-name">this wk</div></div>
+      </div>
+    </div>
+    <div class="style-footer">
+      <div class="style-name" style="color:#00E5FF;">B — Bold Metrics</div>
+      <div class="style-desc">Giant numbers front-and-center, stats lead the page, data-dense layout</div>
+    </div>
+  </div>
+
+  <!-- C: Rings -->
+  <div class="style-card" data-choice="rings" onclick="toggleSelect(this)">
+    <div class="preview-area rings-bg">
+      <div class="rings-week">Week 3 · Sunday</div>
+      <div class="rings-greet">Let's go, <span>Motaz ⚡</span></div>
+      <div class="rings-center">
+        <svg width="90" height="90" viewBox="0 0 90 90">
+          <!-- fat ring (outer) -->
+          <circle cx="45" cy="45" r="40" fill="none" stroke="rgba(0,229,255,0.08)" stroke-width="5"/>
+          <circle cx="45" cy="45" r="40" fill="none" stroke="rgba(0,229,255,0.35)" stroke-width="5"
+            stroke-dasharray="251" stroke-dashoffset="80" stroke-linecap="round" transform="rotate(-90 45 45)"/>
+          <!-- carb ring (middle) -->
+          <circle cx="45" cy="45" r="32" fill="none" stroke="rgba(0,229,255,0.08)" stroke-width="5"/>
+          <circle cx="45" cy="45" r="32" fill="none" stroke="rgba(0,180,220,0.6)" stroke-width="5"
+            stroke-dasharray="201" stroke-dashoffset="112" stroke-linecap="round" transform="rotate(-90 45 45)"/>
+          <!-- protein ring (inner) -->
+          <circle cx="45" cy="45" r="24" fill="none" stroke="rgba(0,229,255,0.08)" stroke-width="5"/>
+          <circle cx="45" cy="45" r="24" fill="none" stroke="#00E5FF" stroke-width="5"
+            stroke-dasharray="151" stroke-dashoffset="38" stroke-linecap="round" transform="rotate(-90 45 45)"/>
+        </svg>
+        <div class="rings-center-label">
+          <div class="rings-center-num">75%</div>
+          <div class="rings-center-sub">protein</div>
+        </div>
+      </div>
+      <div class="rings-legend">
+        <div class="rings-legend-item">
+          <div class="rings-legend-dot" style="background:#00E5FF;box-shadow:0 0 4px #00E5FF;"></div>
+          <div class="rings-legend-label">Protein</div>
+          <div class="rings-legend-val">165g</div>
+        </div>
+        <div class="rings-legend-item">
+          <div class="rings-legend-dot" style="background:#0099BB;"></div>
+          <div class="rings-legend-label">Carbs</div>
+          <div class="rings-legend-val">110g</div>
+        </div>
+        <div class="rings-legend-item">
+          <div class="rings-legend-dot" style="background:rgba(0,229,255,0.35);"></div>
+          <div class="rings-legend-label">Fat</div>
+          <div class="rings-legend-val">48g</div>
+        </div>
+      </div>
+      <div class="rings-session">
+        <div class="rings-session-l">
+          <div class="tag">Push · Session A</div>
+          <div class="name">Push Day</div>
+          <div class="sub">Chest · Shoulders · Triceps</div>
+        </div>
+        <div class="rings-go-btn">GO ▶</div>
+      </div>
+    </div>
+    <div class="style-footer">
+      <div class="style-name" style="color:#00E5FF;">C — Rings</div>
+      <div class="style-desc">Concentric macro rings, radial progress, data visualized not just listed</div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,17 @@
+/* src/components/PRAlert.css */
+.pr-alert {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(90deg, rgba(255,140,0,0.1), var(--accent-glow));
+  border: 1px solid rgba(255, 140, 0, 0.3);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+
+.pr-icon { font-size: 26px; }
+.pr-body { flex: 1; }
+.pr-title { font-size: 13px; font-weight: 800; color: var(--orange); }
+.pr-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.pr-weight { font-size: 20px; font-weight: 900; color: var(--accent); }

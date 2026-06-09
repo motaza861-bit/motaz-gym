@@ -1,0 +1,74 @@
+/* src/pages/Dashboard.css */
+.dash-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.dash-week {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.dash-greeting {
+  font-size: 24px;
+  font-weight: 900;
+  margin-top: 4px;
+}
+
+.dash-greeting span { color: var(--accent); }
+
+.dash-header-right { display: flex; align-items: center; gap: 10px; }
+
+.dash-settings-btn { font-size: 20px; opacity: 0.6; transition: opacity 0.2s; }
+.dash-settings-btn:hover { opacity: 1; }
+
+.dash-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-dark), var(--accent));
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 18px;
+  color: #000;
+}
+
+.dash-pills {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.pill {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-pill);
+  padding: 6px 14px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.pill.hot {
+  border-color: var(--accent-glow);
+  background: rgba(255,255,255,0.04);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.dash-macro-card {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.rest-card {
+  text-align: center;
+  padding: 28px 16px;
+  margin-bottom: 12px;
+}
+.rest-emoji { font-size: 36px; margin-bottom: 8px; }
+.rest-title { font-size: 18px; font-weight: 800; }
+.rest-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }

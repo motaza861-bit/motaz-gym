@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IronMind — Theme Customizer</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #03070f;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  color: #e0f4ff;
+  padding: 30px 24px 60px;
+  min-height: 100vh;
+}
+
+h1 { font-size: 22px; font-weight: 900; margin-bottom: 6px; }
+.page-sub { font-size: 13px; color: #2a4a5e; margin-bottom: 32px; }
+
+.layout { display: flex; gap: 32px; flex-wrap: wrap; align-items: flex-start; }
+
+/* ── Settings panel ── */
+.settings-panel {
+  width: 300px;
+  flex-shrink: 0;
+}
+.settings-title {
+  font-size: 11px;
+  color: #2a4a5e;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.settings-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 12px;
+}
+
+/* Color picker section */
+.color-section { margin-bottom: 20px; }
+.color-label { font-size: 13px; font-weight: 700; color: #e0f4ff; margin-bottom: 4px; }
+.color-hint { font-size: 11px; color: #2a4a5e; margin-bottom: 12px; }
+.color-presets { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.color-dot {
+  width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform 0.15s, border-color 0.15s;
+  position: relative;
+}
+.color-dot:hover { transform: scale(1.1); }
+.color-dot.active { border-color: #fff; box-shadow: 0 0 0 3px rgba(255,255,255,0.15); }
+.color-dot.active::after {
+  content: '✓';
+  position: absolute;
+  inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; color: #000; font-weight: 900;
+}
+.color-picker-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  cursor: pointer;
+}
+.color-picker-swatch {
+  width: 24px; height: 24px; border-radius: 6px;
+  background: #00E5FF;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.color-picker-text { font-size: 12px; color: #4a6a7a; }
+.color-picker-value { font-size: 12px; color: #e0f4ff; font-family: monospace; margin-left: auto; }
+input[type="color"] { opacity: 0; position: absolute; width: 0; height: 0; }
+
+/* Card style toggle */
+.toggle-section { margin-bottom: 20px; }
+.toggle-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+}
+.toggle-opt {
+  padding: 12px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(255,255,255,0.07);
+  background: rgba(255,255,255,0.02);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+}
+.toggle-opt.active {
+  border-color: #00E5FF;
+  background: rgba(0,229,255,0.06);
+  box-shadow: 0 0 16px rgba(0,229,255,0.08);
+}
+.toggle-opt-icon { font-size: 22px; margin-bottom: 5px; }
+.toggle-opt-label { font-size: 12px; font-weight: 700; color: #e0f4ff; }
+.toggle-opt-desc { font-size: 10px; color: #2a4a5e; margin-top: 2px; }
+
+/* Background darkness */
+.bg-section {}
+.bg-swatches { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+.bg-swatch {
+  border-radius: 10px;
+  padding: 10px 6px;
+  border: 1.5px solid rgba(255,255,255,0.06);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+}
+.bg-swatch.active {
+  border-color: #00E5FF;
+  box-shadow: 0 0 12px rgba(0,229,255,0.1);
+}
+.bg-circle {
+  width: 28px; height: 28px; border-radius: 50%;
+  margin: 0 auto 6px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.bg-swatch-label { font-size: 9px; color: #4a6a7a; }
+.bg-swatch.active .bg-swatch-label { color: #00E5FF; }
+
+/* ── Live preview phones ── */
+.preview-area { flex: 1; min-width: 280px; }
+.preview-label { font-size: 11px; color: #2a4a5e; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; margin-bottom: 16px; }
+.phones-row { display: flex; gap: 20px; flex-wrap: wrap; }
+
+.phone {
+  width: 160px;
+  height: 300px;
+  border-radius: 24px;
+  border: 1.5px solid rgba(255,255,255,0.08);
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.7);
+  flex-shrink: 0;
+}
+.phone-inner { padding: 14px 12px; position: relative; z-index: 1; height: 100%; }
+.orb { position: absolute; border-radius: 50%; filter: blur(30px); pointer-events: none; }
+
+.ph-week { font-size: 7px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+.ph-greet { font-size: 12px; font-weight: 900; margin-bottom: 8px; }
+
+/* Glass card variant */
+.ph-card-glass {
+  border-radius: 12px;
+  padding: 10px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid;
+  backdrop-filter: blur(10px);
+  margin-bottom: 8px;
+  position: relative;
+  overflow: hidden;
+}
+.ph-card-glass::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, currentColor, transparent);
+  opacity: 0.4;
+}
+/* Flat card variant */
+.ph-card-flat {
+  border-radius: 12px;
+  padding: 10px;
+  border: 1px solid;
+  margin-bottom: 8px;
+}
+
+.ph-session-tag { font-size: 6px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-bottom: 3px; }
+.ph-session-name { font-size: 10px; font-weight: 900; color: #e0f4ff; margin-bottom: 1px; }
+.ph-session-muscles { font-size: 7px; margin-bottom: 8px; }
+.ph-btn {
+  width: 100%; padding: 6px; border-radius: 8px;
+  font-size: 7px; font-weight: 900;
+  text-align: center; text-transform: uppercase; letter-spacing: 1px;
+  color: #000;
+}
+.ph-rings { display: flex; justify-content: space-around; margin-top: 6px; }
+.ph-ring-item { text-align: center; }
+.ph-ring-label { font-size: 6px; margin-top: 3px; }
+.ph-ring-val { font-size: 8px; font-weight: 900; color: #e0f4ff; }
+
+.phone-caption {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.phone-caption-sub { font-size: 10px; color: #2a4a5e; margin-top: 2px; text-align: center; }
+
+.phone-col { display: flex; flex-direction: column; }
+</style>
+</head>
+<body>
+
+<h1>Theme Customizer</h1>
+<p class="page-sub">3 independent controls — all stored in localStorage, applied on boot via CSS variables</p>
+
+<div class="layout">
+
+  <!-- Settings UI -->
+  <div class="settings-panel">
+    <p class="settings-title">Appearance Settings</p>
+
+    <div class="settings-card">
+      <!-- Accent color -->
+      <div class="color-section">
+        <div class="color-label">Accent Color</div>
+        <div class="color-hint">Drives buttons, rings, glows, highlights</div>
+        <div class="color-presets">
+          <div class="color-dot active" style="background:#00E5FF;box-shadow:0 0 10px rgba(0,229,255,0.5);" title="Arctic Cyan"></div>
+          <div class="color-dot" style="background:#ff3c3c;box-shadow:0 0 10px rgba(255,60,60,0.4);" title="Inferno Red"></div>
+          <div class="color-dot" style="background:#AAFF00;box-shadow:0 0 10px rgba(170,255,0,0.4);" title="Volt Green"></div>
+          <div class="color-dot" style="background:#D4AF37;box-shadow:0 0 10px rgba(212,175,55,0.4);" title="Gold"></div>
+          <div class="color-dot" style="background:#BF5FFF;box-shadow:0 0 10px rgba(191,95,255,0.4);" title="Ultraviolet"></div>
+          <div class="color-dot" style="background:#FF6B35;box-shadow:0 0 10px rgba(255,107,53,0.4);" title="Ember Orange"></div>
+        </div>
+        <div class="color-picker-row">
+          <div class="color-picker-swatch" id="swatchPreview"></div>
+          <span class="color-picker-text">Custom color</span>
+          <span class="color-picker-value" id="hexVal">#00E5FF</span>
+          <input type="color" id="colorPicker" value="#00e5ff">
+        </div>
+      </div>
+
+      <!-- Card style -->
+      <div class="toggle-section">
+        <div class="color-label" style="margin-bottom:4px;">Card Style</div>
+        <div class="color-hint">How cards look throughout the app</div>
+        <div class="toggle-row">
+          <div class="toggle-opt active" id="glassOpt">
+            <div class="toggle-opt-icon">🔲</div>
+            <div class="toggle-opt-label">Glass</div>
+            <div class="toggle-opt-desc">Frosted, glowing edges, blur</div>
+          </div>
+          <div class="toggle-opt" id="flatOpt">
+            <div class="toggle-opt-icon">▪️</div>
+            <div class="toggle-opt-label">Flat</div>
+            <div class="toggle-opt-desc">Solid, clean, no blur</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Background darkness -->
+      <div class="bg-section">
+        <div class="color-label" style="margin-bottom:4px;">Background</div>
+        <div class="color-hint">Base darkness of the app</div>
+        <div class="bg-swatches">
+          <div class="bg-swatch" data-bg="#000000">
+            <div class="bg-circle" style="background:#000;"></div>
+            <div class="bg-swatch-label">Abyss</div>
+          </div>
+          <div class="bg-swatch active" data-bg="#060A12">
+            <div class="bg-circle" style="background:#060A12;"></div>
+            <div class="bg-swatch-label">Deep</div>
+          </div>
+          <div class="bg-swatch" data-bg="#0d0d0d">
+            <div class="bg-circle" style="background:#0d0d0d;"></div>
+            <div class="bg-swatch-label">Dark</div>
+          </div>
+          <div class="bg-swatch" data-bg="#1a1a2e">
+            <div class="bg-circle" style="background:#1a1a2e;"></div>
+            <div class="bg-swatch-label">Void</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:11px;color:#2a4a5e;line-height:1.6;padding:0 4px;">
+      ✦ Choice is saved instantly to localStorage<br>
+      ✦ Applied on boot via CSS custom properties on <code style="color:#4a7a8a;">:root</code><br>
+      ✦ No page reload needed — changes apply live
+    </div>
+  </div>
+
+  <!-- Live previews -->
+  <div class="preview-area">
+    <p class="preview-label">How it looks — same controls, different accent colors</p>
+    <div class="phones-row">
+
+      <!-- Cyan + Glass + Deep -->
+      <div class="phone-col">
+        <div class="phone" id="phone1">
+          <div style="background:#060A12;height:100%;position:relative;">
+            <div class="orb" style="width:100px;height:100px;background:#00E5FF;opacity:0.08;top:-30px;right:-20px;"></div>
+            <div class="phone-inner">
+              <div class="ph-week" style="color:rgba(0,229,255,0.4);">Week 3 · Sunday</div>
+              <div class="ph-greet" style="color:#e0f4ff;">Let's go, <span style="color:#00E5FF;">Motaz ⚡</span></div>
+              <div class="ph-card-glass" style="border-color:rgba(0,229,255,0.15);color:#00E5FF;">
+                <div class="ph-session-tag" style="color:#00E5FF;">Push · Session A</div>
+                <div class="ph-session-name">Push Day</div>
+                <div class="ph-session-muscles" style="color:rgba(0,229,255,0.3);">Chest · Shoulders · Triceps</div>
+                <div class="ph-btn" style="background:linear-gradient(90deg,#0099BB,#00E5FF);">▶ Start Workout</div>
+              </div>
+              <div class="ph-rings">
+                <div class="ph-ring-item">
+                  <svg width="38" height="38" viewBox="0 0 38 38">
+                    <circle cx="19" cy="19" r="15" fill="none" stroke="rgba(0,229,255,0.1)" stroke-width="4"/>
+                    <circle cx="19" cy="19" r="15" fill="none" stroke="#00E5FF" stroke-width="4" stroke-dasharray="94" stroke-dashoffset="24" stroke-linecap="round" transform="rotate(-90 19 19)" style="filter:drop-shadow(0 0 3px #00E5FF)"/>
+                    <text x="19" y="23" text-anchor="middle" fill="#e0f4ff" font-size="8" font-weight="900" font-family="system-ui">75%</text>
+                  </svg>
+                  <div class="ph-ring-label" style="color:rgba(0,229,255,0.5);">Protein</div>
+                </div>
+                <div class="ph-ring-item">
+                  <svg width="38" height="38" viewBox="0 0 38 38">
+                    <circle cx="19" cy="19" r="15" fill="none" stroke="rgba(0,229,255,0.1)" stroke-width="4"/>
+                    <circle cx="19" cy="19" r="15" fill="none" stroke="#0099BB" stroke-width="4" stroke-dasharray="94" stroke-dashoffset="53" stroke-linecap="round" transform="rotate(-90 19 19)"/>
+                    <text x="19" y="23" text-anchor="middle" fill="#e0f4ff" font-size="8" font-weight="900" font-family="system-ui">44%</text>
+                  </svg>
+                  <div class="ph-ring-label" style="color:rgba(0,229,255,0.5);">Carbs</div>
+                </div>
+                <div class="ph-ring-item">
+                  <svg width="38" height="38" viewBox="0 0 38 38">
+                    <circle cx="19" cy="19" r="15" fill="none" stroke="rgba(0,229,255,0.1)" stroke-width="4"/>
+                    <circle cx="19" cy="19" r="15" fill="none" stroke="rgba(0,180,220,0.5)" stroke-width="4" stroke-dasharray="94" stroke-dashoffset="30" stroke-linecap="round" transform="rotate(-90 19 19)"/>
+                    <text x="19" y="23" text-anchor="middle" fill="#e0f4ff" font-size="8" font-weight="900" font-family="system-ui">68%</text>
+                  </svg>
+                  <div class="ph-ring-label" style="color:rgba(0,229,255,0.5);">Fat</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-caption" style="color:#00E5FF;">Cyan + Glass</div>
+        <div class="phone-caption-sub">Deep bg</div>
+      </div>
+
+      <!-- Volt + Flat + Abyss -->
+      <div class="phone-col">
+        <div class="phone">
+          <div style="background:#000;height:100%;position:relative;">
+            <div class="phone-inner">
+              <div class="ph-week" style="color:rgba(170,255,0,0.35);">Week 3 · Sunday</div>
+              <div class="ph-greet" style="color:#e0f4ff;">Let's go, <span style="color:#AAFF00;">Motaz ⚡</span></div>
+              <div class="ph-card-flat" style="background:#0d0d0d;border-color:rgba(170,255,0,0.15);">
+                <div class="ph-session-tag" style="color:#AAFF00;">Push · Session A</div>
+                <div class="ph-session-name">Push Day</div>
+                <div class="ph-session-muscles" style="color:rgba(170,255,0,0.3);">Chest · Shoulders · Triceps</div>
+                <div class="ph-btn" style="background:#AAFF00;margin-top:4px;">▶ Start Workout</div>
+              </div>
+              <div class="ph-rings">
+                <div class="ph-ring-item">
+                  <svg width="38" height="38" viewBox="0 0 38 38">
+                    <circle cx="19" cy="19" r="15" fill="none" stroke="rgba(170,255,0,0.1)" stroke-width="4"/>
+                    <circle cx="19" cy="19" r="15" fill="none" stroke="#AAFF00" stroke-width="4" stroke-dasharray="94" stroke-dashoffset="24" stroke-linecap="round" transform="rotate(-90 19 19)" style="filter:drop-shadow(0 0 3px #AAFF00)"/>
+                    <text x="19" y="23" text-anchor="middle" fill="#e0f4ff" font-size="8" font-weight="900" font-family="system-ui">75%</text>
+                  </svg>
+                  <div class="ph-ring-label" style="color:rgba(170,255,0,0.5);">Protein</div>
+                </div>
+                <div class="ph-ring-item">
+                  <svg width="38" height="38" viewBox="0 0 38 38">
+                    <circle cx="19" cy="19" r="15" fill="none" stroke="rgba(170,255,0,0.1)" stroke-width="4"/>
+                    <circle cx="19" cy="19" r="15" fill="none" stroke="rgba(130,200,0,0.7)" stroke-width="4" stroke-dasharray="94" stroke-dashoffset="53" stroke-linecap="round" transform="rotate(-90 19 19)"/>
+                    <text x="19" y="23" text-anchor="middle" fill="#e0f4ff" font-size="8" font-weight="900" font-family="system-ui">44%</text>
+                  </svg>
+                  <div class="ph-ring-label" style="color:rgba(170,255,0,0.5);">Carbs</div>
+                </div>
+                <div class="ph-ring-item">
+                  <svg width="38" height="38" viewBox="0 0 38 38">
+                    <circle cx="19" cy="19" r="15" fill="none" stroke="rgba(170,255,0,0.1)" stroke-width="4"/>
+                    <circle cx="19" cy="19" r="15" fill="none" stroke="rgba(130,200,0,0.4)" stroke-width="4" stroke-dasharray="94" stroke-dashoffset="30" stroke-linecap="round" transform="rotate(-90 19 19)"/>
+                    <text x="19" y="23" text-anchor="middle" fill="#e0f4ff" font-size="8" font-weight="900" font-family="system-ui">68%</text>
+                  </svg>
+                  <div class="ph-ring-label" style="color:rgba(170,255,0,0.5);">Fat</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-caption" style="color:#AAFF00;">Volt + Flat</div>
+        <div class="phone-caption-sub">Abyss bg</div>
+      </div>
+
+      <!-- Purple + Glass + Void -->
+      <div class="phone-col">
+        <div class="phone">
+          <div style="background:#1a1a2e;height:100%;position:relative;">
+            <div class="orb" style="width:100px;height:100px;background:#BF5FFF;opacity:0.1;top:-20px;right:-20px;"></div>
+            <div class="phone-inner">
+              <div class="ph-week" style="color:rgba(191,95,255,0.4);">Week 3 · Sunday</div>
+              <div class="ph-greet" style="color:#e0f4ff;">Let's go, <span style="color:#BF5FFF;">Motaz ⚡</span></div>
+              <div class="ph-card-glass" style="border-color:rgba(191,95,255,0.18);color:#BF5FFF;background:rgba(191,95,255,0.04);">
+                <div class="ph-session-tag" style="color:#BF5FFF;">Push · Session A</div>
+                <div class="ph-session-name">Push Day</div>
+                <div class="ph-session-muscles" style="color:rgba(191,95,255,0.35);">Chest · Shoulders · Triceps</div>
+                <div class="ph-btn" style="background:linear-gradient(90deg,#8B2FCC,#BF5FFF);margin-top:4px;">▶ Start Workout</div>
+              </div>
+              <div class="ph-rings">
+                <div class="ph-ring-item">
+                  <svg width="38" height="38" viewBox="0 0 38 38">
+                    <circle cx="19" cy="19" r="15" fill="none" stroke="rgba(191,95,255,0.12)" stroke-width="4"/>
+                    <circle cx="19" cy="19" r="15" fill="none" stroke="#BF5FFF" stroke-width="4" stroke-dasharray="94" stroke-dashoffset="24" stroke-linecap="round" transform="rotate(-90 19 19)" style="filter:drop-shadow(0 0 3px #BF5FFF)"/>
+                    <text x="19" y="23" text-anchor="middle" fill="#e0f4ff" font-size="8" font-weight="900" font-family="system-ui">75%</text>
+                  </svg>
+                  <div class="ph-ring-label" style="color:rgba(191,95,255,0.5);">Protein</div>
+                </div>
+                <div class="ph-ring-item">
+                  <svg width="38" height="38" viewBox="0 0 38 38">
+                    <circle cx="19" cy="19" r="15" fill="none" stroke="rgba(191,95,255,0.12)" stroke-width="4"/>
+                    <circle cx="19" cy="19" r="15" fill="none" stroke="rgba(150,60,200,0.7)" stroke-width="4" stroke-dasharray="94" stroke-dashoffset="53" stroke-linecap="round" transform="rotate(-90 19 19)"/>
+                    <text x="19" y="23" text-anchor="middle" fill="#e0f4ff" font-size="8" font-weight="900" font-family="system-ui">44%</text>
+                  </svg>
+                  <div class="ph-ring-label" style="color:rgba(191,95,255,0.5);">Carbs</div>
+                </div>
+                <div class="ph-ring-item">
+                  <svg width="38" height="38" viewBox="0 0 38 38">
+                    <circle cx="19" cy="19" r="15" fill="none" stroke="rgba(191,95,255,0.12)" stroke-width="4"/>
+                    <circle cx="19" cy="19" r="15" fill="none" stroke="rgba(150,60,200,0.4)" stroke-width="4" stroke-dasharray="94" stroke-dashoffset="30" stroke-linecap="round" transform="rotate(-90 19 19)"/>
+                    <text x="19" y="23" text-anchor="middle" fill="#e0f4ff" font-size="8" font-weight="900" font-family="system-ui">68%</text>
+                  </svg>
+                  <div class="ph-ring-label" style="color:rgba(191,95,255,0.5);">Fat</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-caption" style="color:#BF5FFF;">Purple + Glass</div>
+        <div class="phone-caption-sub">Void bg</div>
+      </div>
+
+    </div>
+
+    <div style="margin-top:28px;padding:16px 20px;background:rgba(0,229,255,0.04);border:1px solid rgba(0,229,255,0.1);border-radius:14px;">
+      <div style="font-size:12px;font-weight:800;color:#00E5FF;margin-bottom:8px;">How it works technically</div>
+      <div style="font-size:11px;color:#4a7a8a;line-height:1.7;">
+        • <strong style="color:#8ab4c4;">One CSS variable</strong> <code style="color:#00E5FF;">--accent</code> replaces all the hardcoded color values across every page<br>
+        • <strong style="color:#8ab4c4;">Card style</strong> switches a <code style="color:#00E5FF;">data-card-style</code> attribute on <code>&lt;html&gt;</code> — glass vs flat is handled by CSS<br>
+        • <strong style="color:#8ab4c4;">Background</strong> sets <code style="color:#00E5FF;">--bg</code> and <code>--bg-card</code> from 4 presets<br>
+        • <strong style="color:#8ab4c4;">Settings page</strong> gets a new "Appearance" section with a native color picker + the toggles shown above<br>
+        • Changes apply <strong style="color:#8ab4c4;">instantly</strong> — no reload needed
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

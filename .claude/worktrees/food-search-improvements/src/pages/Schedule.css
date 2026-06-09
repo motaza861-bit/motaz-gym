@@ -1,0 +1,131 @@
+/* src/pages/Schedule.css */
+.schedule-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.schedule-title { font-size: 22px; font-weight: 900; }
+.schedule-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+.schedule-edit-btn {
+  flex-shrink: 0;
+  background: transparent;
+  border: 1px solid var(--border-light);
+  color: var(--text-muted);
+  border-radius: var(--radius-pill);
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 2px;
+}
+.schedule-edit-btn--active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.schedule-edit-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: -12px 0 14px;
+}
+
+.day-card--editable {
+  cursor: pointer;
+  border-color: var(--accent-glow);
+}
+.day-card--editable:active {
+  opacity: 0.75;
+}
+
+.day-cycle-hint {
+  font-size: 14px;
+  color: var(--accent);
+  opacity: 0.7;
+}
+
+.week-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+
+.day-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+
+.day-card.today {
+  border-color: var(--accent-glow);
+  background: linear-gradient(135deg, #1a0000, #111);
+}
+
+.day-card.rest { opacity: 0.5; }
+
+.day-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.day-name { font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+
+.today-badge {
+  background: var(--accent);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.session-badge {
+  background: rgba(255,255,255,0.04);
+  color: var(--accent);
+  border: 1px solid var(--accent-glow);
+  font-size: 12px;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+}
+
+.day-rest { font-size: 13px; color: var(--text-muted); }
+.day-focus { font-size: 12px; color: var(--accent); font-weight: 700; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+.day-muscles { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; }
+
+.day-exercises { display: flex; flex-direction: column; gap: 5px; }
+
+.day-ex {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #bbb;
+}
+
+.day-ex-sets { color: var(--accent); font-weight: 700; }
+
+.protocol-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+.protocol-title {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.protocol-item {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 7px;
+  line-height: 1.5;
+}
+
+.protocol-item strong { color: var(--text); }

@@ -1,0 +1,14 @@
+/* src/components/RestTimer.css */
+.rest-timer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0,0,0,0.0) ;
+  border: 1px solid var(--accent-glow);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin-top: 10px;
+}
+
+.rest-timer-label { font-size: 12px; color: var(--text-muted); }
+.rest-timer-display { font-size: 22px; font-weight: 900; color: var(--accent); }

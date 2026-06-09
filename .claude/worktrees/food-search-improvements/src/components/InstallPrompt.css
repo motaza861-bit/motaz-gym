@@ -1,0 +1,23 @@
+.install-banner {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: calc(76px + env(safe-area-inset-bottom, 0));
+  background: #121821;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  z-index: 90;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+.install-banner-text { flex: 1; font-size: 13px; line-height: 1.4; }
+.install-banner-actions { display: flex; gap: 8px; }
+.install-banner button {
+  border: 1px solid rgba(255,255,255,0.15);
+  background: transparent; color: inherit;
+  padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 13px;
+}
+.install-banner button.primary { background: var(--accent, #5ee2c4); color: #0a0a0a; border-color: transparent; font-weight: 600; }

@@ -1,0 +1,129 @@
+.ex-edit-form {
+  background: var(--bg-card);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 8px;
+}
+
+.ex-edit-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+.ex-edit-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.ex-edit-full {
+  grid-column: 1 / -1;
+}
+
+.ex-edit-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ex-edit-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.ex-edit-input {
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 14px;
+  padding: 8px 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ex-edit-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.ex-edit-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.ex-edit-cancel {
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-size: 13px;
+  padding: 7px 14px;
+  cursor: pointer;
+}
+
+.ex-edit-save {
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 14px;
+  cursor: pointer;
+}
+
+.ex-edit-save:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ex-edit-cancel:hover { border-color: var(--text-muted); }
+
+/* Muscle auto-detection */
+.ex-edit-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ex-muscle-spinner {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border: 1.5px solid var(--border-light);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: ex-spin 0.7s linear infinite;
+}
+
+@keyframes ex-spin {
+  to { transform: rotate(360deg); }
+}
+
+.ex-muscle-tag {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.ex-muscle-done  { color: var(--accent); background: rgba(76,175,80,0.12); }
+.ex-muscle-error { color: var(--text-muted); background: var(--bg); }
+
+.ex-input-loading {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

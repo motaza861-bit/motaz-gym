@@ -1,0 +1,98 @@
+<h2>How should meal editing work?</h2>
+<p class="subtitle">You want to change meals, remove the protein shake, add your own</p>
+
+<div class="cards">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#111;padding:14px;border-radius:8px;font-family:monospace;font-size:12px">
+      <div style="color:#aaa;font-size:10px;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Meal Plan</div>
+      <!-- Normal meal -->
+      <div style="background:#1a1a1a;border-radius:8px;padding:10px 12px;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:18px">🍳</span>
+          <div>
+            <div style="color:#fff;font-weight:600">Breakfast</div>
+            <div style="color:#888;font-size:10px">620 kcal · 45g P · 75g C · 18g F</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px">
+          <div style="background:#222;border-radius:6px;padding:4px 8px;color:#aaa;font-size:11px">✏️</div>
+          <div style="background:#222;border-radius:6px;padding:4px 8px;color:#555;font-size:11px">🗑</div>
+        </div>
+      </div>
+      <!-- Expanded edit state -->
+      <div style="background:#1f1f1f;border:1px solid #ff3c3c;border-radius:8px;padding:12px;margin-bottom:6px">
+        <div style="color:#ff3c3c;font-size:10px;margin-bottom:8px;text-transform:uppercase">Editing: Lunch</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
+          <div style="background:#111;border-radius:6px;padding:6px 8px">
+            <div style="color:#666;font-size:9px">Name</div>
+            <div style="color:#fff;font-size:12px">Lunch</div>
+          </div>
+          <div style="background:#111;border-radius:6px;padding:6px 8px">
+            <div style="color:#666;font-size:9px">Calories</div>
+            <div style="color:#fff;font-size:12px">620</div>
+          </div>
+          <div style="background:#111;border-radius:6px;padding:6px 8px">
+            <div style="color:#666;font-size:9px">Protein (g)</div>
+            <div style="color:#fff;font-size:12px">55</div>
+          </div>
+          <div style="background:#111;border-radius:6px;padding:6px 8px">
+            <div style="color:#666;font-size:9px">Carbs (g)</div>
+            <div style="color:#fff;font-size:12px">70</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;justify-content:flex-end">
+          <div style="background:#333;border-radius:6px;padding:5px 12px;color:#aaa;font-size:11px">Cancel</div>
+          <div style="background:#ff3c3c;border-radius:6px;padding:5px 12px;color:#fff;font-size:11px">Save</div>
+        </div>
+      </div>
+      <!-- Add meal button -->
+      <div style="border:1px dashed #333;border-radius:8px;padding:8px;text-align:center;color:#555;font-size:11px">+ Add meal</div>
+    </div>
+    <div class="card-body">
+      <h3>A — Inline editing (recommended)</h3>
+      <p>Edit/delete buttons on each meal in the Nutrition page. Tap edit to expand a form right there. Add new meals at the bottom. No new page needed.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#111;padding:14px;border-radius:8px;font-family:monospace;font-size:12px">
+      <!-- Settings page -->
+      <div style="color:#aaa;font-size:10px;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Settings</div>
+      <div style="background:#1a1a1a;border-radius:8px;padding:10px 12px;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div style="color:#fff;font-size:12px">Manage Meals</div>
+          <div style="color:#888;font-size:10px">5 meals · 2,400 kcal</div>
+        </div>
+        <span style="color:#888">›</span>
+      </div>
+      <div style="background:#1a1a1a;border-radius:8px;padding:10px 12px;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div style="color:#fff;font-size:12px">Calorie Target</div>
+          <div style="color:#888;font-size:10px">2,400 kcal/day</div>
+        </div>
+        <span style="color:#888">›</span>
+      </div>
+      <!-- Manage Meals sub-page -->
+      <div style="margin-top:10px;color:#aaa;font-size:10px;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">Manage Meals</div>
+      <div style="background:#1a1a1a;border-radius:8px;overflow:hidden">
+        <div style="padding:8px 12px;border-bottom:1px solid #222;display:flex;justify-content:space-between;align-items:center">
+          <span style="color:#fff;font-size:12px">🍳 Breakfast</span>
+          <span style="color:#888;font-size:11px">✏️ 🗑</span>
+        </div>
+        <div style="padding:8px 12px;border-bottom:1px solid #222;display:flex;justify-content:space-between;align-items:center">
+          <span style="color:#555;font-size:12px;text-decoration:line-through">🥛 Pre-Workout</span>
+          <span style="color:#888;font-size:11px">✏️ 🗑</span>
+        </div>
+        <div style="padding:8px 12px;display:flex;justify-content:space-between;align-items:center">
+          <span style="color:#fff;font-size:12px">🍗 Lunch</span>
+          <span style="color:#888;font-size:11px">✏️ 🗑</span>
+        </div>
+      </div>
+      <div style="margin-top:6px;border:1px dashed #333;border-radius:8px;padding:7px;text-align:center;color:#555;font-size:11px">+ Add meal</div>
+    </div>
+    <div class="card-body">
+      <h3>B — Meal manager in Settings</h3>
+      <p>A dedicated "Manage Meals" section inside Settings. Separate from the daily tracking view. Cleaner separation but requires navigating away from Nutrition.</p>
+    </div>
+  </div>
+</div>

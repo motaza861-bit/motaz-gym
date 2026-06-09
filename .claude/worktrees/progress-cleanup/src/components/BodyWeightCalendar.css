@@ -1,0 +1,69 @@
+.bw-cal { background: rgba(255,255,255,0.02); border-radius: 10px; padding: 12px; margin-top: 12px; }
+
+.bw-cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.bw-cal-title { font-size: 14px; font-weight: 700; }
+.bw-cal-nav {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: inherit;
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.bw-cal-day-labels { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 4px; }
+.bw-cal-day-label { text-align: center; font-size: 11px; opacity: 0.5; padding: 2px 0; }
+
+.bw-cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+
+.bw-cal-cell {
+  aspect-ratio: 1 / 1;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  color: inherit;
+  cursor: pointer;
+  font-size: 12px;
+}
+.bw-cal-cell--empty { background: transparent; border: 0; cursor: default; }
+.bw-cal-cell--logged { background: rgba(94, 226, 196, 0.08); border-color: rgba(94, 226, 196, 0.3); }
+
+.bw-cal-cell-day { font-size: 11px; opacity: 0.7; }
+.bw-cal-cell-w { font-size: 12px; font-weight: 700; color: var(--accent, #5ee2c4); }
+
+.bw-cal-editor {
+  margin-top: 12px;
+  padding: 12px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 10px;
+}
+.bw-cal-editor-date { font-size: 13px; opacity: 0.7; margin-bottom: 6px; }
+.bw-cal-editor-input {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 10px;
+  color: inherit;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+.bw-cal-editor-actions { display: flex; gap: 8px; }
+.bw-cal-editor-actions button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.bw-cal-cancel { background: transparent; color: inherit; border: 1px solid rgba(255,255,255,0.15); }
+.bw-cal-delete { background: rgba(255, 80, 80, 0.12); color: #ff5c5c; border: 1px solid rgba(255, 80, 80, 0.3); }
+.bw-cal-save { background: var(--accent, #5ee2c4); color: #0a0a0a; border: 0; }

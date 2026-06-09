@@ -1,0 +1,50 @@
+/* src/components/WorkoutCard.css */
+.workout-card {
+  background: linear-gradient(135deg, #1a0000 0%, #130000 100%);
+  border: 1px solid var(--accent-glow);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.wc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.wc-eyebrow {
+  font-size: 10px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+}
+
+.wc-title { font-size: 18px; font-weight: 900; margin-top: 3px; }
+.wc-muscles { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+
+.wc-badge {
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+}
+
+.wc-exercises { margin-bottom: 14px; }
+
+.wc-ex {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+
+.wc-ex:last-child { border-bottom: none; }
+.wc-ex-name { color: #ccc; }
+.wc-ex-sets { color: var(--accent); font-weight: 700; }
+.wc-ex-more { font-size: 11px; color: var(--text-dim); padding-top: 6px; }

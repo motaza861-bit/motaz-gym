@@ -1,0 +1,13 @@
+
+> motaz-gym@0.0.0 test
+> vitest
+
+
+ RUN  v4.1.6 C:/Users/Ehab/.local/bin/motaz-gym
+
+
+ Test Files  3 passed (3)
+      Tests  21 passed (21)
+   Start at  01:00:12
+   Duration  6.20s (transform 171ms, setup 490ms, import 354ms, tests 109ms, environment 4.37s)
+

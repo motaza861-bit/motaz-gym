@@ -1,0 +1,188 @@
+/* src/pages/WorkoutLogger.css */
+
+/* Sub-tab row */
+.wl-tab-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.wl-tab {
+  flex: 1;
+  padding: 10px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.wl-tab.wl-tab-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.wl-classes { width: 100%; }
+
+.logger-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.logger-title { font-size: 20px; font-weight: 900; }
+.logger-sub { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+
+.logger-timer {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--accent-glow);
+  border-radius: var(--radius-pill);
+  padding: 6px 14px;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--accent);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.logger-timer--idle {
+  opacity: 0.55;
+}
+.logger-timer--running {
+  opacity: 1;
+}
+
+.logger-rest {
+  text-align: center;
+  padding: 60px 20px;
+}
+.logger-rest-emoji { font-size: 48px; margin-bottom: 16px; }
+.logger-rest h2 { font-size: 22px; font-weight: 900; }
+.logger-rest p { color: var(--text-muted); margin-top: 8px; }
+
+.swap-overlay { margin-bottom: 12px; }
+.swap-title { font-size: 13px; font-weight: 800; color: var(--accent); margin-bottom: 10px; }
+
+.swap-input {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  color: var(--text);
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.swap-actions { display: flex; gap: 8px; }
+
+.swap-cancel {
+  flex: 1;
+  background: var(--bg-input);
+  border: 1px solid var(--border-light);
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.swap-confirm {
+  flex: 1;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.add-exercise-btn {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  background: none;
+  border: 1px dashed var(--border-light);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  text-align: center;
+  margin-top: 8px;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.add-exercise-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* AI Tweak Panel */
+.tweak-panel {
+  margin-top: 8px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.tweak-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  width: 100%;
+  background: none;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  text-align: start;
+}
+
+.tweak-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.tweak-chevron {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.tweak-body {
+  padding: 0 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tweak-input {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  color: var(--text);
+  font-size: 13px;
+  resize: none;
+  line-height: 1.5;
+}
+.tweak-input:focus { border-color: var(--accent); outline: none; }
+
+.tweak-btn {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.tweak-msg {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0;
+}
+.tweak-success { color: #4caf50; }
+.tweak-error   { color: #ff3c3c; }
+

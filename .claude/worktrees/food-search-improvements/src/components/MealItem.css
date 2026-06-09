@@ -1,0 +1,159 @@
+.meal-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.meal-item.meal-eaten { border-color: rgba(76,175,80,0.3); }
+.meal-item:hover { border-color: var(--border-light); }
+
+.meal-emoji { font-size: 24px; flex-shrink: 0; }
+.meal-body { flex: 1; min-width: 0; }
+.meal-name { font-size: 14px; font-weight: 700; }
+.meal-time { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+.meal-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+.meal-kcal { font-size: 14px; font-weight: 800; color: var(--accent); }
+
+.meal-actions { display: flex; gap: 2px; }
+.meal-action-btn {
+  background: var(--bg-input);
+  border-radius: 6px;
+  padding: 3px 6px;
+  font-size: 13px;
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+.meal-action-btn:hover { opacity: 1; }
+
+.meal-check {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--bg-input);
+  border: 1px solid var(--border-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800;
+}
+.meal-check.checked { background: var(--green); border-color: var(--green); color: #fff; }
+
+/* Edit form */
+.meal-edit-form {
+  background: var(--bg-card);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 10px;
+}
+.meal-edit-title {
+  font-size: 11px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.meal-edit-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.meal-edit-full { grid-column: 1 / -1; }
+.meal-edit-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+.meal-edit-input {
+  background: var(--bg-input);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 7px 10px;
+  color: var(--text);
+  font-size: 13px;
+  width: 100%;
+}
+.meal-edit-input:focus { border-color: var(--accent); outline: none; }
+.meal-edit-emoji { text-align: center; font-size: 18px; }
+.meal-edit-actions { display: flex; gap: 8px; justify-content: flex-end; }
+.meal-edit-cancel {
+  background: var(--bg-input);
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  padding: 8px 16px;
+  font-size: 13px;
+}
+.meal-edit-save {
+  background: var(--accent);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  padding: 8px 20px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.meal-edit-save:hover { background: var(--accent-dark); }
+.meal-fav-btn { opacity: 0.5; }
+.meal-fav-btn.meal-fav-on { opacity: 1; }
+
+.meal-desc-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.meal-desc-row .meal-edit-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.meal-ai-btn {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-light);
+  background: var(--bg-input);
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.meal-ai-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.meal-ai-btn--done { border-color: var(--accent); background: rgba(var(--accent-rgb, 76,175,80), 0.1); }
+.meal-ai-btn--error { border-color: var(--accent); }
+
+.meal-ai-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--border-light);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: meal-spin 0.7s linear infinite;
+}
+
+@keyframes meal-spin {
+  to { transform: rotate(360deg); }
+}
+
+.meal-ai-status {
+  font-size: 11px;
+  margin-top: 4px;
+  display: block;
+}
+
+.meal-ai-status--loading { color: var(--text-muted); }
+.meal-ai-status--done    { color: var(--accent); }
+.meal-ai-status--error   { color: var(--accent); }

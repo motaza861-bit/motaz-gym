@@ -1,0 +1,196 @@
+<style>
+  body { font-family: -apple-system, sans-serif; background: #060A12; color: #e0f4ff; }
+  h2 { font-size: 15px; font-weight: 700; color: #00E5FF; text-transform: uppercase;
+       letter-spacing: 1.5px; margin: 0 0 12px; }
+  .layout { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; align-items: flex-start; margin-top: 8px; }
+  .col { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .col-label { font-size: 11px; color: #4a7a90; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+  .phone {
+    width: 270px;
+    background: #060A12;
+    border-radius: 28px;
+    border: 2px solid #1a2a3a;
+    overflow: hidden;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.6);
+  }
+  .screen { padding: 16px 14px 24px; max-height: 540px; overflow: hidden; }
+
+  /* ---- shared ---- */
+  .card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(0,229,255,0.1);
+    border-radius: 14px;
+    padding: 14px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  /* ---- settings ---- */
+  .s-title { font-size: 18px; font-weight: 900; color: #e0f4ff; margin-bottom: 16px; }
+  .s-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+  .s-tile {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(0,229,255,0.12);
+    border-radius: 14px;
+    padding: 14px 12px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .s-tile-icon { font-size: 20px; margin-bottom: 2px; }
+  .s-tile-label { font-size: 12px; font-weight: 800; color: #e0f4ff; }
+  .s-tile-sub { font-size: 10px; color: #4a7a90; }
+  .s-section-header { display: flex; align-items: center; gap: 7px; margin-bottom: 7px; }
+  .s-section-icon { font-size: 14px; }
+  .s-section-label { font-size: 10px; color: #00E5FF; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; }
+  .appearance-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .a-label { font-size: 11px; color: #4a7a90; font-weight: 600; }
+  .dots { display: flex; gap: 5px; }
+  .dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid transparent; }
+  .dot.active { border-color: white; }
+  .style-toggle { display: flex; gap: 4px; }
+  .style-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(0,229,255,0.15);
+               border-radius: 7px; padding: 3px 9px; font-size: 10px; color: #e0f4ff; font-weight: 600; }
+  .style-btn.active { border-color: #00E5FF; color: #00E5FF; }
+
+  /* ---- food scanner ---- */
+  .f-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .f-title { font-size: 15px; font-weight: 800; color: #e0f4ff; }
+  .f-close { color: #4a7a90; font-size: 13px; }
+  .f-img { width: 100%; height: 100px; background: linear-gradient(135deg, #1a2a3a, #0a1a2a);
+           border-radius: 12px; margin-bottom: 10px; display: flex; align-items: center;
+           justify-content: center; font-size: 28px; }
+  .f-name-input {
+    width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px; padding: 7px 10px; color: #e0f4ff; font-size: 13px; font-weight: 700;
+    text-align: center; margin-bottom: 10px; box-sizing: border-box;
+  }
+  .f-portion-row { display: flex; align-items: center; justify-content: center; gap: 7px; margin-bottom: 12px; }
+  .f-portion-label { font-size: 10px; color: #4a7a90; text-transform: uppercase; letter-spacing: 0.8px;
+                     font-weight: 700; width: 48px; text-align: right; }
+  .f-portion-input { width: 60px; background: rgba(255,255,255,0.05);
+                     border: 1px solid rgba(0,229,255,0.35); border-radius: 7px; padding: 5px 6px;
+                     color: #00E5FF; font-size: 14px; font-weight: 800; text-align: center; }
+  .f-portion-unit { font-size: 11px; color: #4a7a90; }
+  .f-macros { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; margin-bottom: 12px; }
+  .f-macro { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .f-macro-input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+                   border-radius: 7px; padding: 5px 4px; color: #e0f4ff; font-size: 13px; font-weight: 900;
+                   text-align: center; }
+  .f-macro-key { font-size: 9px; color: #4a7a90; text-transform: uppercase; letter-spacing: 0.5px; }
+  .f-actions { display: flex; gap: 8px; }
+  .f-btn-secondary { flex: 1; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+                     border-radius: 10px; padding: 9px; color: #e0f4ff; font-size: 12px; font-weight: 600; }
+  .f-btn-primary { flex: 1.5; background: linear-gradient(90deg,#009db5,#00E5FF); border: none;
+                   border-radius: 10px; padding: 9px; color: #000; font-size: 12px; font-weight: 800; }
+</style>
+
+<h2>What's new — live on motaz-gym.vercel.app</h2>
+<p class="subtitle">Settings now has a tile nav grid. Food scanner shows editable portion + macro fields.</p>
+
+<div class="layout">
+
+  <!-- Settings -->
+  <div class="col">
+    <div class="phone">
+      <div class="screen">
+        <div class="s-title">Settings ⚙️</div>
+
+        <div class="s-tiles">
+          <div class="s-tile">
+            <div class="s-tile-icon">🎨</div>
+            <div class="s-tile-label">Appearance</div>
+            <div class="s-tile-sub">Theme &amp; colours</div>
+          </div>
+          <div class="s-tile">
+            <div class="s-tile-icon">🏋️</div>
+            <div class="s-tile-label">Training</div>
+            <div class="s-tile-sub">Workout program</div>
+          </div>
+          <div class="s-tile">
+            <div class="s-tile-icon">🥗</div>
+            <div class="s-tile-label">Nutrition</div>
+            <div class="s-tile-sub">Macros &amp; targets</div>
+          </div>
+          <div class="s-tile">
+            <div class="s-tile-icon">💾</div>
+            <div class="s-tile-label">Data</div>
+            <div class="s-tile-sub">Backup &amp; restore</div>
+          </div>
+        </div>
+
+        <div class="s-section-header">
+          <span class="s-section-icon">🎨</span>
+          <span class="s-section-label">Appearance</span>
+        </div>
+        <div class="card" style="margin-bottom:0">
+          <div class="appearance-row">
+            <span class="a-label">Accent</span>
+            <div class="dots">
+              <div class="dot active" style="background:#00E5FF"></div>
+              <div class="dot" style="background:#ff3c3c"></div>
+              <div class="dot" style="background:#AAFF00"></div>
+              <div class="dot" style="background:#FFB800"></div>
+              <div class="dot" style="background:#BF5AF2"></div>
+              <div class="dot" style="background:#FF6B00"></div>
+            </div>
+          </div>
+          <div class="appearance-row" style="margin-bottom:0">
+            <span class="a-label">Card style</span>
+            <div class="style-toggle">
+              <div class="style-btn active">Glass</div>
+              <div class="style-btn">Flat</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-label">Settings page</div>
+  </div>
+
+  <!-- Food Scanner -->
+  <div class="col">
+    <div class="phone">
+      <div class="screen">
+        <div class="f-header">
+          <span class="f-title">Scan Food</span>
+          <span class="f-close">✕</span>
+        </div>
+
+        <div class="f-img">🍟</div>
+
+        <input class="f-name-input" value="French Fries" readonly />
+
+        <div class="f-portion-row">
+          <span class="f-portion-label">Portion</span>
+          <div class="f-portion-input">120</div>
+          <span class="f-portion-unit">g</span>
+        </div>
+
+        <div class="f-macros">
+          <div class="f-macro">
+            <div class="f-macro-input">389</div>
+            <span class="f-macro-key">kcal</span>
+          </div>
+          <div class="f-macro">
+            <div class="f-macro-input">4</div>
+            <span class="f-macro-key">protein</span>
+          </div>
+          <div class="f-macro">
+            <div class="f-macro-input">50</div>
+            <span class="f-macro-key">carbs</span>
+          </div>
+          <div class="f-macro">
+            <div class="f-macro-input">19</div>
+            <span class="f-macro-key">fat</span>
+          </div>
+        </div>
+
+        <div class="f-actions">
+          <button class="f-btn-secondary">Try Again</button>
+          <button class="f-btn-primary">Add to Log</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-label">Food scanner result</div>
+  </div>
+
+</div>

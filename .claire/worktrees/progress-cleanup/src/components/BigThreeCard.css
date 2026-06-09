@@ -1,0 +1,61 @@
+.b3-card { padding: 16px; }
+.b3-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.b3-title { margin: 0; font-size: 16px; font-weight: 700; }
+.b3-add-btn {
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 0;
+  background: var(--accent, #5ee2c4);
+  color: #0a0a0a;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.b3-latest { font-size: 14px; opacity: 0.85; margin-bottom: 8px; }
+.b3-empty { font-size: 13px; opacity: 0.6; margin-bottom: 8px; }
+
+.b3-add-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 10px;
+  margin: 8px 0;
+}
+.b3-input {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 10px;
+  color: inherit;
+  font-size: 14px;
+}
+.b3-input[type="date"] { grid-column: 1 / -1; }
+.b3-form-actions { grid-column: 1 / -1; display: flex; gap: 8px; }
+.b3-cancel-btn, .b3-save-btn { flex: 1; padding: 10px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
+.b3-cancel-btn { background: transparent; color: inherit; border: 1px solid rgba(255,255,255,0.15); }
+.b3-save-btn { background: var(--accent, #5ee2c4); color: #0a0a0a; border: 0; }
+
+.b3-list { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.b3-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border-radius: 8px; background: rgba(255,255,255,0.03); }
+.b3-row-text { font-size: 14px; }
+.b3-del-btn {
+  min-width: 32px; min-height: 32px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 80, 80, 0.3);
+  background: rgba(255, 80, 80, 0.08);
+  color: #ff5c5c;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.b3-more-btn {
+  margin-top: 8px;
+  background: transparent;
+  color: var(--accent, #5ee2c4);
+  border: 0;
+  font-size: 13px;
+  cursor: pointer;
+}

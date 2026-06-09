@@ -1,0 +1,346 @@
+.fpage {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--bg);
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 72px);
+}
+
+.fpage-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-light);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.fpage-back {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 22px;
+  cursor: pointer;
+  padding: 4px 8px 4px 0;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.fpage-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fpage-add-btn {
+  width: 100%;
+  padding: 16px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 24px;
+}
+
+/* ── Custom Food: Add Button ── */
+.fcf-add-btn {
+  display: block;
+  width: calc(100% - 32px);
+  margin: 12px 16px 0;
+  padding: 11px 16px;
+  background: transparent;
+  color: var(--accent);
+  border: 1.5px dashed var(--accent);
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.15s;
+}
+.fcf-add-btn:active {
+  background: rgba(var(--accent-rgb, 255, 60, 60), 0.08);
+}
+
+/* ── Custom Food: Section Header ── */
+.fcf-section-header {
+  padding: 10px 16px 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+/* ── Custom Food: Badge ── */
+.fcustom-badge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 6px;
+  background: rgba(var(--accent-rgb, 255, 60, 60), 0.15);
+  color: var(--accent);
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  vertical-align: middle;
+}
+
+/* ── Custom Food: Row Actions ── */
+.fcf-row-actions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  flex-shrink: 0;
+  padding-right: 4px;
+}
+
+.fcf-row-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-card2, var(--bg-card));
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.fcf-row-btn:active {
+  background: var(--border-light);
+}
+
+.fcf-row-btn--delete {
+  color: #e03c3c;
+  border-color: rgba(224, 60, 60, 0.3);
+}
+.fcf-row-btn--delete:active {
+  background: rgba(224, 60, 60, 0.12);
+}
+
+.fcf-row-btn--add {
+  color: var(--accent);
+  border-color: var(--accent);
+  font-size: 18px;
+  font-weight: 700;
+}
+.fcf-row-btn--add:active {
+  background: rgba(var(--accent-rgb, 255, 60, 60), 0.1);
+}
+
+/* ── Custom Food: Inline Form Panel ── */
+.fcf-form-panel {
+  margin: 12px 16px;
+  padding: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+}
+
+.fcf-form-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 14px;
+}
+
+.fcf-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.fcf-form-full {
+  grid-column: 1 / -1;
+}
+
+.fcf-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fcf-form-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.fcf-form-input {
+  width: 100%;
+  padding: 9px 10px;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  font-size: 14px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.fcf-form-input:focus {
+  border-color: var(--accent);
+}
+
+/* ── Custom Food: Emoji Picker ── */
+.fcf-emoji-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.fcf-emoji-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  background: var(--bg);
+  border: 1.5px solid var(--border-light);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.fcf-emoji-btn--selected {
+  border-color: var(--accent);
+  background: rgba(var(--accent-rgb, 255, 60, 60), 0.1);
+}
+
+/* ── Custom Food: Form Validation Error ── */
+.fcf-form-error {
+  margin: 8px 0 0;
+  padding: 8px 10px;
+  background: rgba(224, 60, 60, 0.1);
+  color: #e03c3c;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+/* ── Custom Food: Form Action Buttons ── */
+.fcf-form-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.fcf-form-cancel {
+  flex: 1;
+  padding: 11px;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.fcf-form-cancel:active {
+  background: var(--border-light);
+}
+
+.fcf-form-save {
+  flex: 2;
+  padding: 11px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.fcf-form-save:active {
+  opacity: 0.85;
+}
+
+/* ── Custom Food: Empty State Hint ── */
+.fcf-empty-hint {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted);
+  padding: 4px 24px 16px;
+}
+
+.fpage-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+.fpage-cancel-btn {
+  flex: 0 0 auto;
+  padding: 12px 18px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 80, 80, 0.3);
+  background: rgba(255, 80, 80, 0.08);
+  color: #ff5c5c;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.fpage-cancel-btn:hover { background: rgba(255, 80, 80, 0.18); }
+.fpage-actions .fpage-add-btn { flex: 1 1 auto; }
+
+.fpage-barcode-btn {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0 6px;
+  border-radius: 10px;
+  border: 1px dashed rgba(94, 226, 196, 0.4);
+  background: rgba(94, 226, 196, 0.04);
+  color: var(--accent, #5ee2c4);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.fpage-barcode-btn:hover { background: rgba(94, 226, 196, 0.1); }
+
+.fpage-scan-error {
+  margin: 8px 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255, 80, 80, 0.1);
+  border: 1px solid rgba(255, 80, 80, 0.3);
+  color: #ff8b8b;
+  font-size: 13px;
+}
+
+.fpage-ai-btn {
+  display: block;
+  width: calc(100% - 24px);
+  margin: 16px 12px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 0;
+  background: var(--accent, #5ee2c4);
+  color: #0a0a0a;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.fpage-ai-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.fpage-ai-badge {
+  background: rgba(255, 204, 0, 0.1);
+  border: 1px solid rgba(255, 204, 0, 0.4);
+  color: #ffd34a;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  margin: 12px 0;
+}
