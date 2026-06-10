@@ -30,4 +30,13 @@ export function LanguageProvider({ children }) {
   )
 }
 
-export const useLanguage = () => useContext(LanguageContext)
+const FALLBACK = {
+  lang: 'en',
+  setLang: () => {},
+  t: (key, vars = {}) => {
+    const str = translations.en?.[key] ?? key
+    return Object.entries(vars).reduce((s, [k, v]) => s.replace(`{${k}}`, v), str)
+  },
+}
+
+export const useLanguage = () => useContext(LanguageContext) ?? FALLBACK

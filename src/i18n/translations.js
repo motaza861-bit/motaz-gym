@@ -368,6 +368,90 @@ export const translations = {
     'nu.aria_delete': 'Delete',
     'nu.aria_quick_add': 'Quick add',
     'nu.aria_close': 'Close',
+
+    // Auth — Login
+    'au.login_title': 'Welcome back',
+    'au.login_sub': 'Log in to sync your training across devices.',
+    'au.email': 'Email',
+    'au.password': 'Password',
+    'au.login_btn': 'Log in',
+    'au.signing_in': 'Signing in…',
+    'au.forgot_password': 'Forgot password?',
+    'au.no_account': 'No account?',
+    'au.signup': 'Sign up',
+    'au.err_unverified': 'Please verify your email first. Check your inbox.',
+    'au.err_invalid': 'Invalid email or password.',
+
+    // Auth — Signup
+    'au.signup_title': 'Create your account',
+    'au.signup_sub': 'Your training history will follow you to any phone.',
+    'au.confirm_password': 'Confirm password',
+    'au.agree_prefix': 'I agree to the',
+    'au.agree_and': 'and',
+    'au.privacy': 'Privacy Policy',
+    'au.terms': 'Terms of Service',
+    'au.signup_btn': 'Create account',
+    'au.signup_busy': 'Creating account…',
+    'au.have_account': 'Already have an account?',
+    'au.login': 'Log in',
+    'au.err_password_short': 'Password must be at least 8 characters.',
+    'au.err_password_mismatch': 'Passwords do not match.',
+    'au.err_agree': 'Please agree to the Privacy Policy and Terms.',
+
+    // Auth — Forgot / Reset
+    'au.forgot_title': 'Reset your password',
+    'au.forgot_sub': "Enter your email and we'll send you a reset link.",
+    'au.forgot_send': 'Send reset link',
+    'au.forgot_sending': 'Sending…',
+    'au.forgot_sent_title': 'Check your inbox',
+    'au.forgot_sent_sub': 'We sent a reset link to {email}. Click it to set a new password.',
+    'au.back_to_login': 'Back to log in',
+    'au.reset_title': 'Set a new password',
+    'au.new_password': 'New password',
+    'au.confirm_new_password': 'Confirm new password',
+    'au.save_password': 'Save password',
+    'au.saving': 'Saving…',
+
+    // Auth — Verify
+    'au.verify_title': 'Verify your email',
+    'au.verify_sub': 'We sent a verification link to {email}. Click it to activate your account.',
+    'au.verify_default_inbox': 'your inbox',
+    'au.verify_resent': 'Sent! Check your inbox.',
+    'au.verify_resend': 'Resend verification email',
+    'au.verify_wrong_email': 'Wrong email?',
+    'au.verify_signout_retry': 'Sign out and try again',
+    'au.verify_need_email': 'We need your email to resend. Go back to signup.',
+
+    // Auth — Migration modal
+    'au.mig_title': 'Move your existing data?',
+    'au.mig_body': 'We found workout and nutrition data on this device from before you signed up. Move it into your new account, or start fresh.',
+    'au.mig_discard': 'Start fresh',
+    'au.mig_move': 'Move it',
+    'au.loading': 'Loading…',
+
+    // Schedule
+    'sc.title': 'Training Schedule 📅',
+    'sc.subtitle': '{days} training days/week · {sessions} distinct sessions',
+    'sc.edit': '✏️ Edit',
+    'sc.done': 'Done',
+    'sc.edit_hint': 'Tap a day to cycle through sessions',
+    'sc.today': 'Today',
+    'sc.rest': '😴 Rest & Recover',
+    'sc.day_sun': 'Sunday',
+    'sc.day_mon': 'Monday',
+    'sc.day_tue': 'Tuesday',
+    'sc.day_wed': 'Wednesday',
+    'sc.day_thu': 'Thursday',
+    'sc.day_fri': 'Friday',
+    'sc.day_sat': 'Saturday',
+
+    // Progress
+    'pg.present_body_weight': 'Present Body Weight',
+
+    // BigThreeCard / BodyWeightCalendar (extras)
+    'b3.cancel': 'Cancel',
+    'bw.cancel': 'Cancel',
+    'bw.delete': 'Delete',
   },
 
   ar: {
@@ -739,5 +823,89 @@ export const translations = {
     'nu.aria_delete': 'حذف',
     'nu.aria_quick_add': 'إضافة سريعة',
     'nu.aria_close': 'إغلاق',
+
+    // Auth — Login
+    'au.login_title': 'مرحباً بعودتك',
+    'au.login_sub': 'سجّل الدخول لمزامنة تدريبك بين الأجهزة.',
+    'au.email': 'البريد الإلكتروني',
+    'au.password': 'كلمة المرور',
+    'au.login_btn': 'تسجيل الدخول',
+    'au.signing_in': 'جارٍ تسجيل الدخول…',
+    'au.forgot_password': 'نسيت كلمة المرور؟',
+    'au.no_account': 'ليس لديك حساب؟',
+    'au.signup': 'أنشئ حساباً',
+    'au.err_unverified': 'يرجى تأكيد بريدك الإلكتروني أولاً. تحقّق من صندوق الوارد.',
+    'au.err_invalid': 'البريد أو كلمة المرور غير صحيحة.',
+
+    // Auth — Signup
+    'au.signup_title': 'أنشئ حسابك',
+    'au.signup_sub': 'سيتبعك سجلّ تدريبك على أيّ هاتف.',
+    'au.confirm_password': 'تأكيد كلمة المرور',
+    'au.agree_prefix': 'أوافق على',
+    'au.agree_and': 'و',
+    'au.privacy': 'سياسة الخصوصية',
+    'au.terms': 'شروط الخدمة',
+    'au.signup_btn': 'إنشاء الحساب',
+    'au.signup_busy': 'جارٍ إنشاء الحساب…',
+    'au.have_account': 'لديك حساب بالفعل؟',
+    'au.login': 'تسجيل الدخول',
+    'au.err_password_short': 'يجب أن تكون كلمة المرور 8 أحرف على الأقل.',
+    'au.err_password_mismatch': 'كلمتا المرور غير متطابقتين.',
+    'au.err_agree': 'يرجى الموافقة على سياسة الخصوصية والشروط.',
+
+    // Auth — Forgot / Reset
+    'au.forgot_title': 'إعادة تعيين كلمة المرور',
+    'au.forgot_sub': 'أدخل بريدك الإلكتروني وسنرسل رابط إعادة التعيين.',
+    'au.forgot_send': 'إرسال رابط إعادة التعيين',
+    'au.forgot_sending': 'جارٍ الإرسال…',
+    'au.forgot_sent_title': 'تحقّق من صندوق الوارد',
+    'au.forgot_sent_sub': 'أرسلنا رابط إعادة التعيين إلى {email}. اضغطه لتعيين كلمة مرور جديدة.',
+    'au.back_to_login': 'العودة لتسجيل الدخول',
+    'au.reset_title': 'عيّن كلمة مرور جديدة',
+    'au.new_password': 'كلمة المرور الجديدة',
+    'au.confirm_new_password': 'تأكيد كلمة المرور الجديدة',
+    'au.save_password': 'حفظ كلمة المرور',
+    'au.saving': 'جارٍ الحفظ…',
+
+    // Auth — Verify
+    'au.verify_title': 'تأكيد بريدك الإلكتروني',
+    'au.verify_sub': 'أرسلنا رابط التأكيد إلى {email}. اضغطه لتفعيل حسابك.',
+    'au.verify_default_inbox': 'صندوق الوارد',
+    'au.verify_resent': 'تم الإرسال! تحقّق من صندوق الوارد.',
+    'au.verify_resend': 'إعادة إرسال رابط التأكيد',
+    'au.verify_wrong_email': 'بريد خاطئ؟',
+    'au.verify_signout_retry': 'سجّل خروج وحاول مجدداً',
+    'au.verify_need_email': 'نحتاج بريدك لإعادة الإرسال. ارجع إلى صفحة التسجيل.',
+
+    // Auth — Migration modal
+    'au.mig_title': 'نقل بياناتك الحالية؟',
+    'au.mig_body': 'وجدنا بيانات تمارين وتغذية على هذا الجهاز قبل إنشاء حسابك. انقلها إلى حسابك الجديد أو ابدأ من جديد.',
+    'au.mig_discard': 'ابدأ من جديد',
+    'au.mig_move': 'انقلها',
+    'au.loading': 'جارٍ التحميل…',
+
+    // Schedule
+    'sc.title': 'جدول التدريب 📅',
+    'sc.subtitle': '{days} أيام تدريب/أسبوع · {sessions} جلسات مختلفة',
+    'sc.edit': '✏️ تعديل',
+    'sc.done': 'تم',
+    'sc.edit_hint': 'اضغط يوماً للتنقّل بين الجلسات',
+    'sc.today': 'اليوم',
+    'sc.rest': '😴 راحة واستشفاء',
+    'sc.day_sun': 'الأحد',
+    'sc.day_mon': 'الإثنين',
+    'sc.day_tue': 'الثلاثاء',
+    'sc.day_wed': 'الأربعاء',
+    'sc.day_thu': 'الخميس',
+    'sc.day_fri': 'الجمعة',
+    'sc.day_sat': 'السبت',
+
+    // Progress
+    'pg.present_body_weight': 'الوزن الحالي',
+
+    // BigThreeCard / BodyWeightCalendar (extras)
+    'b3.cancel': 'إلغاء',
+    'bw.cancel': 'إلغاء',
+    'bw.delete': 'حذف',
   },
 }

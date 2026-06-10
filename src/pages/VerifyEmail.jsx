@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { useLanguage } from '../context/LanguageContext'
 import './Auth.css'
 
 export default function VerifyEmail() {
   const navigate = useNavigate()
   const location = useLocation()
+  const { t } = useLanguage()
   const passedEmail = location.state?.email ?? ''
   const [email, setEmail] = useState(passedEmail)
   const [resent, setResent] = useState(false)
@@ -27,7 +29,7 @@ export default function VerifyEmail() {
 
   async function resend() {
     setError('')
-    if (!email) { setError('We need your email to resend. Go back to signup.'); return }
+    if (!email) { setError(t('au.verify_need_email')); return }
     const { error } = await supabase.auth.resend({ type: 'signup', email })
     if (error) { setError(error.message); return }
     setResent(true)
@@ -35,13 +37,13 @@ export default function VerifyEmail() {
 
   return (
     <div className="auth-page">
-      <h1 className="auth-title">Verify your email</h1>
-      <p className="auth-sub">We sent a verification link to {email || 'your inbox'}. Click it to activate your account.</p>
+      <h1 className="auth-title">{t('au.verify_title')}</h1>
+      <p className="auth-sub">{t('au.verify_sub', { email: email || t('au.verify_default_inbox') })}</p>
       {error && <div className="auth-error">{error}</div>}
-      {resent ? <p className="auth-sub">Sent! Check your inbox.</p> : (
-        <button className="auth-btn" onClick={resend} disabled={!email}>Resend verification email</button>
+      {resent ? <p className="auth-sub">{t('au.verify_resent')}</p> : (
+        <button className="auth-btn" onClick={resend} disabled={!email}>{t('au.verify_resend')}</button>
       )}
-      <p className="auth-foot">Wrong email? <button onClick={() => supabase.auth.signOut().then(() => navigate('/signup'))} style={{ background: 'none', border: 0, color: 'inherit', textDecoration: 'underline', cursor: 'pointer' }}>Sign out and try again</button></p>
+      <p className="auth-foot">{t('au.verify_wrong_email')} <button onClick={() => supabase.auth.signOut().then(() => navigate('/signup'))} style={{ background: 'none', border: 0, color: 'inherit', textDecoration: 'underline', cursor: 'pointer' }}>{t('au.verify_signout_retry')}</button></p>
     </div>
   )
 }

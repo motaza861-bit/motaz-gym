@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import './BodyWeightCalendar.css'
 import { kgToDisplay, displayToKg, unitLabel } from '../utils/units'
+import { useLanguage } from '../context/LanguageContext'
 
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December']
 const DAY_LABELS = ['S','M','T','W','T','F','S']
@@ -30,6 +31,7 @@ function buildMonthGrid(year, month0) {
 }
 
 export default function BodyWeightCalendar({ logs, initialMonth, onSave, onDelete, unit = 'kg' }) {
+  const { t } = useLanguage()
   const start = initialMonth ?? formatMonth(new Date().getFullYear(), new Date().getMonth())
   const [{ year, month0 }, setView] = useState(() => parseMonth(start))
   const [editingDate, setEditingDate] = useState(null)
@@ -106,9 +108,9 @@ export default function BodyWeightCalendar({ logs, initialMonth, onSave, onDelet
             autoFocus
           />
           <div className="bw-cal-editor-actions">
-            <button className="bw-cal-cancel" onClick={() => setEditingDate(null)}>Cancel</button>
+            <button className="bw-cal-cancel" onClick={() => setEditingDate(null)}>{t('bw.cancel')}</button>
             {byDate.has(editingDate) && (
-              <button className="bw-cal-delete" onClick={del}>Delete</button>
+              <button className="bw-cal-delete" onClick={del}>{t('bw.delete')}</button>
             )}
             <button className="bw-cal-save" onClick={save}>Save</button>
           </div>

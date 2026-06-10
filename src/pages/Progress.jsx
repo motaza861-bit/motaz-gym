@@ -82,7 +82,7 @@ export default function Progress() {
 
         <button className="bw-disclosure" onClick={toggleCal} aria-expanded={calOpen}>
           <span className="bw-disclosure-arrow">{calOpen ? '▾' : '▸'}</span>
-          <span>Present Body Weight</span>
+          <span>{t('pg.present_body_weight')}</span>
         </button>
 
         {calOpen && (

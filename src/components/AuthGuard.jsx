@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { pullAll, findLocalLegacyKeys, migrateLegacyToCloud, discardLegacy } from '../lib/sync'
+import { useLanguage } from '../context/LanguageContext'
 import './AuthGuard.css'
 
 const SYNC_KEYS = [
@@ -20,6 +21,7 @@ const PUBLIC_PATHS = new Set([
 export default function AuthGuard({ children }) {
   const navigate = useNavigate()
   const location = useLocation()
+  const { t } = useLanguage()
   const [status, setStatus] = useState('loading')
   const [showMigration, setShowMigration] = useState(false)
 
@@ -76,7 +78,7 @@ export default function AuthGuard({ children }) {
     setShowMigration(false)
   }
 
-  if (status === 'loading') return <div className="auth-loading">Loading…</div>
+  if (status === 'loading') return <div className="auth-loading">{t('au.loading')}</div>
 
   return (
     <>
@@ -84,11 +86,11 @@ export default function AuthGuard({ children }) {
       {showMigration && (
         <div className="migration-modal-bg">
           <div className="migration-modal">
-            <h2>Move your existing data?</h2>
-            <p>We found workout and nutrition data on this device from before you signed up. Move it into your new account, or start fresh.</p>
+            <h2>{t('au.mig_title')}</h2>
+            <p>{t('au.mig_body')}</p>
             <div className="migration-actions">
-              <button onClick={onDiscard}>Start fresh</button>
-              <button className="primary" onClick={onMigrate}>Move it</button>
+              <button onClick={onDiscard}>{t('au.mig_discard')}</button>
+              <button className="primary" onClick={onMigrate}>{t('au.mig_move')}</button>
             </div>
           </div>
         </div>

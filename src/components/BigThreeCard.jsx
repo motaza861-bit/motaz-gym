@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { toLocalDateStr } from '../utils/dateHelpers'
 import { kgToDisplay, displayToKg, unitLabel } from '../utils/units'
+import { useLanguage } from '../context/LanguageContext'
 import './BigThreeCard.css'
 
 const VISIBLE_LIMIT = 5
@@ -10,6 +11,7 @@ function generateId() {
 }
 
 export default function BigThreeCard({ lift, title, entries, onAdd, onDelete, unit = 'kg' }) {
+  const { t } = useLanguage()
   const label = unitLabel(unit)
   const [adding, setAdding] = useState(false)
   const [weight, setWeight] = useState('')
@@ -69,7 +71,7 @@ export default function BigThreeCard({ lift, title, entries, onAdd, onDelete, un
           <input className="b3-input" type="date"
             value={date} onChange={e => setDate(e.target.value)} />
           <div className="b3-form-actions">
-            <button className="b3-cancel-btn" onClick={cancelAdd}>Cancel</button>
+            <button className="b3-cancel-btn" onClick={cancelAdd}>{t('b3.cancel')}</button>
             <button className="b3-save-btn" onClick={saveEntry}>Save</button>
           </div>
         </div>
