@@ -9,6 +9,7 @@ import ProposalCard from '../components/ProposalCard'
 import Paywall from '../components/Paywall'
 import { useSubscription } from '../hooks/useSubscription'
 import { hasTier, TIER_2 } from '../lib/tiers'
+import { useLanguage } from '../context/LanguageContext'
 import './Coach.css'
 
 const MAX_HISTORY = 200
@@ -20,11 +21,12 @@ function newId(prefix) {
 
 export default function Coach() {
   const { effectiveTier } = useSubscription()
+  const { t } = useLanguage()
   if (!hasTier(effectiveTier, TIER_2)) {
     return (
       <div className="coach-page">
         <div className="coach-header">
-          <span className="coach-title">🤖 AI Coach</span>
+          <span className="coach-title">🤖 {t('coach.title')}</span>
         </div>
         <Paywall feature="coach" />
       </div>
@@ -34,6 +36,7 @@ export default function Coach() {
 }
 
 function CoachInner() {
+  const { t } = useLanguage()
   const [history, setHistory] = useStorage('chat_history', [])
   const [program, setProgram] = useExercises()
   const [targets] = useTargets()
@@ -92,7 +95,7 @@ function CoachInner() {
         })
       }
     } catch {
-      setError("Couldn't reach your coach. Try again.")
+      setError(t('coach.error_unreachable'))
     } finally {
       setBusy(false)
     }
@@ -114,21 +117,21 @@ function CoachInner() {
   }
 
   function clearChat() {
-    if (!window.confirm('Clear chat history? Workout and nutrition data are not affected.')) return
+    if (!window.confirm(t('coach.clear_confirm'))) return
     setHistory([])
   }
 
   return (
     <div className="coach-page">
       <div className="coach-header">
-        <span className="coach-title">🤖 AI Coach</span>
-        <button className="coach-menu-btn" aria-label="Clear chat" onClick={clearChat}>⋯</button>
+        <span className="coach-title">🤖 {t('coach.title')}</span>
+        <button className="coach-menu-btn" aria-label={t('coach.clear_aria')} onClick={clearChat}>⋯</button>
       </div>
 
       <div className="coach-feed" ref={feedRef}>
         {history.length === 0 && (
           <div className="coach-empty">
-            Hi! I'm your fitness coach. Want to build a program together, or log what you've eaten today?
+            {t('coach.empty')}
           </div>
         )}
         {history.map(msg => {
@@ -158,7 +161,7 @@ function CoachInner() {
             )
           }
           if (msg.type === 'tool_cancelled') {
-            return <ChatBubble key={msg.id} role="assistant" type="text" content={`(cancelled) ${msg.proposal?.summary ?? ''}`} />
+            return <ChatBubble key={msg.id} role="assistant" type="text" content={`${t('coach.cancelled_prefix')} ${msg.proposal?.summary ?? ''}`} />
           }
           return null
         })}
@@ -172,7 +175,7 @@ function CoachInner() {
           className="coach-input"
           value={input}
           onChange={e => setInput(e.target.value)}
-          placeholder="Talk to your coach…"
+          placeholder={t('coach.placeholder')}
           onKeyDown={e => { if (e.key === 'Enter') send() }}
         />
         <button className="coach-send" onClick={send} disabled={!input.trim() || busy}>▶</button>
