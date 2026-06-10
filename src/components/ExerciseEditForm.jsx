@@ -99,14 +99,14 @@ export default function ExerciseEditForm({ exercise, onSave, onCancel }) {
           <label className="ex-edit-label" htmlFor="ex-muscles">
             {t('exf.muscles')}
             {muscleStatus === 'loading' && <span className="ex-muscle-spinner" />}
-            {muscleStatus === 'done'    && <span className="ex-muscle-tag ex-muscle-done">✓ auto-detected</span>}
-            {muscleStatus === 'error'   && <span className="ex-muscle-tag ex-muscle-error">could not detect</span>}
+            {muscleStatus === 'done'    && <span className="ex-muscle-tag ex-muscle-done">{t('exf.auto_detected')}</span>}
+            {muscleStatus === 'error'   && <span className="ex-muscle-tag ex-muscle-error">{t('exf.could_not_detect')}</span>}
           </label>
           <input
             id="ex-muscles"
             className={`ex-edit-input${muscleStatus === 'loading' ? ' ex-input-loading' : ''}`}
             type="text"
-            placeholder={muscleStatus === 'loading' ? 'Detecting…' : t('exf.muscles_ph')}
+            placeholder={muscleStatus === 'loading' ? t('exf.detecting') : t('exf.muscles_ph')}
             value={form.muscles}
             disabled={muscleStatus === 'loading'}
             onChange={e => handleMusclesChange(e.target.value)}

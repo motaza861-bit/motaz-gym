@@ -29,12 +29,13 @@ function compressImage(file) {
 export default function FoodScannerPage() {
   const navigate = useNavigate()
   const { effectiveTier } = useSubscription()
+  const { t } = useLanguage()
   if (!hasTier(effectiveTier, TIER_1)) {
     return (
       <div className="fpage">
         <div className="fpage-header">
           <button className="fpage-back" onClick={() => navigate(-1)}>←</button>
-          <span className="fpage-title">Scan food</span>
+          <span className="fpage-title">{t('fs.title')}</span>
         </div>
         <Paywall feature="ai_photo_scan" />
       </div>
@@ -118,7 +119,7 @@ function FoodScannerInner() {
       state: {
         quickLog: {
           id: `scan_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
-          name: edits.food || 'Scanned meal',
+          name: edits.food || t('fs.scanned_meal'),
           emoji: '📸',
           portionG: edits.portionGrams,
           calories: edits.calories,

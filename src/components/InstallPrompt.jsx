@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useLanguage } from '../context/LanguageContext'
 import './InstallPrompt.css'
 
 const DISMISSED_KEY = '__install_dismissed'
@@ -13,6 +14,7 @@ function isIOS() {
 }
 
 export default function InstallPrompt() {
+  const { t } = useLanguage()
   const [evt, setEvt] = useState(null)
   const [iosHint, setIosHint] = useState(false)
   const [dismissed, setDismissed] = useState(() => localStorage.getItem(DISMISSED_KEY) === '1')
@@ -43,13 +45,11 @@ export default function InstallPrompt() {
   return (
     <div className="install-banner">
       <div className="install-banner-text">
-        {evt
-          ? 'Install IronMind on your phone for the full app experience.'
-          : 'Install IronMind: tap the Share icon, then Add to Home Screen.'}
+        {evt ? t('inst.with_evt') : t('inst.ios')}
       </div>
       <div className="install-banner-actions">
-        <button onClick={dismiss}>Later</button>
-        {evt && <button className="primary" onClick={install}>Install</button>}
+        <button onClick={dismiss}>{t('inst.later')}</button>
+        {evt && <button className="primary" onClick={install}>{t('inst.install')}</button>}
       </div>
     </div>
   )

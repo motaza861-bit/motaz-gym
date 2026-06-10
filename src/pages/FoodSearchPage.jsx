@@ -27,12 +27,13 @@ function calcMacros(per100g, portionG) {
 export default function FoodSearchPage() {
   const navigate = useNavigate()
   const { effectiveTier } = useSubscription()
+  const { t } = useLanguage()
   if (!hasTier(effectiveTier, TIER_1)) {
     return (
       <div className="fpage">
         <div className="fpage-header">
           <button className="fpage-back" onClick={() => navigate(-1)}>←</button>
-          <span className="fpage-title">Search food</span>
+          <span className="fpage-title">{t('nu.search_food')}</span>
         </div>
         <Paywall feature="log_nutrition" />
       </div>
@@ -203,9 +204,9 @@ function FoodSearchInner() {
         selectFood(data)
         return
       }
-      setAiError(data.error || 'Could not estimate. Try a different name.')
+      setAiError(data.error || t('nu.err_estimate'))
     } catch {
-      setAiError('Could not reach the server.')
+      setAiError(t('nu.err_server'))
     } finally {
       setAiLoading(false)
     }
@@ -225,9 +226,9 @@ function FoodSearchInner() {
         selectFood(data.food)
         return
       }
-      setScanError(`Barcode ${code} not found. Try the "Add custom food" button to add it manually.`)
+      setScanError(t('nu.err_barcode_not_found', { code }))
     } catch {
-      setScanError('Could not reach the server. Try again.')
+      setScanError(t('nu.err_server_retry'))
     }
   }
 
@@ -294,7 +295,7 @@ function FoodSearchInner() {
             className="fpage-barcode-btn"
             onClick={() => { setScanError(''); setScannerOpen(true) }}
           >
-            📊 Scan barcode
+            {t('nu.scan_barcode')}
           </button>
 
           <div className="fsearch-input-row">
@@ -428,12 +429,12 @@ function FoodSearchInner() {
                       <span className="fsearch-result-name">{food.name}</span>
                       <span className="fcustom-badge">{t('cf.badge')}</span>
                     </div>
-                    <span className="fsearch-result-kcal">{food.per100g.calories} kcal/100g</span>
+                    <span className="fsearch-result-kcal">{t('nu.kcal_per_100g', { kcal: food.per100g.calories })}</span>
                   </button>
                   <div className="fcf-row-actions">
-                    <button className="fcf-row-btn" onClick={() => openForm(food)} aria-label="Edit">✏️</button>
-                    <button className="fcf-row-btn fcf-row-btn--delete" onClick={() => deleteCustomFood(food)} aria-label="Delete">🗑</button>
-                    <button className="fcf-row-btn fcf-row-btn--add" onClick={() => quickAdd(food)} aria-label="Quick add">+</button>
+                    <button className="fcf-row-btn" onClick={() => openForm(food)} aria-label={t('nu.aria_edit')}>✏️</button>
+                    <button className="fcf-row-btn fcf-row-btn--delete" onClick={() => deleteCustomFood(food)} aria-label={t('nu.aria_delete')}>🗑</button>
+                    <button className="fcf-row-btn fcf-row-btn--add" onClick={() => quickAdd(food)} aria-label={t('nu.aria_quick_add')}>+</button>
                   </div>
                 </div>
               ) : (
@@ -444,9 +445,9 @@ function FoodSearchInner() {
                       <span className="fsearch-result-name">{food.name}</span>
                       {food.brand && <span className="fsearch-result-brand">{food.brand}</span>}
                     </div>
-                    <span className="fsearch-result-kcal">{food.per100g.calories} kcal/100g</span>
+                    <span className="fsearch-result-kcal">{t('nu.kcal_per_100g', { kcal: food.per100g.calories })}</span>
                   </button>
-                  <button className="fsearch-quick-add" onClick={() => quickAdd(food)} aria-label="Quick add">+</button>
+                  <button className="fsearch-quick-add" onClick={() => quickAdd(food)} aria-label={t('nu.aria_quick_add')}>+</button>
                 </div>
               )
             ))}
@@ -454,7 +455,7 @@ function FoodSearchInner() {
             {remoteLoading && (
               <div className="fsearch-remote-loading">
                 <span className="fsearch-spinner" />
-                <span className="fsearch-loading-text">Searching…</span>
+                <span className="fsearch-loading-text">{t('nu.searching')}</span>
               </div>
             )}
           </div>
@@ -464,7 +465,7 @@ function FoodSearchInner() {
             onClick={estimateWithAI}
             disabled={!query.trim() || aiLoading}
           >
-            {aiLoading ? 'Estimating…' : '✨ Can\'t find it? Estimate with AI'}
+            {aiLoading ? t('nu.estimating') : t('nu.estimate_ai_cta')}
           </button>
           {aiError && <div className="fpage-scan-error">{aiError}</div>}
         </>
@@ -480,7 +481,7 @@ function FoodSearchInner() {
 
           {selected?._aiEstimate && (
             <div className="fpage-ai-badge">
-              ✨ AI estimate — verify before saving. All fields are editable.
+              {t('nu.ai_verify')}
             </div>
           )}
 
@@ -501,19 +502,19 @@ function FoodSearchInner() {
             <div className="fsearch-macros">
               <div className="fsearch-macro">
                 <span className="fsearch-macro-val">{macrosPreview.calories}</span>
-                <span className="fsearch-macro-key">kcal</span>
+                <span className="fsearch-macro-key">{t('nu.macro_kcal')}</span>
               </div>
               <div className="fsearch-macro">
                 <span className="fsearch-macro-val">{macrosPreview.protein}g</span>
-                <span className="fsearch-macro-key">protein</span>
+                <span className="fsearch-macro-key">{t('nu.macro_protein')}</span>
               </div>
               <div className="fsearch-macro">
                 <span className="fsearch-macro-val">{macrosPreview.carbs}g</span>
-                <span className="fsearch-macro-key">carbs</span>
+                <span className="fsearch-macro-key">{t('nu.macro_carbs')}</span>
               </div>
               <div className="fsearch-macro">
                 <span className="fsearch-macro-val">{macrosPreview.fat}g</span>
-                <span className="fsearch-macro-key">fat</span>
+                <span className="fsearch-macro-key">{t('nu.macro_fat')}</span>
               </div>
             </div>
           )}
@@ -521,7 +522,7 @@ function FoodSearchInner() {
           <div className="fsearch-portion-note">{t('nu.per_100g')}: {selected.per100g.calories} kcal</div>
 
           <div className="fpage-actions">
-            <button className="fpage-cancel-btn" onClick={() => setSelected(null)}>Cancel</button>
+            <button className="fpage-cancel-btn" onClick={() => setSelected(null)}>{t('nu.cancel')}</button>
             <button className="fpage-add-btn" onClick={handleAdd}>{t('nu.add_to_today')}</button>
           </div>
         </div>

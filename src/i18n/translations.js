@@ -318,6 +318,56 @@ export const translations = {
     'prop.wd_thu': 'Thu',
     'prop.wd_fri': 'Fri',
     'prop.wd_sat': 'Sat',
+
+    // InstallPrompt
+    'inst.with_evt': 'Install IronMind on your phone for the full app experience.',
+    'inst.ios': 'Install IronMind: tap the Share icon, then Add to Home Screen.',
+    'inst.later': 'Later',
+    'inst.install': 'Install',
+
+    // BarcodeScanner
+    'bs.close_aria': 'Close',
+    'bs.title': 'Scan barcode',
+    'bs.hint': 'Hold over the barcode',
+    'bs.err_camera': 'Camera access denied or unavailable.',
+    'bs.err_load': 'Barcode scanner failed to load.',
+
+    // Settings account / delete
+    'st.account': 'Account',
+    'st.macro_calc_from_profile': 'Calculates from your Profile above.',
+    'st.logout': 'Log out',
+    'st.delete_account': 'Delete my account',
+    'st.delete_account_prompt': 'Type your email ({email}) to permanently delete your account and all data:',
+    'st.delete_account_email_mismatch': 'Email did not match. Cancelled.',
+    'st.delete_account_failed': 'Failed: {error}',
+
+    // ExerciseEditForm extras
+    'exf.auto_detected': '✓ auto-detected',
+    'exf.could_not_detect': 'could not detect',
+    'exf.detecting': 'Detecting…',
+
+    // FoodScannerPage
+    'fs.scanned_meal': 'Scanned meal',
+
+    // FoodSearch extras
+    'nu.scan_barcode': '📊 Scan barcode',
+    'nu.searching': 'Searching…',
+    'nu.estimating': 'Estimating…',
+    'nu.estimate_ai_cta': "✨ Can't find it? Estimate with AI",
+    'nu.ai_verify': '✨ AI estimate — verify before saving. All fields are editable.',
+    'nu.kcal_per_100g': '{kcal} kcal/100g',
+    'nu.macro_kcal': 'kcal',
+    'nu.macro_protein': 'protein',
+    'nu.macro_carbs': 'carbs',
+    'nu.macro_fat': 'fat',
+    'nu.err_estimate': 'Could not estimate. Try a different name.',
+    'nu.err_server': 'Could not reach the server.',
+    'nu.err_server_retry': 'Could not reach the server. Try again.',
+    'nu.err_barcode_not_found': 'Barcode {code} not found. Try the "Add custom food" button to add it manually.',
+    'nu.aria_edit': 'Edit',
+    'nu.aria_delete': 'Delete',
+    'nu.aria_quick_add': 'Quick add',
+    'nu.aria_close': 'Close',
   },
 
   ar: {
@@ -639,5 +689,55 @@ export const translations = {
     'prop.wd_thu': 'الخميس',
     'prop.wd_fri': 'الجمعة',
     'prop.wd_sat': 'السبت',
+
+    // InstallPrompt
+    'inst.with_evt': 'ثبّت IronMind على هاتفك للحصول على تجربة التطبيق الكاملة.',
+    'inst.ios': 'لتثبيت IronMind: اضغط أيقونة المشاركة ثم "إضافة إلى الشاشة الرئيسية".',
+    'inst.later': 'لاحقاً',
+    'inst.install': 'تثبيت',
+
+    // BarcodeScanner
+    'bs.close_aria': 'إغلاق',
+    'bs.title': 'مسح الباركود',
+    'bs.hint': 'وجّه الكاميرا نحو الباركود',
+    'bs.err_camera': 'تم رفض الوصول إلى الكاميرا أو أنها غير متاحة.',
+    'bs.err_load': 'فشل تحميل ماسح الباركود.',
+
+    // Settings account / delete
+    'st.account': 'الحساب',
+    'st.macro_calc_from_profile': 'يحسب من الملف الشخصي أعلاه.',
+    'st.logout': 'تسجيل الخروج',
+    'st.delete_account': 'احذف حسابي',
+    'st.delete_account_prompt': 'اكتب بريدك الإلكتروني ({email}) لحذف حسابك وجميع بياناتك بشكل دائم:',
+    'st.delete_account_email_mismatch': 'البريد الإلكتروني غير مطابق. تم الإلغاء.',
+    'st.delete_account_failed': 'فشل: {error}',
+
+    // ExerciseEditForm extras
+    'exf.auto_detected': '✓ تم الكشف تلقائياً',
+    'exf.could_not_detect': 'تعذّر الكشف',
+    'exf.detecting': 'جارٍ الكشف…',
+
+    // FoodScannerPage
+    'fs.scanned_meal': 'وجبة ممسوحة',
+
+    // FoodSearch extras
+    'nu.scan_barcode': '📊 مسح الباركود',
+    'nu.searching': 'جارٍ البحث…',
+    'nu.estimating': 'جارٍ التقدير…',
+    'nu.estimate_ai_cta': '✨ لم تجده؟ قدّر بالذكاء الاصطناعي',
+    'nu.ai_verify': '✨ تقدير AI — تحقّق قبل الحفظ. كل الحقول قابلة للتعديل.',
+    'nu.kcal_per_100g': '{kcal} سعرة/100غ',
+    'nu.macro_kcal': 'سعرة',
+    'nu.macro_protein': 'بروتين',
+    'nu.macro_carbs': 'كربوهيدرات',
+    'nu.macro_fat': 'دهون',
+    'nu.err_estimate': 'تعذّر التقدير. جرّب اسماً آخر.',
+    'nu.err_server': 'تعذّر الوصول إلى الخادم.',
+    'nu.err_server_retry': 'تعذّر الوصول إلى الخادم. حاول مجدداً.',
+    'nu.err_barcode_not_found': 'الباركود {code} غير موجود. جرّب زرّ "أضف طعاماً مخصصاً" لإضافته يدوياً.',
+    'nu.aria_edit': 'تعديل',
+    'nu.aria_delete': 'حذف',
+    'nu.aria_quick_add': 'إضافة سريعة',
+    'nu.aria_close': 'إغلاق',
   },
 }

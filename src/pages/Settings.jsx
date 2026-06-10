@@ -213,7 +213,7 @@ export default function Settings() {
         </div>
         <div className="settings-card card">
           <div className="settings-card-title">{t('st.macro_calc')}</div>
-          <p className="settings-card-desc">Calculates from your Profile above.</p>
+          <p className="settings-card-desc">{t('st.macro_calc_from_profile')}</p>
           <button className="settings-btn calc-calc-btn" onClick={handleCalc}>{t('st.calculate')}</button>
           {calcResult && (
             <div className="calc-result">
@@ -248,7 +248,7 @@ export default function Settings() {
 
       {/* Account */}
       <div className="settings-section danger-zone">
-        <h3>Account</h3>
+        <h3>{t('st.account')}</h3>
         <SubscriptionCard />
         <button
           className="settings-btn"
@@ -258,7 +258,7 @@ export default function Settings() {
             navigate('/login', { replace: true })
           }}
         >
-          Log out
+          {t('st.logout')}
         </button>
         <button
           className="settings-btn"
@@ -281,19 +281,19 @@ export default function Settings() {
           onClick={async () => {
             const { data } = await supabase.auth.getUser()
             const email = data?.user?.email ?? ''
-            const confirm1 = window.prompt(`Type your email (${email}) to permanently delete your account and all data:`)
+            const confirm1 = window.prompt(t('st.delete_account_prompt', { email }))
             if (!confirm1 || confirm1.trim().toLowerCase() !== email.toLowerCase()) {
-              alert('Email did not match. Cancelled.')
+              alert(t('st.delete_account_email_mismatch'))
               return
             }
             const { error } = await supabase.rpc('delete_my_account')
-            if (error) { alert('Failed: ' + error.message); return }
+            if (error) { alert(t('st.delete_account_failed', { error: error.message })); return }
             await supabase.auth.signOut()
             localStorage.clear()
             navigate('/signup', { replace: true })
           }}
         >
-          Delete my account
+          {t('st.delete_account')}
         </button>
       </div>
 

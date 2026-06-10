@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useLanguage } from '../context/LanguageContext'
 import './BarcodeScanner.css'
 
 const BARCODE_FORMATS = ['ean_13', 'ean_8', 'upc_a', 'upc_e']
@@ -8,6 +9,7 @@ function hasNativeDetector() {
 }
 
 export default function BarcodeScanner({ onDetect, onClose }) {
+  const { t } = useLanguage()
   const videoRef = useRef(null)
   const streamRef = useRef(null)
   const detectorRef = useRef(null)
@@ -41,7 +43,7 @@ export default function BarcodeScanner({ onDetect, onClose }) {
           startZxing()
         }
       } catch (e) {
-        setError('Camera access denied or unavailable.')
+        setError(t('bs.err_camera'))
       }
     }
 
@@ -73,7 +75,7 @@ export default function BarcodeScanner({ onDetect, onClose }) {
           if (result) handleDetected(result.getText())
         })
       } catch (e) {
-        setError('Barcode scanner failed to load.')
+        setError(t('bs.err_load'))
       }
     }
 
@@ -103,8 +105,8 @@ export default function BarcodeScanner({ onDetect, onClose }) {
   return (
     <div className="barcode-scanner">
       <div className="bs-header">
-        <button className="bs-close" aria-label="Close" onClick={onClose}>✕</button>
-        <span style={{ color: 'white', fontSize: 14 }}>Scan barcode</span>
+        <button className="bs-close" aria-label={t('bs.close_aria')} onClick={onClose}>✕</button>
+        <span style={{ color: 'white', fontSize: 14 }}>{t('bs.title')}</span>
         <span style={{ width: 38 }} />
       </div>
       <div className="bs-video-wrap">
@@ -112,7 +114,7 @@ export default function BarcodeScanner({ onDetect, onClose }) {
         <div className="bs-crosshair">
           <div className="bs-crosshair-box" />
         </div>
-        <div className="bs-hint">Hold over the barcode</div>
+        <div className="bs-hint">{t('bs.hint')}</div>
         {error && <div className="bs-error">{error}</div>}
       </div>
     </div>
