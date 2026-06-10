@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useSubscription } from '../hooks/useSubscription'
+import { useLanguage } from '../context/LanguageContext'
 
 function format(date) {
   if (!date) return ''
@@ -15,17 +16,18 @@ function variantOf({ status, daysLeft }) {
 
 export default function SubscriptionCard() {
   const navigate = useNavigate()
+  const { t } = useLanguage()
   const sub = useSubscription()
   const v = variantOf(sub)
 
   if (v === 'active') {
     return (
       <div className="card settings-card sub-card">
-        <div className="sub-card-title">🎟️ Subscription</div>
-        <div className="sub-card-row"><span className="sub-card-row-label">Status</span><span>Active</span></div>
-        <div className="sub-card-row"><span className="sub-card-row-label">Tier</span><span>{sub.storedTier === 'tier2' ? 'Tier 2 (full access)' : 'Tier 1'}</span></div>
-        <button className="sub-card-cta" onClick={() => navigate('/pricing')}>Manage plan</button>
-        <button className="sub-card-link" onClick={() => navigate('/pricing')}>Compare plans ›</button>
+        <div className="sub-card-title">🎟️ {t('sub.title')}</div>
+        <div className="sub-card-row"><span className="sub-card-row-label">{t('sub.status')}</span><span>{t('sub.status_active')}</span></div>
+        <div className="sub-card-row"><span className="sub-card-row-label">{t('sub.tier')}</span><span>{sub.storedTier === 'tier2' ? t('sub.tier2_full') : t('sub.tier1')}</span></div>
+        <button className="sub-card-cta" onClick={() => navigate('/pricing')}>{t('sub.manage_plan')}</button>
+        <button className="sub-card-link" onClick={() => navigate('/pricing')}>{t('sub.compare_plans')}</button>
       </div>
     )
   }
@@ -33,12 +35,12 @@ export default function SubscriptionCard() {
   if (v === 'trialing') {
     return (
       <div className="card settings-card sub-card">
-        <div className="sub-card-title">🎟️ Subscription</div>
-        <div className="sub-card-row"><span className="sub-card-row-label">Status</span><span>Trialing</span></div>
-        <div className="sub-card-row"><span className="sub-card-row-label">Tier</span><span>Trial (Tier 2 access)</span></div>
-        <div className="sub-card-row"><span className="sub-card-row-label">Days left in trial</span><span>{sub.daysLeft}</span></div>
-        <button className="sub-card-cta" onClick={() => navigate('/pricing')}>Choose a plan</button>
-        <button className="sub-card-link" onClick={() => navigate('/pricing')}>See what's in each plan ›</button>
+        <div className="sub-card-title">🎟️ {t('sub.title')}</div>
+        <div className="sub-card-row"><span className="sub-card-row-label">{t('sub.status')}</span><span>{t('sub.status_trialing')}</span></div>
+        <div className="sub-card-row"><span className="sub-card-row-label">{t('sub.tier')}</span><span>{t('sub.tier_trial_access')}</span></div>
+        <div className="sub-card-row"><span className="sub-card-row-label">{t('sub.days_left')}</span><span>{sub.daysLeft}</span></div>
+        <button className="sub-card-cta" onClick={() => navigate('/pricing')}>{t('sub.choose_plan')}</button>
+        <button className="sub-card-link" onClick={() => navigate('/pricing')}>{t('sub.see_each_plan')}</button>
       </div>
     )
   }
@@ -46,24 +48,20 @@ export default function SubscriptionCard() {
   if (v === 'warning') {
     return (
       <div className="card settings-card sub-card sub-card-warning">
-        <div className="sub-card-title">⚠️ Your trial ends in {sub.daysLeft} {sub.daysLeft === 1 ? 'day' : 'days'}</div>
-        <div className="sub-card-body">
-          Choose a plan now to keep tracking, logging meals, and using AI Coach.
-        </div>
-        <button className="sub-card-cta" onClick={() => navigate('/pricing')}>Choose a plan</button>
-        <button className="sub-card-link" onClick={() => navigate('/pricing')}>See what's in each plan ›</button>
+        <div className="sub-card-title">⚠️ {t('sub.urgent_title', { n: sub.daysLeft, unit: sub.daysLeft === 1 ? t('sub.day') : t('sub.days') })}</div>
+        <div className="sub-card-body">{t('sub.urgent_body')}</div>
+        <button className="sub-card-cta" onClick={() => navigate('/pricing')}>{t('sub.choose_plan')}</button>
+        <button className="sub-card-link" onClick={() => navigate('/pricing')}>{t('sub.see_each_plan')}</button>
       </div>
     )
   }
 
   return (
     <div className="card settings-card sub-card sub-card-expired">
-      <div className="sub-card-title">🔒 Subscription expired</div>
-      <div className="sub-card-body">
-        Trial ended on {format(sub.trialEndsAt)}. Subscribe to keep using IronMind.
-      </div>
-      <button className="sub-card-cta" onClick={() => navigate('/pricing')}>Subscribe</button>
-      <button className="sub-card-link" onClick={() => navigate('/pricing')}>See plans ›</button>
+      <div className="sub-card-title">🔒 {t('sub.expired_title')}</div>
+      <div className="sub-card-body">{t('sub.expired_body', { date: format(sub.trialEndsAt) })}</div>
+      <button className="sub-card-cta" onClick={() => navigate('/pricing')}>{t('sub.subscribe')}</button>
+      <button className="sub-card-link" onClick={() => navigate('/pricing')}>{t('sub.see_plans')}</button>
     </div>
   )
 }
