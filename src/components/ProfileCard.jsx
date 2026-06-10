@@ -4,24 +4,9 @@ import { supabase } from '../lib/supabase'
 import { kgToDisplay, displayToKg } from '../utils/units'
 import { useLanguage } from '../context/LanguageContext'
 
-const ACTIVITY_OPTIONS = [
-  { value: 'sedentary', label: 'Sedentary' },
-  { value: 'light',     label: 'Light' },
-  { value: 'moderate',  label: 'Moderate' },
-  { value: 'very',      label: 'Very active' },
-  { value: 'extreme',   label: 'Extremely active' },
-]
-
-const GOAL_OPTIONS = [
-  { value: 'recomp', label: 'Recomp' },
-  { value: 'cut',    label: 'Cut −400' },
-  { value: 'bulk',   label: 'Bulk +250' },
-]
-
-const GENDER_OPTIONS = [
-  { value: 'male',   label: 'Male' },
-  { value: 'female', label: 'Female' },
-]
+const ACTIVITY_VALUES = ['sedentary', 'light', 'moderate', 'very', 'extreme']
+const GOAL_VALUES     = ['recomp', 'cut', 'bulk']
+const GENDER_VALUES   = ['male', 'female']
 
 const DEFAULT_PROFILE = {
   name: '', weight: '', height: '', age: '',
@@ -94,7 +79,7 @@ export default function ProfileCard() {
         </label>
 
         <label className="profile-field">
-          <span className="profile-label">Weight</span>
+          <span className="profile-label">{t('pf.weight')}</span>
           <div className="profile-weight-row">
             <input className="calc-input" type="number" inputMode="decimal"
               value={draft.weight}
@@ -109,40 +94,40 @@ export default function ProfileCard() {
         </label>
 
         <label className="profile-field">
-          <span className="profile-label">Height (cm)</span>
+          <span className="profile-label">{t('pf.height_cm')}</span>
           <input className="calc-input" type="number" inputMode="decimal"
             value={draft.height}
             onChange={e => setField('height', e.target.value)} />
         </label>
 
         <label className="profile-field">
-          <span className="profile-label">Age</span>
+          <span className="profile-label">{t('pf.age')}</span>
           <input className="calc-input" type="number" inputMode="numeric"
             value={draft.age}
             onChange={e => setField('age', e.target.value)} />
         </label>
 
         <label className="profile-field">
-          <span className="profile-label">Gender</span>
+          <span className="profile-label">{t('pf.gender')}</span>
           <select className="calc-input" value={draft.gender}
             onChange={e => setField('gender', e.target.value)}>
-            {GENDER_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+            {GENDER_VALUES.map(v => <option key={v} value={v}>{t(`pf.gender_${v}`)}</option>)}
           </select>
         </label>
 
         <label className="profile-field profile-field-full">
-          <span className="profile-label">Activity level</span>
+          <span className="profile-label">{t('pf.activity')}</span>
           <select className="calc-input" value={draft.activityLevel}
             onChange={e => setField('activityLevel', e.target.value)}>
-            {ACTIVITY_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+            {ACTIVITY_VALUES.map(v => <option key={v} value={v}>{t(`pf.act_${v}`)}</option>)}
           </select>
         </label>
 
         <label className="profile-field profile-field-full">
-          <span className="profile-label">Goal</span>
+          <span className="profile-label">{t('pf.goal')}</span>
           <select className="calc-input" value={draft.goal}
             onChange={e => setField('goal', e.target.value)}>
-            {GOAL_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+            {GOAL_VALUES.map(v => <option key={v} value={v}>{t(`pf.goal_${v}`)}</option>)}
           </select>
         </label>
       </div>
